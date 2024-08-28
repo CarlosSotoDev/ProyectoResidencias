@@ -1,14 +1,12 @@
 <?php
-include('../../config.php');
-
-session_start();
+include('../../includes/config.php');  // Asegúrate de que la ruta a config.php sea correcta.
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre_usuario = $_POST['username'];
     $contrasena = $_POST['password'];
 
     // Buscar el usuario en la base de datos
-    $sql = "SELECT ID_Usuario, Nombre_Usuario, Contraseña, Rol FROM Usuario WHERE Nombre_Usuario = ?";
+    $sql = "SELECT ID_Usuario, Nombre_Usuario, Contraseña, Rol FROM usuario WHERE Nombre_Usuario = ?";
     $stmt = $connection->prepare($sql);
     $stmt->bind_param("s", $nombre_usuario);
     $stmt->execute();
@@ -17,21 +15,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        // Verificar la contraseña
+        // Verificar la contraseña usando password_verify()
         if (password_verify($contrasena, $user['Contraseña'])) {
             // Contraseña correcta, iniciar sesión
+            session_start();
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $user['Nombre_Usuario'];
             $_SESSION['user_id'] = $user['ID_Usuario'];
             $_SESSION['rol'] = $user['Rol'];
 
-            // Redirigir al dashboard del Administrador si el rol es 3
+            // Redirigir al dashboard correspondiente según el rol
             if ($_SESSION['rol'] == 3) {
-                header("Location: ../Admin/dashboardAdmin.php");
+                header("Location: ../admin/dashboardAdmin.php");
                 exit;
             } else {
-                // Redirigir a otra página o mostrar un mensaje si no es administrador
-                echo "No tienes acceso al panel de administrador.";
+                // Redirigir a otra página si el usuario no es administrador
+                header("Location: ../public/dashboard.php");  // Modifica esto según el rol del usuario
                 exit;
             }
         } else {

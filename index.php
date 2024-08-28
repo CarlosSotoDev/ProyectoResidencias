@@ -1,6 +1,6 @@
 <?php
-// Incluye la configuración global
-include('config.php');
+// Incluye la configuración global usando una ruta relativa directamente
+include('includes/config.php');
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +12,7 @@ include('config.php');
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>styles.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
