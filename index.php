@@ -313,7 +313,7 @@ include('includes/config.php');
                 <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#tramitesAccordion">
                     <div class="card-body">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua.
+                        labore et dolore magna aliua.
                     </div>
                 </div>
             </div>
