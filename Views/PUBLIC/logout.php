@@ -1,11 +1,14 @@
 <?php
 session_start();
-
-// Destruir todas las sesiones
-$_SESSION = array();
+session_unset();
 session_destroy();
 
-// Redirigir al usuario a la página de inicio de sesión
-header('Location: login.php');
+// Desactivar el caché del navegador
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+header('Pragma: no-cache');
+
+// Redirigir a la página de login
+header('Location: ../public/login.php');
 exit;
 ?>
