@@ -68,6 +68,16 @@ h1 {
     text-align: center; /* Center the text inside the card body */
 }
 
+/* Justify paragraphs with the class "parrafo" */
+.parrafo {
+    text-align: justify;
+}
+
+/* Justify list items with the class "elemento_Listas_Parrafo" */
+.elemento_Listas_Parrafo {
+    text-align: justify;
+}
+
 /* Footer */
 .footer {
     background-color: var(--secondary-color);
