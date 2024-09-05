@@ -1,9 +1,12 @@
 <?php
-include('../../includes/config.php');  // Asegúrate de que la ruta a config.php sea correcta.
+include('../../includes/config.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre_usuario = $_POST['username'];
     $contrasena = $_POST['password'];
+
+    // Encriptar la contraseña ingresada para compararla con la encriptada en la base de datos
+    $contrasena_encriptada = hash('sha256', $contrasena);
 
     // Buscar el usuario en la base de datos
     $sql = "SELECT ID_Usuario, Nombre_Usuario, Contraseña, Rol FROM usuario WHERE Nombre_Usuario = ?";
@@ -15,9 +18,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        // Verificar la contraseña usando password_verify()
-        if (password_verify($contrasena, $user['Contraseña'])) {
-            // Contraseña correcta, iniciar sesión
+        // Verificar si el usuario tiene el rol 4 (Inactivo)
+        if ($user['Rol'] == 4) {
+            header("Location: login.php?error=disabled");
+            exit;
+        }
+
+        // Comparar la contraseña encriptada ingresada con la almacenada en la base de datos
+        if ($contrasena_encriptada === $user['Contraseña']) {
             session_start();
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $user['Nombre_Usuario'];
@@ -29,17 +37,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: ../admin/dashboardAdmin.php");
                 exit;
             } else {
-                // Redirigir a otra página si el usuario no es administrador
-                header("Location: ../public/dashboard.php");  // Modifica esto según el rol del usuario
+                header("Location: dashboard.php");
                 exit;
             }
         } else {
-            // Contraseña incorrecta
             header("Location: login.php?error=incorrect_password");
             exit;
         }
     } else {
-        // Usuario no encontrado
         header("Location: login.php?error=user_not_found");
         exit;
     }

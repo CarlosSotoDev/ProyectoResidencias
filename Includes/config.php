@@ -31,6 +31,21 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Función para verificar si el usuario está autenticado y activo
+function checkLogin() {
+    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+        header('Location: ../public/login.php');
+        exit;
+    }
+
+    // Verificar si el usuario tiene el rol 4 (Inactivo)
+    if ($_SESSION['rol'] == 4) {
+        session_destroy();
+        header('Location: ../public/login.php?error=disabled');
+        exit;
+    }
+}
+
 // Incluir funciones comunes
-include_once(__DIR__ . '/functions.php');
+include_once(__DIR__ . '/functions.php'); // Usar include_once para evitar múltiples inclusiones
 ?>
