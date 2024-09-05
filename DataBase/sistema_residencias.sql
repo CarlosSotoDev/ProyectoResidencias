@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-08-2024 a las 06:29:23
+-- Tiempo de generación: 05-09-2024 a las 02:09:18
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS `administrador` (
   `Rol` int DEFAULT NULL,
   `ID_Usuario` int DEFAULT NULL,
   PRIMARY KEY (`ID_Administrador`),
-  KEY `Carrera` (`Carrera`),
-  KEY `Rol` (`Rol`),
-  KEY `ID_Usuario` (`ID_Usuario`)
+  KEY `fk_administrador_carrera` (`Carrera`),
+  KEY `fk_administrador_rol` (`Rol`),
+  KEY `fk_administrador_usuario` (`ID_Usuario`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -68,11 +68,11 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   `Rol` int DEFAULT NULL,
   `ID_Usuario` int DEFAULT NULL,
   PRIMARY KEY (`ID_Alumno`),
-  KEY `Carrera` (`Carrera`),
-  KEY `Proyecto` (`Proyecto`),
-  KEY `Asesor` (`Asesor`),
-  KEY `Rol` (`Rol`),
-  KEY `ID_Usuario` (`ID_Usuario`)
+  KEY `fk_alumno_carrera` (`Carrera`),
+  KEY `fk_alumno_proyecto` (`Proyecto`),
+  KEY `fk_alumno_asesor` (`Asesor`),
+  KEY `fk_alumno_rol` (`Rol`),
+  KEY `fk_alumno_usuario` (`ID_Usuario`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -92,10 +92,10 @@ CREATE TABLE IF NOT EXISTS `asesor` (
   `Rol` int DEFAULT NULL,
   `ID_Usuario` int DEFAULT NULL,
   PRIMARY KEY (`ID_Asesor`),
-  KEY `Proyecto_Asignado` (`Proyecto_Asignado`),
-  KEY `Carrera` (`Carrera`),
-  KEY `Rol` (`Rol`),
-  KEY `ID_Usuario` (`ID_Usuario`)
+  KEY `fk_asesor_proyecto_asignado` (`Proyecto_Asignado`),
+  KEY `fk_asesor_carrera` (`Carrera`),
+  KEY `fk_asesor_rol` (`Rol`),
+  KEY `fk_asesor_usuario` (`ID_Usuario`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `proyecto` (
   `Status` enum('Pendiente','En Revisión') NOT NULL,
   `Integrantes` int DEFAULT NULL,
   PRIMARY KEY (`ID_Proyecto`),
-  KEY `Integrantes` (`Integrantes`)
+  KEY `fk_proyecto_integrantes` (`Integrantes`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -164,7 +164,8 @@ CREATE TABLE IF NOT EXISTS `rol` (
 INSERT INTO `rol` (`ID_Rol`, `Descripcion`) VALUES
 (1, 'Alumno'),
 (2, 'Asesor'),
-(3, 'Administrador');
+(3, 'Administrador'),
+(4, 'Inactivo');
 
 -- --------------------------------------------------------
 
@@ -179,15 +180,30 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `Contraseña` varchar(255) NOT NULL,
   `Rol` int DEFAULT NULL,
   PRIMARY KEY (`ID_Usuario`),
-  KEY `Rol` (`Rol`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_usuario_rol` (`Rol`)
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
 INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VALUES
-(1, 'admin', 'cd27a308900e4f0e5c24083373ed96e3880a26be144d8eb712c49ca88dd1eac9', 3);
+(1, 'admin', 'cd27a308900e4f0e5c24083373ed96e3880a26be144d8eb712c49ca88dd1eac9', 3),
+(2, 'PRUEBA', '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5', 4),
+(3, 'SOTO', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
+(4, 'admin2', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 3),
+(6, 'prueba3', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
+(7, 'YAEL23', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
+(8, 'SOTO', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
+(9, 'pruebaaa', '173af653133d964edfc16cafe0aba33c8f500a07f3ba3f81943916910c257705', 4),
+(10, 'PRUEBA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
+(11, 'sadsa', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
+(12, 'SOTO', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
+(13, 'aSSA', '6f4b6612125fb3a0daecd2799dfd6c9c299424fd920f9b308110a2c1fbd8f443', 4),
+(14, 'yael', '41e5c285822f1c0702dcea6969221914c8a6887bec55f36ebe84a63b33827027', 4),
+(15, 'admin5', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
+(16, 'SOTO', '2b07da543d6c7806fc45e25f997f9622a4748948b531c5875eba51703c7e420f', 4),
+(17, 'ENABLE', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
 
 --
 -- Disparadores `usuario`
@@ -196,6 +212,16 @@ DROP TRIGGER IF EXISTS `before_usuario_insert`;
 DELIMITER $$
 CREATE TRIGGER `before_usuario_insert` BEFORE INSERT ON `usuario` FOR EACH ROW BEGIN
     SET NEW.Contraseña = SHA2(NEW.Contraseña, 256);
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `before_usuario_update`;
+DELIMITER $$
+CREATE TRIGGER `before_usuario_update` BEFORE UPDATE ON `usuario` FOR EACH ROW BEGIN
+    -- Solo encripta si la contraseña ha sido cambiada
+    IF NEW.Contraseña != OLD.Contraseña THEN
+        SET NEW.Contraseña = SHA2(NEW.Contraseña, 256);
+    END IF;
 END
 $$
 DELIMITER ;
