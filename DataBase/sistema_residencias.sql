@@ -205,14 +205,21 @@ INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VAL
 (16, 'SOTO', '2b07da543d6c7806fc45e25f997f9622a4748948b531c5875eba51703c7e420f', 4),
 (17, 'ENABLE', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
 
+
+
 --
 -- Disparadores `usuario`
 --
+
+
 DROP TRIGGER IF EXISTS `before_usuario_insert`;
 DELIMITER $$
 CREATE TRIGGER `before_usuario_insert` BEFORE INSERT ON `usuario` FOR EACH ROW BEGIN
     SET NEW.Contraseña = SHA2(NEW.Contraseña, 256);
 END
+
+
+
 $$
 DELIMITER ;
 DROP TRIGGER IF EXISTS `before_usuario_update`;
@@ -226,6 +233,7 @@ END
 $$
 DELIMITER ;
 COMMIT;
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
