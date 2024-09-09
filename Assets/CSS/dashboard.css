@@ -1,3 +1,4 @@
+/* Estilos generales que no deben afectar a otras páginas */
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
@@ -60,4 +61,18 @@ body {
 
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos específicos para centrar el mensaje de bienvenida en el Dashboard */
+.welcome-message-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px); /* Ajustar para el tamaño completo de la pantalla menos el navbar */
+}
+
+.welcome-message-container h2 {
+    font-size: 2.5rem; /* Aumentar el tamaño de la fuente */
+    font-weight: bold;
+    color: #333;
 }

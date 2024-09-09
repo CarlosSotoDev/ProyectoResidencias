@@ -6,13 +6,24 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-    if ($_SESSION['rol'] == 3) {
-        header('Location: ../admin/dashboardAdmin.php');
+    if (isset($_SESSION['rol'])) {
+        if ($_SESSION['rol'] == 3) {
+            header('Location: ../admin/dashboardAdmin.php');
+        } else if ($_SESSION['rol'] == 2) {
+            header('Location: ../Asesor/dashboardAsesor.php');
+        } else if ($_SESSION['rol'] == 1) {
+            header('Location: ../Student/dashboardStudent.php');
+        } else {
+            // Rol no reconocido, redirigir a una página de error o login
+            header('Location: login.php');
+        }
     } else {
-        header('Location: dashboard.php');
+        // Si no hay rol definido
+        header('Location: login.php');
     }
     exit;
 }
+
 
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
@@ -38,16 +49,20 @@ if (isset($_GET['error'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>styles.css">
 </head>
+
 <body class="d-flex flex-column min-vh-100">
     <!-- Navbar superior -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="<?php echo BASE_URL; ?>">Inicio</a>
+        <a class="navbar-brand mx-5" href="<?php echo BASE_URL; ?>">
+            <img src="<?php echo IMG_PATH; ?>TESCO.webp" alt="Logo" style="width: 120px;">
+        </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -68,11 +83,13 @@ if (isset($_GET['error'])) {
             <form action="authenticate.php" method="POST">
                 <div class="form-group">
                     <label for="username">Usuario</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Ingresa tu usuario" required>
+                    <input type="text" class="form-control" id="username" name="username"
+                        placeholder="Ingresa tu usuario" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+                    <input type="password" class="form-control" id="password" name="password"
+                        placeholder="Ingresa tu contraseña" required>
                 </div>
                 <button type="submit" class="btn btn-success btn-block">Acceder</button>
             </form>
@@ -88,11 +105,12 @@ if (isset($_GET['error'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
-        window.onpageshow = function(event) {
+        window.onpageshow = function (event) {
             if (event.persisted || window.performance && window.performance.navigation.type == 2) {
                 window.location.reload();
             }
         };
     </script>
 </body>
+
 </html>

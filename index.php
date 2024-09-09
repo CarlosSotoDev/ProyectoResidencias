@@ -27,7 +27,7 @@ include('includes/config.php');
         <div class="accordion mt-3" id="tramitesAccordion">
             <div class="card">
                 <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
+                    <h2 class="mb-0 text-center">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                             data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             Inscripciónes
@@ -77,7 +77,7 @@ include('includes/config.php');
             </div>
             <div class="card">
                 <div class="card-header" id="headingTwo">
-                    <h2 class="mb-0">
+                    <h2 class="mb-0 text-center">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                             data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                             Reinscripción
@@ -120,7 +120,7 @@ include('includes/config.php');
             </div>
             <div class="card">
                 <div class="card-header" id="headingThree">
-                    <h2 class="mb-0">
+                    <h2 class="mb-0 text-center">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                             data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                             Constancias
@@ -169,7 +169,7 @@ include('includes/config.php');
             </div>
             <div class="card">
                 <div class="card-header" id="headingFour">
-                    <h2 class="mb-0">
+                    <h2 class="mb-0 text-center">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                             data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                             Servicio Social
@@ -219,7 +219,7 @@ include('includes/config.php');
             </div>
             <div class="card">
                 <div class="card-header" id="headingFive">
-                    <h2 class="mb-0">
+                    <h2 class="mb-0 text-center">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                             data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                             Residencias
@@ -303,7 +303,7 @@ include('includes/config.php');
             </div>
             <div class="card">
                 <div class="card-header" id="headingSix">
-                    <h2 class="mb-0">
+                    <h2 class="mb-0 text-center">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                             data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                             Titulación

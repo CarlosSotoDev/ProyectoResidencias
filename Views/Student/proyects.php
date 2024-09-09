@@ -5,12 +5,14 @@ checkLogin();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Admin</title>
+    <title>Gestion de Alumnos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
 </head>
+
 <body>
     <!-- Barra superior -->
     <nav class="navbar navbar-dark bg-success">
@@ -30,23 +32,9 @@ checkLogin();
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
-                                Usuarios
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
-                                Proyecto
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
-                                Asesor
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
-                                Alumnos
+                            <!-- Enlace "Alumnos" con redirección directa -->
+                            <a class="nav-link text-white text-center" href="../Student/proyects.php" id="btn-alumnos">
+                                Proyectos
                             </a>
                         </li>
                     </ul>
@@ -55,25 +43,23 @@ checkLogin();
 
             <!-- Contenido principal -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Gestión de Usuarios</h2>
-                
+                <h2>Gestión de Proyectos</h2>
+
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
-                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar por nombre o rol" aria-label="Buscar">
+                    <input class="form-control mr-sm-2" type="search" name="search"
+                        placeholder="Buscar por proyecto o status" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
-                
-                <!-- Botón para agregar usuario (abre modal) -->
-                <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addUserModal">
-                    Agregar Usuario
-                </button>
+
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
-                                <th>Nombre de Usuario</th>
-                                <th>Rol</th>
-                                <th>Acciones</th>
+                                <th>ID_Proyecto</th>
+                                <th>Nombre del Proyecto</th>
+                                <th>Status</th>
+                                <th>Integrante 1</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,35 +68,39 @@ checkLogin();
                             $searchQuery = "";
                             if (isset($_GET['search']) && !empty($_GET['search'])) {
                                 $search = mysqli_real_escape_string($connection, $_GET['search']);
-                                $searchQuery = "AND (Nombre_Usuario LIKE '%$search%' OR Rol LIKE '%$search%')";
+                                $searchQuery = "AND (Nombre_Proyecto LIKE '%$search%' OR Status LIKE '%$search%' OR Integrantes LIKE '%$search%')";
                             }
 
-                            $query = "SELECT ID_Usuario, Nombre_Usuario, Rol FROM usuario WHERE Rol != 4 $searchQuery";
+                            // Query para obtener los proyectos
+                            $query = "SELECT ID_Proyecto, Nombre_Proyecto, Status, Integrantes FROM proyecto WHERE 'Status' != 'Pendiente' $searchQuery";
                             $result = $connection->query($query);
 
+                            // Mostrar los resultados en la tabla
                             while ($row = $result->fetch_assoc()) {
+                                // Aquí solo mostramos el primer integrante (se puede modificar si deseas más)
+                                $integrantes = explode(',', $row['Integrantes']); // Suponiendo que los integrantes están separados por comas
+                                $integrante1 = isset($integrantes[0]) ? $integrantes[0] : 'N/A';
+
                                 echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['Nombre_Usuario']) . "</td>";
-                                echo "<td>" . htmlspecialchars(getRoleName($row['Rol'])) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['ID_Proyecto']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Nombre_Proyecto']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Status']) . "</td>";
+                                echo "<td>" . htmlspecialchars($integrante1) . "</td>";
                                 echo "<td>";
-                                echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editUserModal' 
-                                        data-id='" . $row['ID_Usuario'] . "' 
-                                        data-username='" . htmlspecialchars($row['Nombre_Usuario']) . "' 
-                                        data-role='" . $row['Rol'] . "'>Editar</button>";
-                                echo "<a href='deleteUser.php?id=" . $row['ID_Usuario'] . "' class='btn btn-danger btn-sm'>Eliminar</a>";
-                                echo "</td>";
-                                echo "</tr>";
                             }
                             ?>
                         </tbody>
                     </table>
+
+
                 </div>
             </main>
         </div>
     </div>
 
     <!-- Modal para agregar usuario -->
-    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -146,7 +136,8 @@ checkLogin();
     </div>
 
     <!-- Modal para editar usuario -->
-    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -202,4 +193,5 @@ checkLogin();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

@@ -36,8 +36,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($_SESSION['rol'] == 3) {
                 header("Location: ../admin/dashboardAdmin.php");
                 exit;
+            } else if ($_SESSION['rol'] == 2) {
+                header("Location: ../Asesor/dashboardAsesor.php");
+                exit;
+            } else if ($_SESSION['rol'] == 1) {
+                header("Location: ../Student/dashboardStudent.php"); // Cambié "dashboardAsesor.php" a "dashboardAlumno.php"
+                exit;
             } else {
-                header("Location: dashboard.php");
+                header("Location: login.php");
                 exit;
             }
         } else {
