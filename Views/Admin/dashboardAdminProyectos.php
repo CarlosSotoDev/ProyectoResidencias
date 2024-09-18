@@ -29,9 +29,24 @@ checkLogin();
             <nav class="col-md-2 d-none d-md-block bg-success sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
+                    <li class="nav-item">
+                            <a class="nav-link text-white text-center" href="dashboardAdmin.php">
+                                Usuarios
+                            </a>
+                        </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
+                            <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">
                                 Proyectos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">
+                                Asesor
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">
+                                Alumnos
                             </a>
                         </li>
                     </ul>
@@ -60,31 +75,45 @@ checkLogin();
                                 <th>ID Proyecto</th>
                                 <th>Nombre del Proyecto</th>
                                 <th>Status</th>
+                                <th>Integrante 1</th>
+                                <th>Integrante 2</th>
+                                <th>Integrante 3</th>
+                                <th>Asesor</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            // Verifica si se ha enviado una búsqueda
-                            $searchQuery = "";
-                            if (isset($_GET['search']) && !empty($_GET['search'])) {
-                                $search = mysqli_real_escape_string($connection, $_GET['search']);
-                                $searchQuery = "AND (Nombre_Proyecto LIKE '%$search%')";
-                            }
-
-                            $query = "SELECT * FROM proyecto WHERE 1=1 $searchQuery ORDER BY ID_Proyecto ASC";
+                            // Consulta para obtener todos los campos de la tabla proyecto
+                            $query = "
+                                SELECT p.*, 
+                                       CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) AS Nombre_Asesor,
+                                       CONCAT(i1.Nombres, ' ', i1.Apellido_Paterno, ' ', i1.Apellido_Materno) AS Integrante1,
+                                       CONCAT(i2.Nombres, ' ', i2.Apellido_Paterno, ' ', i2.Apellido_Materno) AS Integrante2,
+                                       CONCAT(i3.Nombres, ' ', i3.Apellido_Paterno, ' ', i3.Apellido_Materno) AS Integrante3
+                                FROM proyecto p
+                                LEFT JOIN asesor a ON p.Asesor = a.ID_Asesor
+                                LEFT JOIN alumno i1 ON p.Integrante_1 = i1.ID_Alumno
+                                LEFT JOIN alumno i2 ON p.Integrante_2 = i2.ID_Alumno
+                                LEFT JOIN alumno i3 ON p.Integrante_3 = i3.ID_Alumno
+                                ORDER BY p.ID_Proyecto ASC";
                             $result = $connection->query($query);
 
+                            // Mostrar todos los campos de la tabla
                             while ($row = $result->fetch_assoc()) {
                                 echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['ID_Proyecto'] ?? '') . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Nombre_Proyecto'] ?? '') . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Status'] ?? '') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['ID_Proyecto']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Nombre_Proyecto']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Status']) . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Integrante1'] ?? 'No asignado') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Integrante2'] ?? 'No asignado') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Integrante3'] ?? 'No asignado') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['Nombre_Asesor'] ?? 'No asignado') . "</td>";
                                 echo "<td>";
                                 echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editProjectModal' 
                                         data-id='" . htmlspecialchars($row['ID_Proyecto']) . "' 
                                         data-nombre='" . htmlspecialchars($row['Nombre_Proyecto']) . "'>Editar</button>";
-                                echo "<a href='deleteProject.php?id=" . htmlspecialchars($row['ID_Proyecto']) . "' class='btn btn-danger btn-sm'>Eliminar</a>";
+                                
                                 echo "</td>";
                                 echo "</tr>";
                             }

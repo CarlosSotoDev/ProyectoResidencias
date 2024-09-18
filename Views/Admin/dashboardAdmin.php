@@ -35,17 +35,17 @@ checkLogin();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="http://localhost:3000/Views/Admin/dashboardAdminProyectos.php">
+                            <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">
                                 Proyectos
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
+                            <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">
                                 Asesor
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
+                            <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">
                                 Alumnos
                             </a>
                         </li>
