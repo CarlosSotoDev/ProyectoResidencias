@@ -1,6 +1,25 @@
 <?php
 include('../../includes/config.php');
 checkLogin();
+
+// Consulta para obtener los datos del proyecto asignado
+$query = "
+    SELECT p.*, 
+           CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) AS Nombre_Asesor,
+           CONCAT(i1.Nombres, ' ', i1.Apellido_Paterno, ' ', i1.Apellido_Materno) AS Integrante1,
+           CONCAT(i2.Nombres, ' ', i2.Apellido_Paterno, ' ', i2.Apellido_Materno) AS Integrante2,
+           CONCAT(i3.Nombres, ' ', i3.Apellido_Paterno, ' ', i3.Apellido_Materno) AS Integrante3
+    FROM proyecto p
+    LEFT JOIN asesor a ON p.Asesor = a.ID_Asesor
+    LEFT JOIN alumno i1 ON p.Integrante_1 = i1.ID_Alumno
+    LEFT JOIN alumno i2 ON p.Integrante_2 = i2.ID_Alumno
+    LEFT JOIN alumno i3 ON p.Integrante_3 = i3.ID_Alumno
+    WHERE p.ID_Proyecto = ?";  // Asegúrate de pasar el ID del proyecto adecuado
+$stmt = $connection->prepare($query);
+$stmt->bind_param('i', $idProyecto);  // Reemplaza $idProyecto con el ID del proyecto deseado
+$stmt->execute();
+$result = $stmt->get_result();
+$proyecto = $result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
@@ -14,179 +33,44 @@ checkLogin();
 </head>
 
 <body>
-    <!-- Barra superior -->
-    <nav class="navbar navbar-dark bg-success">
-        <span class="navbar-brand mb-0 h1">Panel de Administración</span>
-        <div class="d-flex align-items-center">
-            <span class="navbar-text mr-3">
-                <?php echo $_SESSION['username']; ?>
-            </span>
-            <a href="../public/logout.php" class="btn btn-outline-light">Cerrar Sesión</a>
-        </div>
-    </nav>
+    <!-- Navbar -->
+    <?php require('../../includes/navbarAlumno.php'); ?>
 
-    <div class="container-fluid">
+    <main role="main" class="container bg-light p-2 mx-auto my-1">
+        <h2>Gestión de Proyectos</h2>
+
+        <!-- Contenedor dividido en dos columnas -->
         <div class="row">
-            <!-- Barra lateral -->
-            <nav class="col-md-2 d-none d-md-block bg-success sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <!-- Enlace "Alumnos" con redirección directa -->
-                            <a class="nav-link text-white text-center" href="../Student/proyects.php" id="btn-alumnos">
-                                Proyectos
-                            </a>
-                        </li>
+            <!-- Columna izquierda: Datos del proyecto asignado -->
+            <div class="col-md-6 border border-success">
+                <div class="bg-light p-3">
+                    <h4>Datos del Proyecto Asignado</h4>
+                    <p><strong>Nombre del Proyecto:</strong>
+                        <?php echo htmlspecialchars($proyecto['Nombre_Proyecto'] ?? 'No disponible'); ?></p>
+                    <p><strong>Integrantes:</strong></p>
+                    <ul>
+                        <li><?php echo htmlspecialchars($proyecto['Integrante1'] ?? 'No asignado'); ?></li>
+                        <li><?php echo htmlspecialchars($proyecto['Integrante2'] ?? 'No asignado'); ?></li>
+                        <li><?php echo htmlspecialchars($proyecto['Integrante3'] ?? 'No asignado'); ?></li>
                     </ul>
+                    <p><strong>Status del Proyecto:</strong>
+                        <?php echo htmlspecialchars($proyecto['Status'] ?? 'No disponible'); ?></p>
                 </div>
-            </nav>
+            </div>
 
-            <!-- Contenido principal -->
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Gestión de Proyectos</h2>
-
-                <!-- Barra de búsqueda -->
-                <form method="GET" class="form-inline mb-3">
-                    <input class="form-control mr-sm-2" type="search" name="search"
-                        placeholder="Buscar por proyecto o status" aria-label="Buscar">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-                </form>
-
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>ID_Proyecto</th>
-                                <th>Nombre del Proyecto</th>
-                                <th>Status</th>
-                                <th>Integrante 1</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Verifica si se ha enviado una búsqueda
-                            $searchQuery = "";
-                            if (isset($_GET['search']) && !empty($_GET['search'])) {
-                                $search = mysqli_real_escape_string($connection, $_GET['search']);
-                                $searchQuery = "AND (Nombre_Proyecto LIKE '%$search%' OR Status LIKE '%$search%' OR Integrantes LIKE '%$search%')";
-                            }
-
-                            // Query para obtener los proyectos
-                            $query = "SELECT ID_Proyecto, Nombre_Proyecto, Status, Integrantes FROM proyecto WHERE 'Status' != 'Pendiente' $searchQuery";
-                            $result = $connection->query($query);
-
-                            // Mostrar los resultados en la tabla
-                            while ($row = $result->fetch_assoc()) {
-                                // Aquí solo mostramos el primer integrante (se puede modificar si deseas más)
-                                $integrantes = explode(',', $row['Integrantes']); // Suponiendo que los integrantes están separados por comas
-                                $integrante1 = isset($integrantes[0]) ? $integrantes[0] : 'N/A';
-
-                                echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['ID_Proyecto']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Nombre_Proyecto']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Status']) . "</td>";
-                                echo "<td>" . htmlspecialchars($integrante1) . "</td>";
-                                echo "<td>";
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-
-
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <!-- Modal para agregar usuario -->
-    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addUserModalLabel">Agregar Usuario</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="addUser.php" method="POST">
-                        <div class="form-group">
-                            <label for="addUsername">Nombre de Usuario</label>
-                            <input type="text" class="form-control" name="username" id="addUsername" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addRole">Rol</label>
-                            <select class="form-control" name="role" id="addRole" required>
-                                <option value="1">Alumno</option>
-                                <option value="2">Asesor</option>
-                                <option value="3">Administrador</option>
-                                <option value="4">Inactivo</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="addPassword">Contraseña</label>
-                            <input type="password" class="form-control" name="password" id="addPassword" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Agregar Usuario</button>
-                    </form>
+            <!-- Columna derecha: Datos y retroalimentación del asesor -->
+            <div class="col-md-6 border border-success">
+                <div class="bg-light p-3">
+                    <h4>Datos y Retroalimentación del Asesor</h4>
+                    <p><strong>Asesor:</strong>
+                        <?php echo htmlspecialchars($proyecto['Nombre_Asesor'] ?? 'No asignado'); ?></p>
+                    <p><strong>Comentarios:</strong>
+                        <?php echo htmlspecialchars($proyecto['Comentarios_Asesor'] ?? 'Sin comentarios'); ?></p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal para editar usuario -->
-    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="editUser.php" method="POST">
-                        <input type="hidden" name="id" id="editUserId">
-                        <div class="form-group">
-                            <label for="editUsername">Nombre de Usuario</label>
-                            <input type="text" class="form-control" name="username" id="editUsername" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editRole">Rol</label>
-                            <select class="form-control" name="role" id="editRole" required>
-                                <option value="1">Alumno</option>
-                                <option value="2">Asesor</option>
-                                <option value="3">Administrador</option>
-                                <option value="4">Inactivo</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="editPassword">Contraseña (dejar en blanco para no cambiarla)</label>
-                            <input type="password" class="form-control" name="password" id="editPassword">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Enlace para abrir el modal con los datos del usuario -->
-    <script>
-        $('#editUserModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Botón que activa el modal
-            var id = button.data('id'); // Extraer información de los atributos data-*
-            var username = button.data('username');
-            var role = button.data('role');
-
-            var modal = $(this);
-            modal.find('#editUserId').val(id);
-            modal.find('#editUsername').val(username);
-            modal.find('#editRole').val(role);
-        });
-    </script>
+    </main>
 
     <!-- Bootstrap JS y dependencias -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
