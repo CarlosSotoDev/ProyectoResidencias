@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validar si hay espacio para más integrantes
     if (!empty($rowIntegrantes['Integrante_1']) && !empty($rowIntegrantes['Integrante_2']) && !empty($rowIntegrantes['Integrante_3'])) {
-        // Si los tres campos de Integrante están llenos, no se puede agregar más
         header("Location: dashboardAdminAlumnos.php?error=El proyecto ya tiene 3 integrantes asignados.");
         exit();
     }
@@ -37,35 +36,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $connection->begin_transaction();
 
     try {
-        // Insertar el nuevo usuario en la tabla usuario, sin SHA2 ya que el trigger lo hará
-        $queryInsertUsuario = "INSERT INTO usuario (Nombre_Usuario, Contraseña, Rol) VALUES (?, ?, ?)";
-        $stmtUsuario = $connection->prepare($queryInsertUsuario);
-        $stmtUsuario->bind_param("ssi", $nombre_usuario, $contrasena, $rol);
-        $stmtUsuario->execute();
-        $id_usuario = $connection->insert_id; // Obtener el ID del nuevo usuario insertado
+        // Verificar si el ID del alumno es menor que 300
+        $resultLastID = $connection->query("SELECT MAX(ID_Alumno) AS last_id FROM alumno");
+        $rowLastID = $resultLastID->fetch_assoc();
+        $nextID = isset($rowLastID['last_id']) ? max($rowLastID['last_id'] + 1, 300) : 300;
 
-        // Usar el ID del usuario como ID del alumno
-        $id_alumno = $id_usuario;
+        // Insertar el nuevo usuario en la tabla usuario, sin SHA2 ya que el trigger lo hará
+        $queryInsertUsuario = "INSERT INTO usuario (ID_Usuario, Nombre_Usuario, Contraseña, Rol) VALUES (?, ?, ?, ?)";
+        $stmtUsuario = $connection->prepare($queryInsertUsuario);
+        $stmtUsuario->bind_param("issi", $nextID, $nombre_usuario, $contrasena, $rol);
+        $stmtUsuario->execute();
 
         // Insertar el nuevo alumno en la tabla alumno, usando el ID_Usuario como ID_Alumno
         $queryInsertAlumno = "INSERT INTO alumno (ID_Alumno, Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto, Asesor, ID_Usuario) 
                               VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtAlumno = $connection->prepare($queryInsertAlumno);
-        $stmtAlumno->bind_param("isssiiii", $id_alumno, $nombres, $apellido_paterno, $apellido_materno, $carrera, $proyecto, $asesor, $id_usuario);
+        $stmtAlumno->bind_param("isssiiii", $nextID, $nombres, $apellido_paterno, $apellido_materno, $carrera, $proyecto, $asesor, $nextID);
         $stmtAlumno->execute();
 
         // Asignar al alumno como integrante en el proyecto
         if (empty($rowIntegrantes['Integrante_1'])) {
-            // Si Integrante_1 está vacío, asignar el alumno como Integrante_1
-            $queryUpdateProyecto = "UPDATE proyecto SET Integrante_1 = '$id_alumno' WHERE ID_Proyecto = '$proyecto'";
+            $queryUpdateProyecto = "UPDATE proyecto SET Integrante_1 = ? WHERE ID_Proyecto = ?";
         } elseif (empty($rowIntegrantes['Integrante_2'])) {
-            // Si Integrante_2 está vacío, asignar el alumno como Integrante_2
-            $queryUpdateProyecto = "UPDATE proyecto SET Integrante_2 = '$id_alumno' WHERE ID_Proyecto = '$proyecto'";
+            $queryUpdateProyecto = "UPDATE proyecto SET Integrante_2 = ? WHERE ID_Proyecto = ?";
         } else {
-            // Si Integrante_3 está vacío, asignar el alumno como Integrante_3
-            $queryUpdateProyecto = "UPDATE proyecto SET Integrante_3 = '$id_alumno' WHERE ID_Proyecto = '$proyecto'";
+            $queryUpdateProyecto = "UPDATE proyecto SET Integrante_3 = ? WHERE ID_Proyecto = ?";
         }
-        $connection->query($queryUpdateProyecto);
+        $stmtProyecto = $connection->prepare($queryUpdateProyecto);
+        $stmtProyecto->bind_param("ii", $nextID, $proyecto);
+        $stmtProyecto->execute();
 
         // Confirmar la transacción
         $connection->commit();
@@ -82,5 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Cerrar las declaraciones
     $stmtUsuario->close();
     $stmtAlumno->close();
+    $stmtProyecto->close();
 }
 ?>

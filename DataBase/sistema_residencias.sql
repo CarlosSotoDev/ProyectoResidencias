@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 20-09-2024 a las 03:31:09
+-- Tiempo de generación: 20-09-2024 a las 23:26:06
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -66,7 +66,14 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   KEY `fk_alumno_asesor` (`Asesor`),
   KEY `fk_alumno_rol` (`Rol`),
   KEY `fk_alumno_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=301 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alumno`
+--
+
+INSERT INTO `alumno` (`ID_Alumno`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Carrera`, `Proyecto`, `Asesor`, `Calendario_Revisiones`, `Rol`, `ID_Usuario`) VALUES
+(300, 'CARLOS', 'SOTO', 'GARCIA', 1, 1, 100, NULL, NULL, 300);
 
 -- --------------------------------------------------------
 
@@ -96,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `asesor` (
 --
 
 INSERT INTO `asesor` (`ID_Asesor`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Proyecto_Asignado`, `Carrera`, `Rol`, `ID_Usuario`) VALUES
-(100, 'Jose Luis', 'Camacho', 'Campero', 24, 1, NULL, NULL);
+(100, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 1, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -148,14 +155,14 @@ CREATE TABLE IF NOT EXISTS `proyecto` (
   KEY `fk_proyecto_integrante_2` (`Integrante_2`),
   KEY `fk_proyecto_integrante_3` (`Integrante_3`),
   KEY `fk_proyecto_asesor` (`Asesor`)
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto`
 --
 
 INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`) VALUES
-(24, 'prueba', 'Pendiente', NULL, NULL, NULL, NULL);
+(1, 'Proyecto ejemplo 2', 'Pendiente', 300, NULL, NULL, 100);
 
 -- --------------------------------------------------------
 
@@ -169,6 +176,16 @@ CREATE TABLE IF NOT EXISTS `rol` (
   `Descripcion` varchar(50) NOT NULL,
   PRIMARY KEY (`ID_Rol`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`ID_Rol`, `Descripcion`) VALUES
+(1, 'Alumno'),
+(2, 'Asesor'),
+(3, 'Administrador'),
+(4, 'Inactivo');
 
 -- --------------------------------------------------------
 
@@ -184,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `Rol` int DEFAULT NULL,
   PRIMARY KEY (`ID_Usuario`),
   KEY `fk_usuario_rol` (`Rol`)
-) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=301 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -192,7 +209,8 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 
 INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VALUES
 (1, 'admin', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 3),
-(100, 'camacho1', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2);
+(100, 'YAEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
+(300, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
 
 --
 -- Disparadores `usuario`
