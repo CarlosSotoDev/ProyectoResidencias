@@ -29,7 +29,7 @@ checkLogin();
             <nav class="col-md-2 d-none d-md-block bg-success sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link text-white text-center" href="dashboardAdmin.php">
                                 Usuarios
                             </a>
@@ -79,6 +79,8 @@ checkLogin();
                                 <th>Carrera</th>
                                 <th>Proyecto</th>
                                 <th>Asesor</th>
+                                <th>ID Usuario</th>
+                                <th>Rol</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -91,15 +93,16 @@ checkLogin();
                                 $searchQuery = "AND (Nombres LIKE '%$search%' OR Apellido_Paterno LIKE '%$search%' OR Apellido_Materno LIKE '%$search%')";
                             }
 
-                            // Consulta para obtener los datos de los alumnos con los nombres de carrera, proyecto y asesor
+                            // Consulta para obtener los datos de los alumnos con los nombres de carrera, proyecto, asesor, id_usuario, y rol
                             $query = "
                                 SELECT alumno.*, proyecto.Nombre_Proyecto, 
                                        CONCAT(asesor.Nombres, ' ', asesor.Apellido_Paterno, ' ', asesor.Apellido_Materno) AS Nombre_Asesor, 
-                                       carrera.Nombre_Carrera 
+                                       carrera.Nombre_Carrera, usuario.id_usuario, usuario.rol 
                                 FROM alumno 
                                 LEFT JOIN proyecto ON alumno.Proyecto = proyecto.ID_Proyecto 
                                 LEFT JOIN asesor ON alumno.Asesor = asesor.ID_Asesor 
-                                LEFT JOIN carrera ON alumno.Carrera = carrera.ID_Carrera 
+                                LEFT JOIN carrera ON alumno.Carrera = carrera.ID_Carrera
+                                LEFT JOIN usuario ON alumno.ID_Usuario = usuario.id_usuario
                                 WHERE 1=1 $searchQuery 
                                 ORDER BY alumno.ID_Alumno ASC";
                             $result = $connection->query($query);
@@ -114,6 +117,8 @@ checkLogin();
                                 echo "<td>" . htmlspecialchars($row['Nombre_Carrera'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Proyecto'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Asesor'] ?? '') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['id_usuario'] ?? '') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['rol'] ?? '') . "</td>";
                                 echo "<td>";
                                 echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editAlumnoModal' 
                                         data-id='" . htmlspecialchars($row['ID_Alumno'] ?? '') . "' 
@@ -123,7 +128,6 @@ checkLogin();
                                         data-carrera='" . htmlspecialchars($row['Carrera'] ?? '') . "' 
                                         data-proyecto='" . htmlspecialchars($row['Proyecto'] ?? '') . "' 
                                         data-asesor='" . htmlspecialchars($row['Asesor'] ?? '') . "'>Editar</button>";
-                              
                                 echo "</td>";
                                 echo "</tr>";
                             }
@@ -197,6 +201,15 @@ checkLogin();
                                 }
                                 ?>
                             </select>
+                        </div>
+                        <!-- Campos de usuario -->
+                        <div class="form-group">
+                            <label for="addUsuarioAlumno">Nombre de Usuario</label>
+                            <input type="text" class="form-control" name="username" id="addUsuarioAlumno" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addContrasenaAlumno">Contraseña</label>
+                            <input type="password" class="form-control" name="password" id="addContrasenaAlumno" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Agregar Alumno</button>
                     </form>

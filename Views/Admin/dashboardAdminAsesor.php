@@ -29,7 +29,7 @@ checkLogin();
             <nav class="col-md-2 d-none d-md-block bg-success sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link text-white text-center" href="dashboardAdmin.php">
                                 Usuarios
                             </a>
@@ -78,6 +78,8 @@ checkLogin();
                                 <th>Apellido Materno</th>
                                 <th>Carrera</th>
                                 <th>Proyecto Asignado</th>
+                                <th>ID Usuario</th>
+                                <th>Rol</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -90,13 +92,14 @@ checkLogin();
                                 $searchQuery = "AND (asesor.Nombres LIKE '%$search%' OR proyecto.Nombre_Proyecto LIKE '%$search%')";
                             }
 
-                            // Consulta para obtener los asesores junto con los nombres de la carrera y del proyecto
+                            // Consulta para obtener los asesores junto con los nombres de la carrera, proyecto, id_usuario, y rol
                             $query = "
                                 SELECT asesor.ID_Asesor, asesor.Nombres, asesor.Apellido_Paterno, asesor.Apellido_Materno,
-                                carrera.Nombre_Carrera, proyecto.Nombre_Proyecto 
+                                carrera.Nombre_Carrera, proyecto.Nombre_Proyecto, usuario.id_usuario, usuario.rol
                                 FROM asesor
                                 LEFT JOIN carrera ON asesor.Carrera = carrera.ID_Carrera
                                 LEFT JOIN proyecto ON asesor.Proyecto_Asignado = proyecto.ID_Proyecto
+                                LEFT JOIN usuario ON usuario.id_usuario = asesor.ID_Asesor
                                 WHERE 1=1 $searchQuery
                                 ORDER BY asesor.ID_Asesor ASC";
                             $result = $connection->query($query);
@@ -109,13 +112,15 @@ checkLogin();
                                 echo "<td>" . htmlspecialchars($row['Apellido_Materno'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Carrera'] ?? 'Sin Carrera') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Proyecto'] ?? 'Sin Proyecto') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['id_usuario'] ?? '') . "</td>";
+                                echo "<td>" . htmlspecialchars($row['rol'] ?? '') . "</td>";
                                 echo "<td>";
                                 echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editAsesorModal'
-                                        data-id='" . htmlspecialchars($row['ID_Asesor']) . "' 
-                                        data-nombres='" . htmlspecialchars($row['Nombres']) . "'
-                                        data-apellido_paterno='" . htmlspecialchars($row['Apellido_Paterno']) . "'
-                                        data-apellido_materno='" . htmlspecialchars($row['Apellido_Materno']) . "'
-                                        data-carrera='" . htmlspecialchars($row['Nombre_Carrera'] ?? '') . "'
+                                        data-id='" . htmlspecialchars($row['ID_Asesor'] ?? '') . "' 
+                                        data-nombres='" . htmlspecialchars($row['Nombres'] ?? '') . "' 
+                                        data-apellido_paterno='" . htmlspecialchars($row['Apellido_Paterno'] ?? '') . "' 
+                                        data-apellido_materno='" . htmlspecialchars($row['Apellido_Materno'] ?? '') . "' 
+                                        data-carrera='" . htmlspecialchars($row['Nombre_Carrera'] ?? '') . "' 
                                         data-proyecto='" . htmlspecialchars($row['Nombre_Proyecto'] ?? '') . "'>Editar</button>";
                                 echo "</td>";
                                 echo "</tr>";
@@ -140,6 +145,7 @@ checkLogin();
                 </div>
                 <div class="modal-body">
                     <form action="addAsesor.php" method="POST">
+                        <!-- Datos del asesor -->
                         <div class="form-group">
                             <label for="addNombreAsesor">Nombres</label>
                             <input type="text" class="form-control" name="nombres" id="addNombreAsesor" required>
@@ -161,7 +167,7 @@ checkLogin();
                                 $resultCarrera = $connection->query($queryCarrera);
 
                                 while ($carrera = $resultCarrera->fetch_assoc()) {
-                                    echo "<option value='" . $carrera['ID_Carrera'] . "'>" . htmlspecialchars($carrera['Nombre_Carrera'] ?? '') . "</option>";
+                                    echo "<option value='" . htmlspecialchars($carrera['ID_Carrera']) . "'>" . htmlspecialchars($carrera['Nombre_Carrera'] ?? '') . "</option>";
                                 }
                                 ?>
                             </select>
@@ -176,10 +182,19 @@ checkLogin();
                                 $resultProyecto = $connection->query($queryProyecto);
 
                                 while ($proyecto = $resultProyecto->fetch_assoc()) {
-                                    echo "<option value='" . $proyecto['ID_Proyecto'] . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto'] ?? '') . "</option>";
+                                    echo "<option value='" . htmlspecialchars($proyecto['ID_Proyecto']) . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto'] ?? '') . "</option>";
                                 }
                                 ?>
                             </select>
+                        </div>
+                        <!-- Datos del usuario -->
+                        <div class="form-group">
+                            <label for="addUsuario">Nombre de Usuario</label>
+                            <input type="text" class="form-control" name="username" id="addUsuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addContrasena">Contraseña</label>
+                            <input type="password" class="form-control" name="password" id="addContrasena" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Agregar Asesor</button>
                     </form>
@@ -221,7 +236,7 @@ checkLogin();
                                 $resultCarrera = $connection->query($queryCarrera);
 
                                 while ($carrera = $resultCarrera->fetch_assoc()) {
-                                    echo "<option value='" . $carrera['ID_Carrera'] . "'>" . htmlspecialchars($carrera['Nombre_Carrera'] ?? '') . "</option>";
+                                    echo "<option value='" . htmlspecialchars($carrera['ID_Carrera']) . "'>" . htmlspecialchars($carrera['Nombre_Carrera'] ?? '') . "</option>";
                                 }
                                 ?>
                             </select>
@@ -235,7 +250,7 @@ checkLogin();
                                 $resultProyecto = $connection->query($queryProyecto);
 
                                 while ($proyecto = $resultProyecto->fetch_assoc()) {
-                                    echo "<option value='" . $proyecto['ID_Proyecto'] . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto'] ?? '') . "</option>";
+                                    echo "<option value='" . htmlspecialchars($proyecto['ID_Proyecto']) . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto'] ?? '') . "</option>";
                                 }
                                 ?>
                             </select>

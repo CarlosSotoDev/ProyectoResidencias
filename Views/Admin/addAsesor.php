@@ -1,47 +1,57 @@
 <?php
 include('../../includes/config.php');
-checkLogin();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificación para asegurar que todas las claves esperadas en $_POST están definidas
-    $nombres = isset($_POST['nombres']) ? mysqli_real_escape_string($connection, $_POST['nombres']) : null;
-    $apellido_paterno = isset($_POST['apellido_paterno']) ? mysqli_real_escape_string($connection, $_POST['apellido_paterno']) : null;
-    $apellido_materno = isset($_POST['apellido_materno']) ? mysqli_real_escape_string($connection, $_POST['apellido_materno']) : null;
-    $carrera = isset($_POST['carrera']) ? mysqli_real_escape_string($connection, $_POST['carrera']) : null;
-    $proyecto_asignado = isset($_POST['proyecto']) ? mysqli_real_escape_string($connection, $_POST['proyecto']) : null; // Valor por defecto null
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Datos del asesor
+    $nombres = $_POST['nombres'];
+    $apellido_paterno = $_POST['apellido_paterno'];
+    $apellido_materno = $_POST['apellido_materno'];
+    $carrera = $_POST['carrera'];
+    $proyecto = !empty($_POST['proyecto']) ? $_POST['proyecto'] : NULL;
 
-    // Verificamos que las variables esenciales no estén vacías
-    if ($nombres && $apellido_paterno && $apellido_materno && $carrera) {
-        // Insertar asesor en la tabla asesor
-        $query = "INSERT INTO asesor (Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto_Asignado) VALUES ('$nombres', '$apellido_paterno', '$apellido_materno', '$carrera', " . ($proyecto_asignado ? "'$proyecto_asignado'" : "NULL") . ")";
+    // Datos del usuario
+    $nombre_usuario = $_POST['username'];
+    $contrasena = $_POST['password']; // Contraseña en texto plano, se encriptará en la base de datos mediante el trigger
+    $rol = 2; // Rol por defecto
 
-        if ($connection->query($query) === TRUE) {
-            // Si se seleccionó un proyecto, actualizar la tabla proyecto con el asesor asignado
-            if ($proyecto_asignado) {
-                $id_asesor = $connection->insert_id; // Obtenemos el ID del asesor recién agregado
-                $updateProyecto = "UPDATE proyecto SET Asesor = '$id_asesor' WHERE ID_Proyecto = '$proyecto_asignado'";
+    // Iniciar una transacción para asegurar la consistencia
+    $connection->begin_transaction();
 
-                if ($connection->query($updateProyecto) === TRUE) {
-                    // Redirigir al dashboard si todo fue exitoso
-                    header("Location: dashboardAdminAsesor.php?success=1");
-                    exit();
-                } else {
-                    echo "Error al actualizar el proyecto: " . $connection->error;
-                }
+    try {
+        // Insertar en la tabla asesor
+        $sqlAsesor = "INSERT INTO asesor (Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto_Asignado) 
+                      VALUES (?, ?, ?, ?, ?)";
+        $stmtAsesor = $connection->prepare($sqlAsesor);
+        $stmtAsesor->bind_param("sssis", $nombres, $apellido_paterno, $apellido_materno, $carrera, $proyecto);
+
+        if ($stmtAsesor->execute()) {
+            // Obtener el ID del asesor insertado
+            $id_asesor = $connection->insert_id;
+
+            // Insertar en la tabla usuario con id_usuario igual a id_asesor
+            $sqlUsuario = "INSERT INTO usuario (id_usuario, Nombre_Usuario, Contraseña, Rol) VALUES (?, ?, ?, ?)";
+            $stmtUsuario = $connection->prepare($sqlUsuario);
+            $stmtUsuario->bind_param("issi", $id_asesor, $nombre_usuario, $contrasena, $rol);
+
+            if ($stmtUsuario->execute()) {
+                // Confirmar la transacción
+                $connection->commit();
+                header("Location: dashboardAdminAsesor.php?message=Asesor y usuario creados correctamente");
             } else {
-                // Redirigir si no hay proyecto asignado pero se agregó el asesor
-                header("Location: dashboardAdminAsesor.php?success=1");
-                exit();
+                throw new Exception("Error al crear el usuario: " . $stmtUsuario->error);
             }
         } else {
-            echo "Error al agregar el asesor: " . $connection->error;
+            throw new Exception("Error al crear el asesor: " . $stmtAsesor->error);
         }
-    } else {
-        echo "Faltan datos requeridos para agregar el asesor.";
-    }
-} else {
-    echo "Método de solicitud no permitido.";
-}
 
-$connection->close();
+    } catch (Exception $e) {
+        // En caso de error, revertir la transacción
+        $connection->rollback();
+        echo $e->getMessage();
+    }
+
+    // Cerrar las declaraciones
+    $stmtAsesor->close();
+    $stmtUsuario->close();
+}
 ?>

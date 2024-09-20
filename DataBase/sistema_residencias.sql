@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-09-2024 a las 02:09:18
+-- Tiempo de generación: 20-09-2024 a las 01:12:26
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -73,7 +73,16 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   KEY `fk_alumno_asesor` (`Asesor`),
   KEY `fk_alumno_rol` (`Rol`),
   KEY `fk_alumno_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `alumno`
+--
+
+INSERT INTO `alumno` (`ID_Alumno`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Carrera`, `Proyecto`, `Asesor`, `Calendario_Revisiones`, `Rol`, `ID_Usuario`) VALUES
+(9, 'SHELY', 'ORLETH', 'MONTIEL', 1, 17, 13, NULL, NULL, NULL),
+(8, 'DIEGO', 'FARFAN', 'MARTINEZ', 1, 16, 12, NULL, NULL, NULL),
+(7, 'wa', 'wad', 'dawd', 1, 15, 11, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -96,7 +105,18 @@ CREATE TABLE IF NOT EXISTS `asesor` (
   KEY `fk_asesor_carrera` (`Carrera`),
   KEY `fk_asesor_rol` (`Rol`),
   KEY `fk_asesor_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `asesor`
+--
+
+INSERT INTO `asesor` (`ID_Asesor`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Proyecto_Asignado`, `Carrera`, `Rol`, `ID_Usuario`) VALUES
+(14, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 16, 3, NULL, NULL),
+(11, 'CARLOS', 'SOTO', 'CAMPOY', 15, 5, NULL, NULL),
+(12, 'ARTURO', 'FALCON', 'CAMPOY', 16, 10, NULL, NULL),
+(13, 'LUIS', 'CAMACHO', 'CAMPERO', 17, 1, NULL, NULL),
+(15, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 16, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -139,10 +159,25 @@ CREATE TABLE IF NOT EXISTS `proyecto` (
   `ID_Proyecto` int NOT NULL AUTO_INCREMENT,
   `Nombre_Proyecto` varchar(200) NOT NULL,
   `Status` enum('Pendiente','En Revisión') NOT NULL,
-  `Integrantes` int DEFAULT NULL,
+  `Integrante_1` int DEFAULT NULL,
+  `Integrante_2` int DEFAULT NULL,
+  `Integrante_3` int DEFAULT NULL,
+  `Asesor` int DEFAULT NULL,
   PRIMARY KEY (`ID_Proyecto`),
-  KEY `fk_proyecto_integrantes` (`Integrantes`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_proyecto_integrante_1` (`Integrante_1`),
+  KEY `fk_proyecto_integrante_2` (`Integrante_2`),
+  KEY `fk_proyecto_integrante_3` (`Integrante_3`),
+  KEY `fk_proyecto_asesor` (`Asesor`)
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `proyecto`
+--
+
+INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`) VALUES
+(16, 'PROYECTO X', 'Pendiente', 8, NULL, NULL, 12),
+(17, 'PROYECTO KRATOS', 'Pendiente', 9, NULL, NULL, 13),
+(18, 'HOLA', 'Pendiente', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -181,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `Rol` int DEFAULT NULL,
   PRIMARY KEY (`ID_Usuario`),
   KEY `fk_usuario_rol` (`Rol`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -198,28 +233,16 @@ INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VAL
 (9, 'pruebaaa', '173af653133d964edfc16cafe0aba33c8f500a07f3ba3f81943916910c257705', 4),
 (10, 'PRUEBA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
 (11, 'sadsa', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
-(12, 'SOTO', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 4),
-(13, 'aSSA', '6f4b6612125fb3a0daecd2799dfd6c9c299424fd920f9b308110a2c1fbd8f443', 4),
-(14, 'yael', '41e5c285822f1c0702dcea6969221914c8a6887bec55f36ebe84a63b33827027', 4),
-(15, 'admin5', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
-(16, 'SOTO', '2b07da543d6c7806fc45e25f997f9622a4748948b531c5875eba51703c7e420f', 4),
-(17, 'ENABLE', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
-
-
+(15, 'PRUEBA', '6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918', 2);
 
 --
 -- Disparadores `usuario`
 --
-
-
 DROP TRIGGER IF EXISTS `before_usuario_insert`;
 DELIMITER $$
 CREATE TRIGGER `before_usuario_insert` BEFORE INSERT ON `usuario` FOR EACH ROW BEGIN
     SET NEW.Contraseña = SHA2(NEW.Contraseña, 256);
 END
-
-
-
 $$
 DELIMITER ;
 DROP TRIGGER IF EXISTS `before_usuario_update`;
@@ -233,7 +256,6 @@ END
 $$
 DELIMITER ;
 COMMIT;
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
