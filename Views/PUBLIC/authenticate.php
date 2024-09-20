@@ -5,8 +5,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre_usuario = $_POST['username'];
     $contrasena = $_POST['password'];
 
-    // Encriptar la contraseña ingresada para compararla con la encriptada en la base de datos
-    $contrasena_encriptada = hash('sha256', $contrasena);
+    // Eliminar el cifrado en el código ya que la base de datos lo realiza con un trigger
+    // $contrasena_encriptada = hash('sha256', $contrasena);  // Esta línea ya no es necesaria
 
     // Buscar el usuario en la base de datos
     $sql = "SELECT ID_Usuario, Nombre_Usuario, Contraseña, Rol FROM usuario WHERE Nombre_Usuario = ?";
@@ -24,8 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        // Comparar la contraseña encriptada ingresada con la almacenada en la base de datos
-        if ($contrasena_encriptada === $user['Contraseña']) {
+        // Comparar la contraseña ingresada con la almacenada en la base de datos
+        // Ya no necesitamos cifrarla en el código, ya que la base de datos la cifra con el trigger
+        if (hash('sha256', $contrasena) === $user['Contraseña']) {
             session_start();
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $user['Nombre_Usuario'];
@@ -40,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: ../Asesor/dashboardAsesor.php");
                 exit;
             } else if ($_SESSION['rol'] == 1) {
-                header("Location: ../Student/dashboardStudent.php"); // Cambié "dashboardAsesor.php" a "dashboardAlumno.php"
+                header("Location: ../Student/dashboardStudent.php");
                 exit;
             } else {
                 header("Location: login.php");
