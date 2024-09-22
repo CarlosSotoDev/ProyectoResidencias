@@ -18,35 +18,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $connection->begin_transaction();
 
     try {
+        // Verificar el ID del asesor, asegurarse de que el ID del asesor sea mayor o igual a 100
+        $resultLastID = $connection->query("SELECT MAX(ID_Asesor) AS last_id FROM asesor");
+        $rowLastID = $resultLastID->fetch_assoc();
+        $nextID = isset($rowLastID['last_id']) ? max($rowLastID['last_id'] + 1, 100) : 100;
+
         // Insertar en la tabla asesor
-        $sqlAsesor = "INSERT INTO asesor (Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto_Asignado) 
-                      VALUES (?, ?, ?, ?, ?)";
+        $sqlAsesor = "INSERT INTO asesor (ID_Asesor, Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto_Asignado, Rol, ID_Usuario) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtAsesor = $connection->prepare($sqlAsesor);
-        $stmtAsesor->bind_param("sssis", $nombres, $apellido_paterno, $apellido_materno, $carrera, $proyecto);
+        $stmtAsesor->bind_param("isssiiii", $nextID, $nombres, $apellido_paterno, $apellido_materno, $carrera, $proyecto, $rol, $nextID);
         $stmtAsesor->execute();
-        $id_asesor = $connection->insert_id; // Obtener el ID del asesor insertado
-
-        // Asegurarse de que el ID del asesor sea mayor o igual a 100
-        if ($id_asesor < 100) {
-            $queryAdjustAutoIncrement = "ALTER TABLE asesor AUTO_INCREMENT = 100";
-            $connection->query($queryAdjustAutoIncrement);
-
-            // Reinsertar el asesor con ID ajustado
-            $stmtAsesor->execute();
-            $id_asesor = $connection->insert_id; // Obtener el nuevo ID ajustado
-        }
 
         // Insertar en la tabla usuario con id_usuario igual a id_asesor
         $sqlUsuario = "INSERT INTO usuario (id_usuario, Nombre_Usuario, Contraseña, Rol) VALUES (?, ?, ?, ?)";
         $stmtUsuario = $connection->prepare($sqlUsuario);
-        $stmtUsuario->bind_param("issi", $id_asesor, $nombre_usuario, $contrasena, $rol);
+        $stmtUsuario->bind_param("issi", $nextID, $nombre_usuario, $contrasena, $rol);
         $stmtUsuario->execute();
 
         // Si el asesor tiene un proyecto asignado, actualizar el proyecto con el ID del asesor
         if (!empty($proyecto)) {
             $sqlUpdateProyecto = "UPDATE proyecto SET Asesor = ? WHERE ID_Proyecto = ?";
             $stmtProyecto = $connection->prepare($sqlUpdateProyecto);
-            $stmtProyecto->bind_param("ii", $id_asesor, $proyecto);
+            $stmtProyecto->bind_param("ii", $nextID, $proyecto);
             $stmtProyecto->execute();
         }
 

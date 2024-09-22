@@ -1,4 +1,4 @@
-<?php
+<?php 
 include('../../includes/config.php');
 checkLogin();
 ?>
@@ -59,13 +59,19 @@ checkLogin();
 
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
-                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar por nombre o proyecto" aria-label="Buscar">
+                    <input class="form-control mr-sm-2" type="search" name="search" 
+                           placeholder="Buscar por ID, Nombre, Apellidos, Carrera o Proyectos" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
                 <!-- Botón para agregar asesor (abre modal) -->
                 <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addAsesorModal">
                     Agregar Asesor
+                </button>
+
+                <!-- Botón para agregar asesor EXISTENTE (abre modal) -->
+                <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#assignExistingAsesorModal">
+                    Agregar Asesor existente
                 </button>
 
                 <div class="table-responsive">
@@ -77,9 +83,7 @@ checkLogin();
                                 <th>Apellido Paterno</th>
                                 <th>Apellido Materno</th>
                                 <th>Carrera</th>
-                                <th>Proyecto Asignado</th>
-                                <th>ID Usuario</th>
-                                <th>Rol</th>
+                                <th>Proyectos Asignados</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -89,31 +93,50 @@ checkLogin();
                             $searchQuery = "";
                             if (isset($_GET['search']) && !empty($_GET['search'])) {
                                 $search = mysqli_real_escape_string($connection, $_GET['search']);
-                                $searchQuery = "AND (asesor.Nombres LIKE '%$search%' OR proyecto.Nombre_Proyecto LIKE '%$search%')";
+                                $searchQuery = "AND (asesor.ID_Asesor LIKE '%$search%' 
+                                    OR asesor.Nombres LIKE '%$search%' 
+                                    OR asesor.Apellido_Paterno LIKE '%$search%'
+                                    OR asesor.Apellido_Materno LIKE '%$search%'
+                                    OR carrera.Nombre_Carrera LIKE '%$search%'
+                                    OR proyecto.Nombre_Proyecto LIKE '%$search%')";
                             }
 
-                            // Consulta para obtener los asesores junto con los nombres de la carrera, proyecto, id_usuario, y rol
+                            // Consulta para obtener los asesores y sus proyectos asignados
                             $query = "
                                 SELECT asesor.ID_Asesor, asesor.Nombres, asesor.Apellido_Paterno, asesor.Apellido_Materno,
-                                carrera.Nombre_Carrera, proyecto.Nombre_Proyecto, usuario.id_usuario, usuario.rol
+                                       carrera.Nombre_Carrera, GROUP_CONCAT(proyecto.Nombre_Proyecto SEPARATOR ', ') AS Proyectos
                                 FROM asesor
                                 LEFT JOIN carrera ON asesor.Carrera = carrera.ID_Carrera
-                                LEFT JOIN proyecto ON asesor.Proyecto_Asignado = proyecto.ID_Proyecto
-                                LEFT JOIN usuario ON usuario.id_usuario = asesor.ID_Asesor
+                                LEFT JOIN proyecto ON asesor.ID_Asesor = proyecto.Asesor
                                 WHERE 1=1 $searchQuery
+                                GROUP BY asesor.ID_Asesor
                                 ORDER BY asesor.ID_Asesor ASC";
                             $result = $connection->query($query);
 
+                            // Mostrar la información del asesor y sus proyectos
                             while ($row = $result->fetch_assoc()) {
+                                $proyectos = explode(", ", $row['Proyectos'] ?? []); // Separa los proyectos
                                 echo "<tr>";
                                 echo "<td>" . htmlspecialchars($row['ID_Asesor'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombres'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Apellido_Paterno'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Apellido_Materno'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Carrera'] ?? 'Sin Carrera') . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Nombre_Proyecto'] ?? 'Sin Proyecto') . "</td>";
-                                echo "<td>" . htmlspecialchars($row['id_usuario'] ?? '') . "</td>";
-                                echo "<td>" . htmlspecialchars($row['rol'] ?? '') . "</td>";
+
+                                // Si tiene más de un proyecto, mostrar una lista desplegable
+                                if (count($proyectos) > 1) {
+                                    echo "<td>
+                                          <select class='form-control'>
+                                              <option value=''>Seleccionar Proyecto</option>";
+                                    foreach ($proyectos as $proyecto) {
+                                        echo "<option value='" . htmlspecialchars($proyecto) . "'>" . htmlspecialchars($proyecto) . "</option>";
+                                    }
+                                    echo "</select></td>";
+                                } else {
+                                    // Si solo tiene un proyecto, mostrarlo directamente
+                                    echo "<td>" . htmlspecialchars($proyectos[0] ?? 'Sin Proyecto') . "</td>";
+                                }
+
                                 echo "<td>";
                                 echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editAsesorModal'
                                         data-id='" . htmlspecialchars($row['ID_Asesor'] ?? '') . "' 
@@ -121,7 +144,7 @@ checkLogin();
                                         data-apellido_paterno='" . htmlspecialchars($row['Apellido_Paterno'] ?? '') . "' 
                                         data-apellido_materno='" . htmlspecialchars($row['Apellido_Materno'] ?? '') . "' 
                                         data-carrera='" . htmlspecialchars($row['Nombre_Carrera'] ?? '') . "' 
-                                        data-proyecto='" . htmlspecialchars($row['Nombre_Proyecto'] ?? '') . "'>Editar</button>";
+                                        data-proyecto='" . htmlspecialchars($row['Proyectos'] ?? '') . "'>Editar</button>";
                                 echo "</td>";
                                 echo "</tr>";
                             }
@@ -256,6 +279,53 @@ checkLogin();
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para asignar asesor existente -->
+    <div class="modal fade" id="assignExistingAsesorModal" tabindex="-1" role="dialog" aria-labelledby="assignExistingAsesorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignExistingAsesorModalLabel">Asignar Asesor Existente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="assignAsesor.php" method="POST" id="assignAsesorForm">
+                        <div class="form-group">
+                            <label for="selectExistingAsesor">Seleccionar Asesor</label>
+                            <select class="form-control" name="asesor_id" id="selectExistingAsesor" required>
+                                <option value="">Seleccione un Asesor</option>
+                                <?php
+                                // Obtener los asesores existentes
+                                $queryAsesores = "SELECT ID_Asesor, CONCAT(Nombres, ' ', Apellido_Paterno, ' ', Apellido_Materno) AS Nombre_Asesor FROM asesor";
+                                $resultAsesores = $connection->query($queryAsesores);
+                                while ($asesor = $resultAsesores->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($asesor['ID_Asesor']) . "'>" . htmlspecialchars($asesor['Nombre_Asesor']) . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectProject">Seleccionar Proyecto</label>
+                            <select class="form-control" name="proyecto_id" id="selectProject" required>
+                                <option value="">Seleccione un Proyecto</option>
+                                <?php
+                                // Obtener los proyectos disponibles
+                                $queryProyectos = "SELECT ID_Proyecto, Nombre_Proyecto FROM proyecto WHERE Asesor IS NULL";
+                                $resultProyectos = $connection->query($queryProyectos);
+                                while ($proyecto = $resultProyectos->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($proyecto['ID_Proyecto']) . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto']) . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Asignar Asesor</button>
                     </form>
                 </div>
             </div>

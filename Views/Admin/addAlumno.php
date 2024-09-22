@@ -47,11 +47,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmtUsuario->bind_param("issi", $nextID, $nombre_usuario, $contrasena, $rol);
         $stmtUsuario->execute();
 
-        // Insertar el nuevo alumno en la tabla alumno, usando el ID_Usuario como ID_Alumno
-        $queryInsertAlumno = "INSERT INTO alumno (ID_Alumno, Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto, Asesor, ID_Usuario) 
-                              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        // Insertar el nuevo alumno en la tabla alumno, usando el ID_Usuario como ID_Alumno y asignando el rol
+        $queryInsertAlumno = "INSERT INTO alumno (ID_Alumno, Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto, Asesor, ID_Usuario, Rol) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtAlumno = $connection->prepare($queryInsertAlumno);
-        $stmtAlumno->bind_param("isssiiii", $nextID, $nombres, $apellido_paterno, $apellido_materno, $carrera, $proyecto, $asesor, $nextID);
+        $stmtAlumno->bind_param("isssiiiii", $nextID, $nombres, $apellido_paterno, $apellido_materno, $carrera, $proyecto, $asesor, $nextID, $rol);
         $stmtAlumno->execute();
 
         // Asignar al alumno como integrante en el proyecto

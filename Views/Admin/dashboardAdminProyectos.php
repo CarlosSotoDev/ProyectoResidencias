@@ -62,7 +62,7 @@ checkLogin();
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
                     <input class="form-control mr-sm-2" type="search" name="search"
-                        placeholder="Buscar por nombre de proyecto" aria-label="Buscar">
+                        placeholder="Buscar por ID, Nombre de proyecto, Status, Integrante, Asesor" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
@@ -87,7 +87,10 @@ checkLogin();
                         </thead>
                         <tbody>
                             <?php
-                            // Consulta para obtener todos los campos de la tabla proyecto
+                            // Obtener el valor de búsqueda, si se proporcionó
+                            $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+                            // Consulta para obtener todos los campos de la tabla proyecto con opción de búsqueda
                             $query = "
                                 SELECT p.*, 
                                        CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) AS Nombre_Asesor,
@@ -99,7 +102,15 @@ checkLogin();
                                 LEFT JOIN alumno i1 ON p.Integrante_1 = i1.ID_Alumno
                                 LEFT JOIN alumno i2 ON p.Integrante_2 = i2.ID_Alumno
                                 LEFT JOIN alumno i3 ON p.Integrante_3 = i3.ID_Alumno
+                                WHERE p.ID_Proyecto LIKE '%$search%'
+                                   OR p.Nombre_Proyecto LIKE '%$search%'
+                                   OR p.Status LIKE '%$search%'
+                                   OR CONCAT(i1.Nombres, ' ', i1.Apellido_Paterno, ' ', i1.Apellido_Materno) LIKE '%$search%'
+                                   OR CONCAT(i2.Nombres, ' ', i2.Apellido_Paterno, ' ', i2.Apellido_Materno) LIKE '%$search%'
+                                   OR CONCAT(i3.Nombres, ' ', i3.Apellido_Paterno, ' ', i3.Apellido_Materno) LIKE '%$search%'
+                                   OR CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) LIKE '%$search%'
                                 ORDER BY p.ID_Proyecto ASC";
+                            
                             $result = $connection->query($query);
 
                             // Mostrar todos los campos de la tabla
@@ -116,7 +127,6 @@ checkLogin();
                                 echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editProjectModal' 
                                         data-id='" . htmlspecialchars($row['ID_Proyecto']) . "' 
                                         data-nombre='" . htmlspecialchars($row['Nombre_Proyecto']) . "'>Editar</button>";
-
                                 echo "</td>";
                                 echo "</tr>";
                             }

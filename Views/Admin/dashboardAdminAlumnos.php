@@ -79,18 +79,16 @@ checkLogin();
                                 <th>Carrera</th>
                                 <th>Proyecto</th>
                                 <th>Asesor</th>
-                                <th>ID Usuario</th>
-                                <th>Rol</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            // Verificar si se ha enviado una búsqueda
+                            // Verifica si se ha enviado una búsqueda
                             $searchQuery = "";
                             if (isset($_GET['search']) && !empty($_GET['search'])) {
                                 $search = mysqli_real_escape_string($connection, $_GET['search']);
-                                $searchQuery = "AND (Nombres LIKE '%$search%' OR Apellido_Paterno LIKE '%$search%' OR Apellido_Materno LIKE '%$search%')";
+                                $searchQuery = "AND (alumno.Nombres LIKE '%$search%' OR alumno.Apellido_Paterno LIKE '%$search%' OR alumno.Apellido_Materno LIKE '%$search%' OR alumno.Id_Alumno LIKE '%$search%' OR asesor.Nombres LIKE '%$search%' OR proyecto.Nombre_Proyecto LIKE '%$search%')";
                             }
 
                             // Consulta para obtener los datos de los alumnos con los nombres de carrera, proyecto, asesor, id_usuario, y rol
@@ -117,8 +115,8 @@ checkLogin();
                                 echo "<td>" . htmlspecialchars($row['Nombre_Carrera'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Proyecto'] ?? '') . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Asesor'] ?? '') . "</td>";
-                                echo "<td>" . htmlspecialchars($row['id_usuario'] ?? '') . "</td>";
-                                echo "<td>" . htmlspecialchars($row['rol'] ?? '') . "</td>";
+                                //echo "<td>" . htmlspecialchars($row['id_usuario'] ?? '') . "</td>";
+                               // echo "<td>" . htmlspecialchars($row['rol'] ?? '') . "</td>";
                                 echo "<td>";
                                 echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editAlumnoModal' 
                                         data-id='" . htmlspecialchars($row['ID_Alumno'] ?? '') . "' 

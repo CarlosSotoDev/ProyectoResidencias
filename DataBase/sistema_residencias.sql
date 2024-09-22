@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 20-09-2024 a las 23:26:06
+-- Tiempo de generación: 22-09-2024 a las 21:25:52
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -66,14 +66,15 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   KEY `fk_alumno_asesor` (`Asesor`),
   KEY `fk_alumno_rol` (`Rol`),
   KEY `fk_alumno_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=301 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `alumno`
 --
 
 INSERT INTO `alumno` (`ID_Alumno`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Carrera`, `Proyecto`, `Asesor`, `Calendario_Revisiones`, `Rol`, `ID_Usuario`) VALUES
-(300, 'CARLOS', 'SOTO', 'GARCIA', 1, 1, 100, NULL, NULL, 300);
+(300, 'CARLOS', 'SOTO', 'GARCIA', 1, 1, 100, NULL, 1, 300),
+(301, 'ALUMNOPRUEBA', 'PUEBA', 'JUAREZ', 1, 1, 100, NULL, 1, 301);
 
 -- --------------------------------------------------------
 
@@ -96,14 +97,15 @@ CREATE TABLE IF NOT EXISTS `asesor` (
   KEY `fk_asesor_carrera` (`Carrera`),
   KEY `fk_asesor_rol` (`Rol`),
   KEY `fk_asesor_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `asesor`
 --
 
 INSERT INTO `asesor` (`ID_Asesor`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Proyecto_Asignado`, `Carrera`, `Rol`, `ID_Usuario`) VALUES
-(100, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 1, 1, NULL, NULL);
+(100, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 1, 1, 2, 100),
+(101, 'AXEL', 'LIRA', 'JUAREZ', 2, 1, 2, 101);
 
 -- --------------------------------------------------------
 
@@ -123,17 +125,17 @@ CREATE TABLE IF NOT EXISTS `carrera` (
 --
 
 INSERT INTO `carrera` (`ID_Carrera`, `Nombre_Carrera`) VALUES
-(1, 'Ingeniería en Sistemas Computacionales'),
-(2, 'Ingeniería Industrial'),
-(3, 'Ingeniería Electromecánica'),
-(4, 'Ingeniería Mecatrónica'),
-(5, 'Ingeniería Ambiental'),
-(6, 'Ingeniería en Materiales'),
-(7, 'Ingeniería en Gestión Empresarial'),
-(8, 'Ingeniería en Tecnologías de la Información y Comunicaciones'),
-(9, 'Ingeniería Química'),
-(10, 'Ingeniería Civil'),
-(11, 'Licenciatura en Administración');
+(1, 'INGENIERÍA EN SISTEMAS COMPUTACIONALES'),
+(2, 'INGENIERÍA INDUSTRIAL'),
+(3, 'INGENIERÍA ELECTROMECÁNICA'),
+(4, 'INGENIERÍA MECATRÓNICA'),
+(5, 'INGENIERÍA AMBIENTAL'),
+(6, 'INGENIERÍA EN MATERIALES'),
+(7, 'INGENIERÍA EN GESTIÓN EMPRESARIAL'),
+(8, 'INGENIERÍA EN TECNOLOGÍAS DE LA INFORMACIÓN Y COMUNICACIONES'),
+(9, 'INGENIERÍA QUÍMICA'),
+(10, 'INGENIERÍA CIVIL'),
+(11, 'LICENCIATURA EN ADMINISTRACIÓN');
 
 -- --------------------------------------------------------
 
@@ -155,14 +157,15 @@ CREATE TABLE IF NOT EXISTS `proyecto` (
   KEY `fk_proyecto_integrante_2` (`Integrante_2`),
   KEY `fk_proyecto_integrante_3` (`Integrante_3`),
   KEY `fk_proyecto_asesor` (`Asesor`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto`
 --
 
 INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`) VALUES
-(1, 'Proyecto ejemplo 2', 'Pendiente', 300, NULL, NULL, 100);
+(1, 'Proyecto ejemplo 2', 'Pendiente', 300, 301, NULL, 100),
+(2, 'ASDASDAS', 'Pendiente', NULL, NULL, NULL, 101);
 
 -- --------------------------------------------------------
 
@@ -182,10 +185,10 @@ CREATE TABLE IF NOT EXISTS `rol` (
 --
 
 INSERT INTO `rol` (`ID_Rol`, `Descripcion`) VALUES
-(1, 'Alumno'),
-(2, 'Asesor'),
-(3, 'Administrador'),
-(4, 'Inactivo');
+(1, 'ALUMNO'),
+(2, 'ASESOR'),
+(3, 'ADMINISTRADOR'),
+(4, 'INACTIVO');
 
 -- --------------------------------------------------------
 
@@ -201,16 +204,18 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `Rol` int DEFAULT NULL,
   PRIMARY KEY (`ID_Usuario`),
   KEY `fk_usuario_rol` (`Rol`)
-) ENGINE=MyISAM AUTO_INCREMENT=301 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
 INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VALUES
-(1, 'admin', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 3),
+(1, 'ADMIN', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 3),
 (100, 'YAEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
-(300, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
+(300, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
+(301, 'PRUEBA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
+(101, 'AXEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2);
 
 --
 -- Disparadores `usuario`
