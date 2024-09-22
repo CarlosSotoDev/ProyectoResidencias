@@ -26,14 +26,14 @@ $proyecto = $result->fetch_assoc();  // Obtener el primer resultado del proyecto
 
 <head>
     <meta charset="UTF-8">
-    <title>Gestion de Alumnos</title>
+    <title>GESTION PROYECTOS</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
 </head>
 
 <body>
     <!-- Navbar -->
-    <?php require('../../includes/navbarAlumno.php'); ?>
+    <?php require('../../includes/navbarAsesor.php'); ?>
 
     <main role="main" class="container bg-light p-2 mx-auto my-1">
         <h2>Gestión de Proyectos</h2>

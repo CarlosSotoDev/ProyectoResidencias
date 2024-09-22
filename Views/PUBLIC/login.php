@@ -2,11 +2,13 @@
 include('../../includes/config.php');
 
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+    session_start(); // Asegúrate de iniciar la sesión
 }
 
+// Verificar si el usuario ya está logueado
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     if (isset($_SESSION['rol'])) {
+        // Redirigir al dashboard según el rol
         if ($_SESSION['rol'] == 3) {
             header('Location: ../admin/dashboardAdmin.php');
         } else if ($_SESSION['rol'] == 2) {
@@ -24,13 +26,14 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     exit;
 }
 
-
+// Control de cache y errores de autenticación
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 header('Pragma: no-cache');
 
 $error_message = "";
 
+// Verificar si hay un error de autenticación
 if (isset($_GET['error'])) {
     switch ($_GET['error']) {
         case 'disabled':
@@ -72,7 +75,7 @@ if (isset($_GET['error'])) {
         </div>
     </nav>
 
-    <div class="container mt-5 flex-grow-1 d-flex justify-content-center align-items-center">
+    <div class="container flex-grow-1 d-flex justify-content-center align-items-center">
         <div class="card p-4" style="max-width: 500px; width: 100%;">
             <h2 class="text-center">Iniciar Sesión</h2>
             <?php if (!empty($error_message)): ?>

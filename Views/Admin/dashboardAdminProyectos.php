@@ -5,12 +5,14 @@ checkLogin();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Admin - Proyectos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
 </head>
+
 <body>
     <!-- Barra superior -->
     <nav class="navbar navbar-dark bg-success">
@@ -29,7 +31,7 @@ checkLogin();
             <nav class="col-md-2 d-none d-md-block bg-success sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link text-white text-center" href="dashboardAdmin.php">
                                 Usuarios
                             </a>
@@ -59,7 +61,8 @@ checkLogin();
 
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
-                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar por nombre de proyecto" aria-label="Buscar">
+                    <input class="form-control mr-sm-2" type="search" name="search"
+                        placeholder="Buscar por nombre de proyecto" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
@@ -113,7 +116,7 @@ checkLogin();
                                 echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editProjectModal' 
                                         data-id='" . htmlspecialchars($row['ID_Proyecto']) . "' 
                                         data-nombre='" . htmlspecialchars($row['Nombre_Proyecto']) . "'>Editar</button>";
-                                
+
                                 echo "</td>";
                                 echo "</tr>";
                             }
@@ -126,7 +129,8 @@ checkLogin();
     </div>
 
     <!-- Modal para agregar proyecto -->
-    <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -139,7 +143,8 @@ checkLogin();
                     <form action="addProject.php" method="POST">
                         <div class="form-group">
                             <label for="addNombreProyecto">Nombre del Proyecto</label>
-                            <input type="text" class="form-control" name="nombre_proyecto" id="addNombreProyecto" required>
+                            <input type="text" class="form-control" name="nombre_proyecto" id="addNombreProyecto"
+                                required>
                         </div>
                         <input type="hidden" name="status" value="Pendiente"> <!-- Status predeterminado -->
                         <button type="submit" class="btn btn-primary">Agregar Proyecto</button>
@@ -150,7 +155,8 @@ checkLogin();
     </div>
 
     <!-- Modal para editar proyecto -->
-    <div class="modal fade" id="editProjectModal" tabindex="-1" role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editProjectModal" tabindex="-1" role="dialog" aria-labelledby="editProjectModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -161,10 +167,12 @@ checkLogin();
                 </div>
                 <div class="modal-body">
                     <form action="editProject.php" method="POST">
-                        <input type="hidden" name="id_proyecto" id="editProjectId"> <!-- Campo oculto para el ID del proyecto -->
+                        <input type="hidden" name="id_proyecto" id="editProjectId">
+                        <!-- Campo oculto para el ID del proyecto -->
                         <div class="form-group">
                             <label for="editNombreProyecto">Nombre del Proyecto</label>
-                            <input type="text" class="form-control" name="nombre_proyecto" id="editNombreProyecto" required>
+                            <input type="text" class="form-control" name="nombre_proyecto" id="editNombreProyecto"
+                                required>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </form>
@@ -191,4 +199,5 @@ checkLogin();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

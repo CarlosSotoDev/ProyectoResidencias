@@ -5,9 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre_usuario = $_POST['username'];
     $contrasena = $_POST['password'];
 
-    // Eliminar el cifrado en el código ya que la base de datos lo realiza con un trigger
-    // $contrasena_encriptada = hash('sha256', $contrasena);  // Esta línea ya no es necesaria
-
     // Buscar el usuario en la base de datos
     $sql = "SELECT ID_Usuario, Nombre_Usuario, Contraseña, Rol FROM usuario WHERE Nombre_Usuario = ?";
     $stmt = $connection->prepare($sql);
@@ -25,20 +22,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Comparar la contraseña ingresada con la almacenada en la base de datos
-        // Ya no necesitamos cifrarla en el código, ya que la base de datos la cifra con el trigger
         if (hash('sha256', $contrasena) === $user['Contraseña']) {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $user['Nombre_Usuario'];
             $_SESSION['user_id'] = $user['ID_Usuario'];
             $_SESSION['rol'] = $user['Rol'];
 
+            // Verificar si es un asesor (rol 2)
+            if ($_SESSION['rol'] == 2) {
+                // Consulta para obtener el ID del asesor asociado al ID_Usuario
+                $sqlAsesor = "SELECT ID_Asesor FROM asesor WHERE ID_Usuario = ?";
+                $stmtAsesor = $connection->prepare($sqlAsesor);
+                $stmtAsesor->bind_param("i", $user['ID_Usuario']);
+                $stmtAsesor->execute();
+                $resultAsesor = $stmtAsesor->get_result();
+
+                // Verificar si se obtuvo el ID_Asesor
+                if ($resultAsesor->num_rows > 0) {
+                    $asesor = $resultAsesor->fetch_assoc();
+                    $_SESSION['asesor_id'] = $asesor['ID_Asesor']; // Guardar el ID del asesor en la sesión
+                    echo "ID del Asesor obtenido: " . $asesor['ID_Asesor']; // Verificar si se obtuvo correctamente
+                } else {
+                    echo "Error: No se encontró el ID del asesor en la base de datos.";
+                    exit;
+                }
+
+                header("Location: ../Asesor/dashboardAsesor.php");
+                exit;
+            }
+
             // Redirigir al dashboard correspondiente según el rol
             if ($_SESSION['rol'] == 3) {
                 header("Location: ../admin/dashboardAdmin.php");
-                exit;
-            } else if ($_SESSION['rol'] == 2) {
-                header("Location: ../Asesor/dashboardAsesor.php");
                 exit;
             } else if ($_SESSION['rol'] == 1) {
                 header("Location: ../Student/dashboardStudent.php");
@@ -56,4 +74,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 }
-?>
