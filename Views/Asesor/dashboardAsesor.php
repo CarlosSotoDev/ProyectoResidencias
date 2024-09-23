@@ -2,11 +2,12 @@
 include('../../includes/config.php');
 checkLogin();
 
-// Verificar si el ID del asesor está en la sesión
 if (isset($_SESSION['asesor_id'])) {
-    echo "<div class='alert alert-success'>ID del Asesor en la sesión: " . $_SESSION['asesor_id'] . "</div>";
+    // Si el ID_Asesor está en la sesión, lo enviamos a la consola
+    echo "<script>console.log('ID del Asesor en la sesión: " . $_SESSION['asesor_id'] . "');</script>";
 } else {
-    echo "<div class='alert alert-danger'>No se encontró el ID del asesor en la sesión.</div>";
+    // Si no se encuentra el ID_Asesor en la sesión, mostramos un error en la consola
+    echo "<script>console.log('Error: No se encontró el ID del asesor en la sesión.');</script>";
 }
 ?>
 
@@ -22,7 +23,9 @@ if (isset($_SESSION['asesor_id'])) {
 
 <body>
     <!-- Navbar -->
-    <?php require('../../includes/navbarAsesor.php'); ?>
+    <?php
+    require('../../includes/navbarAsesor.php');
+    ?>
 
     <main role="main" class="container bg-light p-2 mx-auto my-1">
         <!-- Dashboard Bienvenida -->

@@ -1,6 +1,6 @@
 <!-- Barra superior -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <a class="navbar-brand mx-5" href="../Student/dashboardStudent.php">
+        <a class="navbar-brand mx-5" href="../Asesor/dashboardAsesor.php">
             <img src="<?php echo IMG_PATH; ?>TESCO_TRANSPARENTE.webp" alt="Logo" style="width: 120px;">
         </a>    
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"

@@ -60,26 +60,24 @@ $result = $stmt->get_result(); // Obtener los resultados de la consulta
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
                         <thead>
-                            <tr>
+                            <tr class="text-center">
                                 <th>ID Proyecto</th>
                                 <th>Nombre del Proyecto</th>
                                 <th>Status</th>
-                                <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="text-center">
                             <?php
                             // Mostrar los proyectos asignados al asesor
                             while ($row = $result->fetch_assoc()) {
                                 echo "<tr>";
                                 echo "<td>" . htmlspecialchars($row['ID_Proyecto']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['Nombre_Proyecto']) . "</td>";
+                                
+                                // Crear el enlace alrededor del nombre del proyecto
+                                echo "<td><a href='../Asesor/proyects.php?id=" . htmlspecialchars($row['ID_Proyecto']) . "'>" . htmlspecialchars($row['Nombre_Proyecto']) . "</a></td>";
+                                
                                 echo "<td>" . htmlspecialchars($row['Status']) . "</td>";
                                 echo "<td>";
-                                echo "<button type='button' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#editProjectModal' 
-                                        data-id='" . htmlspecialchars($row['ID_Proyecto']) . "' 
-                                        data-nombre='" . htmlspecialchars($row['Nombre_Proyecto']) . "'>Editar</button>";
-                                echo "</td>";
                                 echo "</tr>";
                             }
                             ?>

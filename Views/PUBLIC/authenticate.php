@@ -33,18 +33,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Verificar si es un asesor (rol 2)
             if ($_SESSION['rol'] == 2) {
-                // Consulta para obtener el ID del asesor asociado al ID_Usuario
-                $sqlAsesor = "SELECT ID_Asesor FROM asesor WHERE ID_Usuario = ?";
+                // Consulta para obtener el ID del asesor y el nombre completo asociado al ID_Usuario
+                $sqlAsesor = "SELECT ID_Asesor, CONCAT(Nombres, ' ', Apellido_Paterno, ' ', Apellido_Materno) AS Nombre_Completo 
+                              FROM asesor 
+                              WHERE ID_Usuario = ?";
                 $stmtAsesor = $connection->prepare($sqlAsesor);
                 $stmtAsesor->bind_param("i", $user['ID_Usuario']);
                 $stmtAsesor->execute();
                 $resultAsesor = $stmtAsesor->get_result();
 
-                // Verificar si se obtuvo el ID_Asesor
+                // Verificar si se obtuvo el ID_Asesor y el nombre completo
                 if ($resultAsesor->num_rows > 0) {
                     $asesor = $resultAsesor->fetch_assoc();
                     $_SESSION['asesor_id'] = $asesor['ID_Asesor']; // Guardar el ID del asesor en la sesión
-                    echo "ID del Asesor obtenido: " . $asesor['ID_Asesor']; // Verificar si se obtuvo correctamente
+                    $_SESSION['nombre_completo'] = $asesor['Nombre_Completo']; // Guardar el nombre completo del asesor
                 } else {
                     echo "Error: No se encontró el ID del asesor en la base de datos.";
                     exit;
@@ -74,3 +76,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 }
+?>

@@ -2,23 +2,55 @@
 include('../../includes/config.php');
 checkLogin();
 
-// Nueva consulta para obtener los datos del proyecto
-$query = "
-    SELECT p.*, 
-           CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) AS Nombre_Asesor,
-           CONCAT(i1.Nombres, ' ', i1.Apellido_Paterno, ' ', i1.Apellido_Materno) AS Integrante1,
-           CONCAT(i2.Nombres, ' ', i2.Apellido_Paterno, ' ', i2.Apellido_Materno) AS Integrante2,
-           CONCAT(i3.Nombres, ' ', i3.Apellido_Paterno, ' ', i3.Apellido_Materno) AS Integrante3
-    FROM proyecto p
-    LEFT JOIN asesor a ON p.Asesor = a.ID_Asesor
-    LEFT JOIN alumno i1 ON p.Integrante_1 = i1.ID_Alumno
-    LEFT JOIN alumno i2 ON p.Integrante_2 = i2.ID_Alumno
-    LEFT JOIN alumno i3 ON p.Integrante_3 = i3.ID_Alumno
-    ORDER BY p.ID_Proyecto ASC";
+// Obtener el ID_Usuario de la sesión
+$usuario_id = $_SESSION['user_id']; // Verifica que 'user_id' esté siendo correctamente guardado en la sesión.
+$rol = $_SESSION['rol']; // Verifica el rol del usuario, 1 = Alumno, 2 = Asesor
 
-// Ejecutar la consulta
-$result = $connection->query($query);
-$proyecto = $result->fetch_assoc();  // Obtener el primer resultado del proyecto (puedes ajustar esto según la lógica)
+// Almacenamos el nombre del asesor logueado en la sesión si es asesor
+$nombre_asesor_sesion = isset($_SESSION['nombre_completo']) ? $_SESSION['nombre_completo'] : '';
+
+// Modificamos la consulta dependiendo del rol del usuario
+if ($rol == 2) {
+    // Si el usuario es Asesor, obtener los proyectos donde él es el asesor
+    $query = "
+        SELECT p.*, 
+               CONCAT(i1.Nombres, ' ', i1.Apellido_Paterno, ' ', i1.Apellido_Materno) AS Integrante1,
+               CONCAT(i2.Nombres, ' ', i2.Apellido_Paterno, ' ', i2.Apellido_Materno) AS Integrante2,
+               CONCAT(i3.Nombres, ' ', i3.Apellido_Paterno, ' ', i3.Apellido_Materno) AS Integrante3
+        FROM proyecto p
+        LEFT JOIN alumno i1 ON p.Integrante_1 = i1.ID_Alumno
+        LEFT JOIN alumno i2 ON p.Integrante_2 = i2.ID_Alumno
+        LEFT JOIN alumno i3 ON p.Integrante_3 = i3.ID_Alumno
+        WHERE p.Asesor = (SELECT ID_Asesor FROM asesor WHERE ID_Usuario = ?) -- Aquí filtramos solo los proyectos del asesor actual
+        ORDER BY p.ID_Proyecto ASC";
+
+    // Preparar la consulta
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+} elseif ($rol == 1) {
+    // Si el usuario es Alumno, obtener solo los proyectos en los que él es un integrante
+    $query = "
+        SELECT p.*, 
+               CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) AS Nombre_Asesor,
+               CONCAT(i1.Nombres, ' ', i1.Apellido_Paterno, ' ', i1.Apellido_Materno) AS Integrante1,
+               CONCAT(i2.Nombres, ' ', i2.Apellido_Paterno, ' ', i2.Apellido_Materno) AS Integrante2,
+               CONCAT(i3.Nombres, ' ', i3.Apellido_Paterno, ' ', i3.Apellido_Materno) AS Integrante3
+        FROM proyecto p
+        LEFT JOIN asesor a ON p.Asesor = a.ID_Asesor
+        LEFT JOIN alumno i1 ON p.Integrante_1 = i1.ID_Alumno
+        LEFT JOIN alumno i2 ON p.Integrante_2 = i2.ID_Alumno
+        LEFT JOIN alumno i3 ON p.Integrante_3 = i3.ID_Alumno
+        WHERE p.Integrante_1 = ? OR p.Integrante_2 = ? OR p.Integrante_3 = ? -- Filtrar por el alumno actual
+        ORDER BY p.ID_Proyecto ASC";
+
+    // Preparar la consulta
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("iii", $usuario_id, $usuario_id, $usuario_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +58,7 @@ $proyecto = $result->fetch_assoc();  // Obtener el primer resultado del proyecto
 
 <head>
     <meta charset="UTF-8">
-    <title>GESTION PROYECTOS</title>
+    <title>Gestion de Proyectos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
 </head>
@@ -44,33 +76,48 @@ $proyecto = $result->fetch_assoc();  // Obtener el primer resultado del proyecto
             <div class="col-md-6 border-right border-2 border-success">
                 <div class="bg-light p-3">
                     <h2 class="text-center">Datos del Proyecto Asignado</h2>
-                    <p class="h2">
-                        Nombre del Proyecto:<br>
-                        <strong><?php echo htmlspecialchars($proyecto['Nombre_Proyecto'] ?? 'No disponible'); ?></strong>
-                    </p>
-                    <p class="h4">Integrantes:</p>
 
-                    <ul>
-                        <li><?php echo htmlspecialchars($proyecto['Integrante1'] ?? 'No asignado'); ?></li>
-                        <?php if (!empty($proyecto['Integrante2'])): ?>
-                            <li><?php echo htmlspecialchars($proyecto['Integrante2']); ?></li>
-                        <?php endif; ?>
-                        <?php if (!empty($proyecto['Integrante3'])): ?>
-                            <li><?php echo htmlspecialchars($proyecto['Integrante3']); ?></li>
-                        <?php endif; ?>
-                    </ul>
-                    <p><strong>Status del Proyecto:</strong>
-                        <?php echo htmlspecialchars($proyecto['Status'] ?? 'No disponible'); ?></p>
+                    <?php
+                    // Verificar si tenemos resultados antes de iterar
+                    if ($result && $result->num_rows > 0) {
+                        while ($proyecto = $result->fetch_assoc()): ?>
+                            <p class="h2">
+                                Nombre del Proyecto:<br>
+                                <strong><?php echo htmlspecialchars($proyecto['Nombre_Proyecto'] ?? 'No disponible'); ?></strong>
+                            </p>
+                            <p class="h4">Integrantes:</p>
+                            <ul>
+                                <li><?php echo htmlspecialchars($proyecto['Integrante1'] ?? 'No asignado'); ?></li>
+                                <?php if (!empty($proyecto['Integrante2'])): ?>
+                                    <li><?php echo htmlspecialchars($proyecto['Integrante2']); ?></li>
+                                <?php endif; ?>
+                                <?php if (!empty($proyecto['Integrante3'])): ?>
+                                    <li><?php echo htmlspecialchars($proyecto['Integrante3']); ?></li>
+                                <?php endif; ?>
+                            </ul>
+                            <p><strong>Status del Proyecto:</strong>
+                                <?php echo htmlspecialchars($proyecto['Status'] ?? 'No disponible'); ?></p>
+                        <?php endwhile;
+                    } else {
+                        echo "<p>No hay proyectos asignados.</p>";
+                    }
+                    ?>
                 </div>
             </div>
-
 
             <!-- Columna derecha: Datos y retroalimentación del asesor -->
             <div class="col-md-6">
                 <div class="bg-light p-3">
                     <h2 class="text-center">Datos y Retroalimentación del Asesor</h2>
                     <p><strong>Asesor:</strong>
-                        <?php echo htmlspecialchars($proyecto['Nombre_Asesor'] ?? 'No asignado'); ?></p>
+                        <?php
+                        if ($rol == 2) {
+                            echo htmlspecialchars($nombre_asesor_sesion); // Nombre del asesor que está logueado
+                        } else {
+                            echo htmlspecialchars($proyecto['Nombre_Asesor'] ?? 'No asignado');
+                        }
+                        ?>
+                    </p>
                     <p><strong>Comentarios:</strong>
                         <?php echo htmlspecialchars($proyecto['Comentarios_Asesor'] ?? 'Sin comentarios'); ?></p>
                 </div>
