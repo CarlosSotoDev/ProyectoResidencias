@@ -1,31 +1,33 @@
 <?php
-session_start(); // Inicia la sesión
+session_start(); // Iniciar la sesión
 
 include('../../includes/config.php'); // Conexión a la base de datos
-checkLogin(); // Función que verifica si el usuario ha iniciado sesión
+checkLogin(); // Verificar si el usuario ha iniciado sesión
 
 // Verificar si el ID del asesor está en la sesión
 if (!isset($_SESSION['asesor_id'])) {
-    // Si no se encuentra el ID del asesor en la sesión, redirigir o mostrar un mensaje de error
     echo "Error: No se encontró el ID del asesor en la sesión.";
-    exit; // Detener la ejecución si no se encuentra el ID del asesor
+    exit;
 }
 
-// Obtener el ID del asesor de la sesión
+// Obtener el ID del asesor desde la sesión
 $asesor_id = $_SESSION['asesor_id'];
 
-// Consulta para obtener los proyectos asignados al asesor que ha iniciado sesión
+// Verificar si hay un término de búsqueda
+$search_term = isset($_GET['search']) ? '%' . $_GET['search'] . '%' : '%%';
+
+// Consulta para obtener los proyectos asignados al asesor
 $query = "
     SELECT p.ID_Proyecto, p.Nombre_Proyecto, p.Status
     FROM proyecto p
-    WHERE p.Asesor = ?
+    WHERE p.Asesor = ? AND p.Nombre_Proyecto LIKE ?
     ORDER BY p.ID_Proyecto ASC";
 
-// Preparar la consulta para evitar inyecciones SQL
+// Preparar la consulta
 $stmt = $connection->prepare($query);
-$stmt->bind_param('i', $asesor_id); // 'i' indica que el parámetro es un entero
+$stmt->bind_param('is', $asesor_id, $search_term); // 'i' para entero y 's' para string
 $stmt->execute();
-$result = $stmt->get_result(); // Obtener los resultados de la consulta
+$result = $stmt->get_result(); // Obtener resultados
 
 ?>
 
@@ -36,7 +38,7 @@ $result = $stmt->get_result(); // Obtener los resultados de la consulta
     <meta charset="UTF-8">
     <title>Gestión de Proyectos Asignados</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css">
 </head>
 
 <body>
@@ -45,7 +47,6 @@ $result = $stmt->get_result(); // Obtener los resultados de la consulta
 
     <div class="container-fluid">
         <div class="row">
-
             <!-- Contenido principal -->
             <main role="main" class="container bg-light p-2 mx-auto my-1">
                 <h2>Gestión de Proyectos Asignados</h2>
@@ -53,7 +54,8 @@ $result = $stmt->get_result(); // Obtener los resultados de la consulta
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
                     <input class="form-control mr-sm-2" type="search" name="search"
-                        placeholder="Buscar por nombre de proyecto" aria-label="Buscar">
+                        placeholder="Buscar por nombre de proyecto" aria-label="Buscar"
+                        value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
@@ -68,17 +70,18 @@ $result = $stmt->get_result(); // Obtener los resultados de la consulta
                         </thead>
                         <tbody class="text-center">
                             <?php
-                            // Mostrar los proyectos asignados al asesor
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['ID_Proyecto']) . "</td>";
-                                
-                                // Crear el enlace alrededor del nombre del proyecto
-                                echo "<td><a href='../Asesor/proyects.php?id=" . htmlspecialchars($row['ID_Proyecto']) . "'>" . htmlspecialchars($row['Nombre_Proyecto']) . "</a></td>";
-                                
-                                echo "<td>" . htmlspecialchars($row['Status']) . "</td>";
-                                echo "<td>";
-                                echo "</tr>";
+                            // Mostrar proyectos asignados
+                            if ($result && $result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<tr>";
+                                    echo "<td>" . htmlspecialchars($row['ID_Proyecto']) . "</td>";
+                                    // Enlace a la página proyects.php con el ID del proyecto
+                                    echo "<td><a href='proyects.php?id_proyecto=" . htmlspecialchars($row['ID_Proyecto']) . "'>" . htmlspecialchars($row['Nombre_Proyecto']) . "</a></td>";
+                                    echo "<td>" . htmlspecialchars($row['Status']) . "</td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='3'>No hay proyectos asignados.</td></tr>";
                             }
                             ?>
                         </tbody>

@@ -77,11 +77,11 @@ if ($rol == 2) {
             <div class="col-md-6 border-right border-2 border-success">
                 <div class="bg-light p-3">
                     <h2 class="text-center">Datos del Proyecto Asignado</h2>
-                    <p class="h2">
+                    <p class="h2 text-center">
                         Nombre del Proyecto:<br>
                         <strong><?php echo htmlspecialchars($proyecto['Nombre_Proyecto'] ?? 'No disponible'); ?></strong>
                     </p>
-                    <p class="h4">Integrantes:</p>
+                    <p class="h4 text-center">Integrantes:</p>
 
                     <ul>
                         <li><?php echo htmlspecialchars($proyecto['Integrante1'] ?? 'No asignado'); ?></li>
@@ -103,8 +103,10 @@ if ($rol == 2) {
                     <h2 class="text-center">Datos y Retroalimentación del Asesor</h2>
                     <p><strong>Asesor:</strong>
                         <?php echo htmlspecialchars($proyecto['Nombre_Asesor'] ?? 'No asignado'); ?></p>
-                    <p><strong>Comentarios:</strong>
-                        <?php echo htmlspecialchars($proyecto['Comentarios_Asesor'] ?? 'Sin comentarios'); ?></p>
+                    <div class="text-center">
+                        <a href="../Student/historyRevitions.php" class="btn btn-success mb-3">HISTORIAL DE
+                            REVISIONES</a>
+                    </div>
                 </div>
             </div>
         </div>

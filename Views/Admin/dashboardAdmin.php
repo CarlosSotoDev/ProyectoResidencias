@@ -5,12 +5,14 @@ checkLogin();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Admin</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
 </head>
+
 <body>
     <!-- Barra superior -->
     <nav class="navbar navbar-dark bg-success">
@@ -27,6 +29,7 @@ checkLogin();
         <div class="row">
             <!-- Barra lateral -->
             <nav class="col-md-2 d-none d-md-block bg-success sidebar">
+
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -56,15 +59,16 @@ checkLogin();
             <!-- Contenido principal -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <h2>Gestión de Usuarios</h2>
-                
+
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
-                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar por nombre o rol" aria-label="Buscar">
+                    <input class="form-control mr-sm-2" type="search" name="search"
+                        placeholder="Buscar por nombre o rol" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm">
+                    <table class="table table-striped table-sm text-center">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -105,4 +109,5 @@ checkLogin();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

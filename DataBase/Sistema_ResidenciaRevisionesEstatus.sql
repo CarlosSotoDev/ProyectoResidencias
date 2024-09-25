@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 22-09-2024 a las 21:25:52
+-- Tiempo de generación: 24-09-2024 a las 21:22:33
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   KEY `fk_alumno_asesor` (`Asesor`),
   KEY `fk_alumno_rol` (`Rol`),
   KEY `fk_alumno_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=304 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `alumno`
@@ -74,7 +74,9 @@ CREATE TABLE IF NOT EXISTS `alumno` (
 
 INSERT INTO `alumno` (`ID_Alumno`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Carrera`, `Proyecto`, `Asesor`, `Calendario_Revisiones`, `Rol`, `ID_Usuario`) VALUES
 (300, 'CARLOS', 'SOTO', 'GARCIA', 1, 1, 100, NULL, 1, 300),
-(301, 'ALUMNOPRUEBA', 'PUEBA', 'JUAREZ', 1, 1, 100, NULL, 1, 301);
+(301, 'ALUMNOPRUEBA', 'PUEBA', 'JUAREZ', 1, 1, 100, NULL, 1, 301),
+(302, 'REGINA', 'MORA', 'GARCIA', 1, 2, 100, NULL, 1, 302),
+(303, 'Brandon', 'Velazquez', 'Santiago', 1, 3, 100, NULL, 1, 303);
 
 -- --------------------------------------------------------
 
@@ -140,6 +142,20 @@ INSERT INTO `carrera` (`ID_Carrera`, `Nombre_Carrera`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `conproyectorevisiones`
+--
+
+DROP TABLE IF EXISTS `conproyectorevisiones`;
+CREATE TABLE IF NOT EXISTS `conproyectorevisiones` (
+  `ID_Proyecto` int NOT NULL,
+  `ID_Conexion` int NOT NULL,
+  KEY `fk_conProyectoRevisiones_proyecto` (`ID_Proyecto`),
+  KEY `fk_conProyectoRevisiones_revisiones` (`ID_Conexion`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `proyecto`
 --
 
@@ -147,25 +163,43 @@ DROP TABLE IF EXISTS `proyecto`;
 CREATE TABLE IF NOT EXISTS `proyecto` (
   `ID_Proyecto` int NOT NULL AUTO_INCREMENT,
   `Nombre_Proyecto` varchar(200) NOT NULL,
-  `Status` enum('Pendiente','En Revisión') NOT NULL,
+  `Status` enum('Pendiente','En Revisión','Revisado','Completado') NOT NULL,
   `Integrante_1` int DEFAULT NULL,
   `Integrante_2` int DEFAULT NULL,
   `Integrante_3` int DEFAULT NULL,
   `Asesor` int DEFAULT NULL,
+  `Archivo_Docx` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID_Proyecto`),
   KEY `fk_proyecto_integrante_1` (`Integrante_1`),
   KEY `fk_proyecto_integrante_2` (`Integrante_2`),
   KEY `fk_proyecto_integrante_3` (`Integrante_3`),
   KEY `fk_proyecto_asesor` (`Asesor`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto`
 --
 
-INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`) VALUES
-(1, 'Proyecto ejemplo 2', 'Pendiente', 300, 301, NULL, 100),
-(2, 'ASDASDAS', 'Pendiente', NULL, NULL, NULL, 101);
+INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`, `Archivo_Docx`) VALUES
+(1, 'Proyecto ejemplo 2', 'En Revisión', 300, 301, NULL, 100, 'RMG FO-TESCo-72. Solicitud de Residencia Profesional V12 - copia - copia (1).docx'),
+(2, 'ASDASDAS', 'Pendiente', 302, NULL, NULL, 101, 'ConstanciaEstudiosCreditos.docx'),
+(3, 'NuevoProyecto', 'Pendiente', 303, NULL, NULL, 100, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `revisiones`
+--
+
+DROP TABLE IF EXISTS `revisiones`;
+CREATE TABLE IF NOT EXISTS `revisiones` (
+  `ID_Conexion` int NOT NULL,
+  `ID_Revision` int NOT NULL AUTO_INCREMENT,
+  `Comentario` varchar(100) NOT NULL,
+  `Fecha_Revision` date NOT NULL,
+  `Fecha_Proxima_Revision` date NOT NULL,
+  PRIMARY KEY (`ID_Revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -204,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `Rol` int DEFAULT NULL,
   PRIMARY KEY (`ID_Usuario`),
   KEY `fk_usuario_rol` (`Rol`)
-) ENGINE=MyISAM AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=304 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -215,7 +249,9 @@ INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VAL
 (100, 'YAEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
 (300, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
 (301, 'PRUEBA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
-(101, 'AXEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2);
+(101, 'AXEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
+(302, 'REGINA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
+(303, 'BRANDON', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
 
 --
 -- Disparadores `usuario`
