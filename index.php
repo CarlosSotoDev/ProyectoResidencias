@@ -35,7 +35,7 @@ include('includes/config.php');
                     </h2>
                 </div>
                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#tramitesAccordion">
-                    <div class="card-body">
+                    <div class="card-body"> 
                         <h1>Proceso de Inscripción en el Tecnológico de Estudios Superiores de Coacalco (TESCo)</h1>
 
                         <p class="parrafo"><strong>1. Consulta de Convocatoria:</strong> La convocatoria para el proceso de inscripción

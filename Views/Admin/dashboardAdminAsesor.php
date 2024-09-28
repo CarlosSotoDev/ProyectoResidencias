@@ -200,8 +200,8 @@ checkLogin();
                             <select class="form-control" name="proyecto" id="addProyecto">
                                 <option value="">Sin Proyecto</option>
                                 <?php
-                                // Obtener los proyectos de la base de datos
-                                $queryProyecto = "SELECT * FROM proyecto";
+                                // Obtener los proyectos de la base de datos que no tienen asignado un asesor
+                                $queryProyecto = "SELECT * FROM proyecto WHERE Asesor IS NULL OR Asesor = ''";
                                 $resultProyecto = $connection->query($queryProyecto);
 
                                 while ($proyecto = $resultProyecto->fetch_assoc()) {

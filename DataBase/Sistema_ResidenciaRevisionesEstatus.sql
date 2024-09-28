@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-09-2024 a las 21:22:33
+-- Tiempo de generación: 28-09-2024 a las 22:46:36
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -66,17 +66,16 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   KEY `fk_alumno_asesor` (`Asesor`),
   KEY `fk_alumno_rol` (`Rol`),
   KEY `fk_alumno_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=304 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=303 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `alumno`
 --
 
 INSERT INTO `alumno` (`ID_Alumno`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Carrera`, `Proyecto`, `Asesor`, `Calendario_Revisiones`, `Rol`, `ID_Usuario`) VALUES
-(300, 'CARLOS', 'SOTO', 'GARCIA', 1, 1, 100, NULL, 1, 300),
-(301, 'ALUMNOPRUEBA', 'PUEBA', 'JUAREZ', 1, 1, 100, NULL, 1, 301),
-(302, 'REGINA', 'MORA', 'GARCIA', 1, 2, 100, NULL, 1, 302),
-(303, 'Brandon', 'Velazquez', 'Santiago', 1, 3, 100, NULL, 1, 303);
+(300, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 1, 1, 100, NULL, 1, 300),
+(301, 'JOEL', 'CAMACHO', 'CAMPOY', 1, 2, 100, NULL, 1, 301),
+(302, 'ALUMNO', 'CAMACHO', 'CAMPOY', 1, 5, 102, NULL, 1, 302);
 
 -- --------------------------------------------------------
 
@@ -99,15 +98,16 @@ CREATE TABLE IF NOT EXISTS `asesor` (
   KEY `fk_asesor_carrera` (`Carrera`),
   KEY `fk_asesor_rol` (`Rol`),
   KEY `fk_asesor_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `asesor`
 --
 
 INSERT INTO `asesor` (`ID_Asesor`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Proyecto_Asignado`, `Carrera`, `Rol`, `ID_Usuario`) VALUES
-(100, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 1, 1, 2, 100),
-(101, 'AXEL', 'LIRA', 'JUAREZ', 2, 1, 2, 101);
+(100, 'AXEL', 'LIRA', 'JUAREZ', 1, 1, 2, 100),
+(101, 'CARLOS', 'SOTO', 'JUAREZ', 3, 1, 2, 101),
+(102, 'ASESOR', 'LIRA', 'ROBLEDO', 5, 1, 2, 102);
 
 -- --------------------------------------------------------
 
@@ -174,16 +174,18 @@ CREATE TABLE IF NOT EXISTS `proyecto` (
   KEY `fk_proyecto_integrante_2` (`Integrante_2`),
   KEY `fk_proyecto_integrante_3` (`Integrante_3`),
   KEY `fk_proyecto_asesor` (`Asesor`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto`
 --
 
 INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`, `Archivo_Docx`) VALUES
-(1, 'Proyecto ejemplo 2', 'En Revisión', 300, 301, NULL, 100, 'RMG FO-TESCo-72. Solicitud de Residencia Profesional V12 - copia - copia (1).docx'),
-(2, 'ASDASDAS', 'Pendiente', 302, NULL, NULL, 101, 'ConstanciaEstudiosCreditos.docx'),
-(3, 'NuevoProyecto', 'Pendiente', 303, NULL, NULL, 100, NULL);
+(1, 'Proyecto ejemplo 2', 'En Revisión', 300, NULL, NULL, 100, 'PO-VI-TESCO-03_Acreditacion_de_Residencia_Profesional__V5a.docx'),
+(2, 'Proyecto ejemplo 3', 'En Revisión', 301, NULL, NULL, 100, 'GF.docx'),
+(3, 'RSRS', 'Pendiente', NULL, NULL, NULL, 101, NULL),
+(4, 'HOLA', 'Pendiente', NULL, NULL, NULL, 101, NULL),
+(5, 'PROYECTO PARA EJEMPLO', 'En Revisión', 302, NULL, NULL, 102, 'Caso_de_uso_vou.docx');
 
 -- --------------------------------------------------------
 
@@ -195,9 +197,10 @@ DROP TABLE IF EXISTS `revisiones`;
 CREATE TABLE IF NOT EXISTS `revisiones` (
   `ID_Conexion` int NOT NULL,
   `ID_Revision` int NOT NULL AUTO_INCREMENT,
-  `Comentario` varchar(100) NOT NULL,
+  `Comentario` text,
   `Fecha_Revision` date NOT NULL,
   `Fecha_Proxima_Revision` date NOT NULL,
+  `Revision_Numero` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID_Revision`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -238,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `Rol` int DEFAULT NULL,
   PRIMARY KEY (`ID_Usuario`),
   KEY `fk_usuario_rol` (`Rol`)
-) ENGINE=MyISAM AUTO_INCREMENT=304 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=303 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -246,12 +249,12 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 
 INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VALUES
 (1, 'ADMIN', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 3),
-(100, 'YAEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
-(300, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
-(301, 'PRUEBA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
-(101, 'AXEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
-(302, 'REGINA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
-(303, 'BRANDON', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
+(100, 'AXEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
+(300, 'YAEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
+(301, 'JOEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
+(101, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
+(102, 'ASESOR', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
+(302, 'ALUMNO', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
 
 --
 -- Disparadores `usuario`
