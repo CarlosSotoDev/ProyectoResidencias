@@ -10,20 +10,15 @@ checkLogin();
     <meta charset="UTF-8">
     <title>Dashboard Admin</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
 </head>
 
 <body>
-    <!-- Barra superior -->
-    <nav class="navbar navbar-dark bg-success">
-        <span class="navbar-brand mb-0 h1">Panel de Administración</span>
-        <div class="d-flex align-items-center">
-            <span class="navbar-text mr-3">
-                <?php echo $_SESSION['username']; ?>
-            </span>
-            <a href="../public/logout.php" class="btn btn-outline-light">Cerrar Sesión</a>
-        </div>
-    </nav>
+    <!-- Navbar -->
+    <?php require('../../includes/navbarAdmin.php'); ?>
+
 
     <div class="container-fluid">
         <div class="row">

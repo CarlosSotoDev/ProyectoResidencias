@@ -1,0 +1,85 @@
+/* Estilos generales que no deben afectar a otras páginas */
+body.page-dashboard {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding-top: 60px;
+    /* Asegurar que el contenido no se oculte bajo la navbar fija */
+}
+
+div.container{
+    background-color: #ffffff;
+}
+
+
+html{
+    scroll-behavior: smooth;
+}
+
+.navbar {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #28a745;
+    color: white;
+}
+
+/* Barra lateral fija */
+.page-dashboard .sidebar {
+    position: fixed;
+    top: 60px;
+    /* Ajustar la barra lateral para que comience justo después de la navbar */
+    bottom: 0;
+    left: 0;
+    width: 220px;
+    background-color: #28a745;
+    padding-top: 20px;
+    color: white;
+    z-index: 1000;
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 0;
+}
+
+/* Contenido principal */
+.page-dashboard .content {
+    margin-left: 220px;
+    /* Espacio reservado para la barra lateral */
+    padding: 20px;
+    background-color: #ffffff;
+    width: calc(100% - 220px);
+    margin-right: 0;
+    padding-left: 0;
+}
+
+/* Estilo de los enlaces de la barra lateral */
+.sidebar .nav-link {
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #218838;
+    /* Cambia el fondo en hover */
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .page-dashboard .sidebar {
+        width: 100%;
+        /* Ocupa todo el ancho en pantallas pequeñas */
+        position: relative;
+        top: 0;
+        /* Reiniciar la posición en móviles */
+        height: auto;
+    }
+
+    .page-dashboard .content {
+        margin-left: 0;
+        /* Eliminar margen izquierdo */
+        width: 100%;
+        /* El contenido ocupa todo el ancho */
+    }
+}

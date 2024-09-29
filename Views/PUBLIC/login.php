@@ -62,18 +62,8 @@ if (isset($_GET['error'])) {
 
 <body class="d-flex flex-column min-vh-100">
     <!-- Navbar superior -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand mx-5" href="<?php echo BASE_URL; ?>">
-            <img src="<?php echo IMG_PATH; ?>TESCO.webp" alt="Logo" style="width: 120px;">
-        </a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo BASE_URL; ?>">Volver al Inicio</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <?php include('../../includes/navbarLogin.php'); ?>
+    
 
     <div class="container flex-grow-1 d-flex justify-content-center align-items-center">
         <div class="card p-4" style="max-width: 500px; width: 100%;">
