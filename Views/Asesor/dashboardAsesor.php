@@ -9,6 +9,17 @@ if (isset($_SESSION['asesor_id'])) {
     // Si no se encuentra el ID_Asesor en la sesión, mostramos un error en la consola
     echo "<script>console.log('Error: No se encontró el ID del asesor en la sesión.');</script>";
 }
+
+// Mensajes de éxito o error al cambiar la contraseña
+if (isset($_SESSION['success'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
+    unset($_SESSION['error']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +38,9 @@ if (isset($_SESSION['asesor_id'])) {
     <?php
     require('../../includes/navbarAsesor.php');
     ?>
+
+    <!-- Modal Cambio Contraseña -->
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
 
     <main role="main" class="container bg-light p-2 mx-auto my-1">
         <!-- Dashboard Bienvenida -->

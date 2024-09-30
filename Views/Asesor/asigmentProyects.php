@@ -28,10 +28,22 @@ $stmt->bind_param('is', $asesor_id, $search_term); // 'i' para entero y 's' para
 $stmt->execute();
 $result = $stmt->get_result(); // Obtener resultados
 
+// Mensajes de éxito o error al cambiar la contraseña
+if (isset($_SESSION['success'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
+    unset($_SESSION['error']);
+}
+
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Proyectos Asignados</title>
@@ -39,9 +51,13 @@ $result = $stmt->get_result(); // Obtener resultados
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css">
 </head>
+
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAsesor.php'); ?>
+
+    <!-- Modal Cambio Contraseña -->
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
 
     <div class="container-fluid">
         <div class="row">
@@ -72,14 +88,14 @@ $result = $stmt->get_result(); // Obtener resultados
                             if ($result && $result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
                                     $id_proyecto = $row['ID_Proyecto'];
-                                    
+
                                     // Verificar si el proyecto ya está en conproyectorevisiones
                                     $checkQuery = "SELECT * FROM conproyectorevisiones WHERE ID_Proyecto = ?";
                                     $stmtCheck = $connection->prepare($checkQuery);
                                     $stmtCheck->bind_param('i', $id_proyecto);
                                     $stmtCheck->execute();
                                     $resultCheck = $stmtCheck->get_result();
-                                    
+
                                     // Si no existe, lo insertamos
                                     if ($resultCheck->num_rows == 0) {
                                         // Insertar con ID_Conexion igual al ID_Proyecto
@@ -88,7 +104,7 @@ $result = $stmt->get_result(); // Obtener resultados
                                         $stmtInsert->bind_param('ii', $id_proyecto, $id_proyecto); // Ambos valores iguales
                                         $stmtInsert->execute();
                                     }
-                                    
+
                                     // Mostrar el enlace al proyecto
                                     echo "<tr>";
                                     echo "<td>" . htmlspecialchars($row['ID_Proyecto']) . "</td>";
@@ -113,4 +129,5 @@ $result = $stmt->get_result(); // Obtener resultados
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 </body>
+
 </html>

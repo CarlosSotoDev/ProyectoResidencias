@@ -22,6 +22,18 @@ if ($result && $result->num_rows > 0) {
     $_SESSION['id_proyecto'] = null; // No hay proyecto asignado
     $nombre_proyecto = "No hay proyecto asignado";
 }
+
+// Mensajes de éxito o error al cambiar la contraseña
+if (isset($_SESSION['success'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
+    unset($_SESSION['error']);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -38,6 +50,10 @@ if ($result && $result->num_rows > 0) {
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAlumno.php'); ?>
+    <!-- Modal Cambio Contraseña -->
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
+    
+
 
     <!-- Página de contenido -->
     <div class="container-fluid page-dashboard bg-white">
@@ -79,8 +95,8 @@ if ($result && $result->num_rows > 0) {
                 <div class="container mt-5">
                     <!-- Formato de Hoja -->
                     <div class="card mb-4" id="pagina">
-                        <div class="card-header bg-success text-white " >
-                            <h2 class="card-title" >Formato APA - Página</h2>
+                        <div class="card-header bg-success text-white ">
+                            <h2 class="card-title">Formato APA - Página</h2>
                         </div>
                         <div class="card-body">
                             <h5 class="font-weight-bold">Características de la página según APA 7.ª edición:</h5>

@@ -26,7 +26,8 @@
                     <i class="fas fa-user text-white ml-2"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">Perfil</a>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#changePasswordModal">Cambiar
+                        Contraseña</a>
                     <a class="dropdown-item" href="../public/logout.php">Cerrar Sesión</a>
                 </div>
             </div>

@@ -22,6 +22,17 @@ if ($result && $result->num_rows > 0) {
     $_SESSION['id_proyecto'] = null; // No hay proyecto asignado
     $nombre_proyecto = "No hay proyecto asignado";
 }
+
+// Mensajes de éxito o error al cambiar la contraseña
+if (isset($_SESSION['success'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
+    unset($_SESSION['error']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -39,24 +50,25 @@ if ($result && $result->num_rows > 0) {
     <!-- Navbar -->
     <?php require('../../includes/navbarAlumno.php'); ?>
 
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
+
     <!-- Página de contenido -->
     <div class="container-fluid page-dashboard bg-white">
         <div class="row">
             <!-- Barra lateral -->
             <div class="col-2 sidebar bg-success d-flex flex-column align-items-center p-3">
-                <!-- Aquí va el contenido de la barra lateral -->
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="#anteproyecto">Anteproyecto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#titulo">Titulo del Proyecto</a>
+                        <a class="nav-link text-white text-center" href="#titulo">Título del Proyecto</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="#objGen">Objetivo General</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#objEsp">Objetivos Especificos</a>
+                        <a class="nav-link text-white text-center" href="#objEsp">Objetivos Específicos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="#acts">Actividades a realizar</a>
@@ -70,11 +82,9 @@ if ($result && $result->num_rows > 0) {
             <!-- Contenido principal -->
             <div class="col-sm-10 content bg-white p-5 my-5 text-justify">
                 <h1 id="anteproyecto">Anteproyecto</h1>
-                <p>El anteproyecto es el primer documento que se te solicitará cuando ya estes registrado en Residencias
-                    profesionales aqui te eneseñamos como se debe de construir los apartados principales de este
-                    documento
-
-                </p>
+                <p>El anteproyecto es el primer documento que se te solicitará cuando ya estés registrado en Residencias
+                    profesionales. Aquí te enseñamos cómo se deben construir los apartados principales de este
+                    documento.</p>
 
                 <div class="container mt-5">
                     <!-- Título -->
@@ -125,8 +135,8 @@ if ($result && $result->num_rows > 0) {
                                     realización del proyecto.</li>
                                 <li><strong>Cómo:</strong> De manera general, describir qué métodos, herramientas o
                                     tecnologías se usarán para alcanzar el objetivo.</li>
-                                <li><strong>Inicio</strong> Los objetivos especificos y generales deben de comenzar con
-                                    un verbo</li>
+                                <li><strong>Inicio</strong> Los objetivos específicos y generales deben comenzar con un
+                                    verbo.</li>
                             </ul>
 
                             <h5 class="font-weight-bold">Ejemplo:</h5>
@@ -157,35 +167,28 @@ if ($result && $result->num_rows > 0) {
                                     explicando su importancia dentro del proyecto.</li>
                                 <li><strong>Cómo:</strong> Describe brevemente las tecnologías o métodos que se usarán
                                     para realizar esa tarea específica.</li>
-                                <li><strong>Inicio</strong> Los objetivos especificos y generales deben de comenzar con
-                                    un verbo</li>
-                                <li><strong>Cuantos</strong> Aqui tu puedes colocar lo objetivos especificos que
-                                    requieras, recuerda que estos tambien se definiran en tu Cronograma(Tambien se
-                                    explica como se debe de hacer en el siguiente punto de la pagina)</li>
+                                <li><strong>Inicio</strong> Los objetivos específicos deben comenzar con un verbo.</li>
+                                <li><strong>Cuantos</strong> Puedes colocar los objetivos específicos que requieras.
+                                    Recuerda que estos se definirán en tu cronograma.</li>
                             </ul>
 
                             <h5 class="font-weight-bold">Ejemplos:</h5>
                             <ul>
-                                <li> Implementar el backend con PHP y MySQL
-                                    para gestionar la lógica de negocio relacionada con los proyectos, usuarios y la
-                                    gestión de entregas.</li>
-                                <li> Desarrollar el
-                                    frontend utilizando HTML, CSS, Bootstrap y JavaScript para crear una interfaz de
-                                    usuario intuitiva y responsive.</li>
-                                <li>Establecer un sistema de roles y
-                                    autenticación que permita a los usuarios acceder a las funcionalidades según su rol
-                                    (administrador, asesor, alumno).</li>
+                                <li>Implementar el backend con PHP y MySQL para gestionar la lógica de negocio.</li>
+                                <li>Desarrollar el frontend utilizando HTML, CSS, Bootstrap y JavaScript.</li>
+                                <li>Establecer un sistema de roles y autenticación que permita a los usuarios acceder a
+                                    las funcionalidades según su rol.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Descripcion detallada de actividades -->
+                    <!-- Descripción detallada de actividades -->
                     <div class="card mb-4">
                         <div class="card-header bg-success text-white">
                             <h2 class="card-title" id="acts">Descripción detallada de las actividades a realizar</h2>
                         </div>
                         <div class="card-body">
-                            <h5 class="font-weight-bold">Breve Explicación:</h5>
+                            <h5 class="font-weight-bold">Explicación:</h5>
                             <p>La descripción detallada de las actividades establece los pasos específicos que se deben
                                 llevar a cabo para completar el proyecto. Cada actividad debe estar claramente definida,
                                 con objetivos y responsabilidades bien establecidos para asegurar que el proyecto avance
@@ -194,11 +197,9 @@ if ($result && $result->num_rows > 0) {
                             <h5 class="font-weight-bold">Estructura:</h5>
                             <ul>
                                 <li><strong>Qué es:</strong> Se debe detallar cada una de las actividades que se
-                                    realizarán a lo largo del proyecto, asegurando que todas las fases del desarrollo
-                                    estén cubiertas.</li>
+                                    realizarán a lo largo del proyecto.</li>
                                 <li><strong>Por qué:</strong> Explicar por qué es necesario definir claramente las
-                                    actividades a realizar, como una forma de asegurar que no se omita ningún paso
-                                    importante y de facilitar el seguimiento del progreso.</li>
+                                    actividades a realizar.</li>
                                 <li><strong>Cómo:</strong> Describir cómo se organizarán las actividades, estableciendo
                                     un orden lógico, identificando dependencias entre tareas y asignando responsables y
                                     fechas para cada una.</li>
@@ -207,8 +208,7 @@ if ($result && $result->num_rows > 0) {
                             <h5 class="font-weight-bold">Ejemplos:</h5>
                             <ul>
                                 <li><strong>Análisis de requerimientos:</strong> Recolectar las necesidades de los
-                                    usuarios (alumnos, asesores y administradores) y establecer el diseño del sistema.
-                                </li>
+                                    usuarios y establecer el diseño del sistema.</li>
                                 <li><strong>Diseño del sistema:</strong> Definir la arquitectura del sistema, diseñando
                                     tanto el frontend como el backend.</li>
                                 <li><strong>Desarrollo del backend:</strong> Implementar las funcionalidades para la
@@ -222,9 +222,6 @@ if ($result && $result->num_rows > 0) {
                                 <li><strong>Documentación:</strong> Generar la documentación técnica del sistema para
                                     facilitar futuras modificaciones y mantenimientos.</li>
                             </ul>
-
-                            <h5 class="font-weight-bold">Deben de estar ligadas al Cronograma al igual que los objetivos
-                                especificos</h5>
                         </div>
                     </div>
 
@@ -234,7 +231,7 @@ if ($result && $result->num_rows > 0) {
                             <h2 class="card-title" id="cronograma">Cronograma de actividades</h2>
                         </div>
                         <div class="card-body">
-                            <h5 class="font-weight-bold">Breve Explicación:</h5>
+                            <h5 class="font-weight-bold">Explicación:</h5>
                             <p>El cronograma define el tiempo estimado para cada fase del proyecto, incluyendo las
                                 fechas clave y los plazos de entrega de las distintas tareas y actividades. Ayuda a
                                 planificar el trabajo, controlar el progreso y asegurar que el proyecto se complete
@@ -243,32 +240,30 @@ if ($result && $result->num_rows > 0) {
                             <h5 class="font-weight-bold">Estructura:</h5>
                             <ul>
                                 <li><strong>Qué es:</strong> Debe especificar las actividades principales del proyecto y
-                                    su orden cronológico (Esta vinculado a los objetivos especificos).</li>
+                                    su orden cronológico.</li>
                                 <li><strong>Por qué:</strong> Justifica la importancia de seguir un cronograma para
-                                    asegurar que el proyecto avance de manera ordenada y se cumplan los plazos
-                                    establecidos.</li>
+                                    asegurar que el proyecto avance de manera ordenada.</li>
                                 <li><strong>Cómo:</strong> Indica cómo se definirán los tiempos y fechas para cada
-                                    tarea (Pueden ser días, semanas o el periodo te tiempo de preferencia),
-                                    estableciendo hitos o entregas parciales, y los métodos que se utilizarán
-                                    para monitorear el cumplimiento.</li>
-                                <li><strong>En donde se puede realizar:</strong> Este se puede realizar en diferentes
-                                    herramientas o plataformas, alguna de ella puede ser Excel o GantProject. Tambien se
-                                    puede preguntar al asesor y al departamento de residencias para pedir alguna
-                                    sugerencia y si este diagrama es aceptado con dicha tecnologia</li>
+                                    tarea, estableciendo hitos o entregas parciales.</li>
+                                <li><strong>En qué herramientas:</strong> Este se puede realizar en herramientas como
+                                    Excel o GantProject.</li>
                             </ul>
                             <h5 class="font-weight-bold">Ejemplo realizado en Excel:</h5>
                             <div class="text-center">
-                                <img src="../../Assets/IMG/Cronograma.webp" alt="" class="text-center">
+                                <img src="../../Assets/IMG/Cronograma.webp" alt="Cronograma" class="text-center">
                             </div>
                         </div>
                     </div>
 
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Scripts de Bootstrap -->
-                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Scripts de Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

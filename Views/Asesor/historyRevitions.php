@@ -37,6 +37,17 @@ if ($project_id) {
     echo "No se ha seleccionado ningún proyecto.";
     exit();
 }
+
+// Mensajes de éxito o error al cambiar la contraseña
+if (isset($_SESSION['success'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
+    unset($_SESSION['error']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -53,6 +64,8 @@ if ($project_id) {
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAsesor.php'); ?>
+    <!-- Modal Cambio Contraseña -->
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
 
     <main role="main" class="container-fluid bg-light p-2 my-1 border border-success custom-margin">
         <h2>Historial de Revisiones</h2>

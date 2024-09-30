@@ -14,7 +14,7 @@
                         Ir al Proyecto
                     </a>
                 <?php else: ?>
-                    <p>No tienes ningún proyecto asignado.</p>
+                    <p class="nav-link">No tienes ningún proyecto asignado.</p>
                 <?php endif; ?>
             </li>
 
@@ -26,7 +26,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="Anteproyecto.php">Anteproyecto</a>
-                    <a class="dropdown-item" href="Documentacion.php">Documentacion Proyecto</a>
+                    <a class="dropdown-item" href="Documentacion.php">Documentación Proyecto</a>
                     <a class="dropdown-item" href="APA7.php">APA 7</a>
                 </div>
             </li>
@@ -44,7 +44,9 @@
                     <i class="fas fa-user text-white ml-2"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">Perfil</a>
+                    <!-- Botón para abrir el modal de cambio de contraseña -->
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#changePasswordModal">Cambiar
+                        Contraseña</a>
                     <a class="dropdown-item" href="../public/logout.php">Cerrar Sesión</a>
                 </div>
             </div>

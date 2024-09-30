@@ -22,6 +22,17 @@ if ($result && $result->num_rows > 0) {
     $_SESSION['id_proyecto'] = null; // No hay proyecto asignado
     $nombre_proyecto = "No hay proyecto asignado";
 }
+
+// Mensajes de éxito o error al cambiar la contraseña
+if (isset($_SESSION['success'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
+    unset($_SESSION['error']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -38,6 +49,8 @@ if ($result && $result->num_rows > 0) {
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAlumno.php'); ?>
+    <!-- Modal Cambio Contraseña -->
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
 
     <!-- Página de contenido -->
     <div class="container-fluid page-dashboard bg-white">
@@ -79,8 +92,12 @@ if ($result && $result->num_rows > 0) {
             <!-- Contenido principal -->
             <div class="col-sm-10 content bg-white p-5 my-5 text-justify">
                 <h1 id="anteproyecto">Documentacion</h1>
-                <p>En este documento tendras registro de todos los detalles de tu proyecto y todas las partes que le conforman, desde la portada hasta la referencias, este es el documento más largo en la entrega de tu proyecto, aqui te explicamos como hacer cada uno de los puntos mas importantes
-                    recuerda que para elaborar este documento necesitaras del formato <a href="APA7.php">APA 7 edicion</a>  que dando click en en link te redirigira a los formatos y reglas especificas que tu documento deberá de tener
+                <p>En este documento tendras registro de todos los detalles de tu proyecto y todas las partes que le
+                    conforman, desde la portada hasta la referencias, este es el documento más largo en la entrega de tu
+                    proyecto, aqui te explicamos como hacer cada uno de los puntos mas importantes
+                    recuerda que para elaborar este documento necesitaras del formato <a href="APA7.php">APA 7
+                        edicion</a> que dando click en en link te redirigira a los formatos y reglas especificas que tu
+                    documento deberá de tener
 
                 </p>
 

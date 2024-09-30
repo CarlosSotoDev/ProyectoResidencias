@@ -86,10 +86,22 @@ $stmt = $connection->prepare($query);
 $stmt->bind_param("i", $project_id);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Mensajes de éxito o error al cambiar la contraseña
+if (isset($_SESSION['success'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
+    unset($_SESSION['error']);
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Historial de Revisiones</title>
@@ -98,9 +110,13 @@ $result = $stmt->get_result();
 
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css">
 </head>
+
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAlumno.php'); ?>
+    <!-- Modal Cambio Contraseña -->
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
+
 
     <!-- Main content -->
     <main role="main" class="container-fluid bg-light p-2 my-1 border border-success custom-margin">
@@ -119,9 +135,9 @@ $result = $stmt->get_result();
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($result && $result->num_rows > 0): 
+                    <?php if ($result && $result->num_rows > 0):
                         $proyecto = $result->fetch_assoc();
-                    ?>
+                        ?>
                         <p class="h2 text-center">
                             <strong><?php echo htmlspecialchars($proyecto['Nombre_Proyecto'] ?? 'No disponible'); ?></strong>
                         </p>
@@ -130,7 +146,8 @@ $result = $stmt->get_result();
                         <form method="post" enctype="multipart/form-data">
                             <div class="d-flex flex-column align-items-center justify-content-center">
                                 <label for="documento">Seleccionar Documento (.docx):</label>
-                                <input type="file" name="documento" id="documento" class="form-control" accept=".doc, .docx" required style="width: 50%;">
+                                <input type="file" name="documento" id="documento" class="form-control" accept=".doc, .docx"
+                                    required style="width: 50%;">
                                 <!-- Campo oculto para enviar el ID del proyecto -->
                                 <input type="hidden" name="project_id" value="<?php echo $proyecto['ID_Proyecto']; ?>">
                                 <button type="submit" class="btn btn-success mt-3 mx-auto">Subir Documento</button>
@@ -140,7 +157,8 @@ $result = $stmt->get_result();
                         <!-- Mostrar el documento si ya ha sido subido -->
                         <?php if (!empty($proyecto['Archivo_Docx'])): ?>
                             <p class="mt-3">Documento Actual:
-                                <a href="../../uploads/documents/<?php echo rawurlencode($proyecto['Archivo_Docx']); ?>" target="_blank" class="document-link">Ver Documento</a>
+                                <a href="../../uploads/documents/<?php echo rawurlencode($proyecto['Archivo_Docx']); ?>"
+                                    target="_blank" class="document-link">Ver Documento</a>
                             </p>
                         <?php endif; ?>
 
@@ -230,7 +248,8 @@ $result = $stmt->get_result();
     </main>
 
     <!-- Modal para mostrar comentario completo -->
-    <div class="modal fade" id="verComentarioModal" tabindex="-1" role="dialog" aria-labelledby="verComentarioModalLabel" aria-hidden="true">
+    <div class="modal fade" id="verComentarioModal" tabindex="-1" role="dialog"
+        aria-labelledby="verComentarioModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -257,11 +276,11 @@ $result = $stmt->get_result();
                 message.style.display = 'block';  // Mostrar el mensaje
                 setTimeout(function () {
                     message.style.display = 'none'; // Ocultar después de 3 segundos
-                }, 3000); 
+                }, 3000);
             }
 
             // Manejar el evento de clic en los botones "Ver Comentario"
-            $(document).on('click', '.ver-comentario', function() {
+            $(document).on('click', '.ver-comentario', function () {
                 var comentario = $(this).data('comentario');
                 if (comentario) {
                     $("#comentario-completo").text(comentario); // Colocar el comentario en el modal
@@ -273,4 +292,5 @@ $result = $stmt->get_result();
         });
     </script>
 </body>
+
 </html>

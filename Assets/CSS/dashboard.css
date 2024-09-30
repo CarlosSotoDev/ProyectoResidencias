@@ -137,3 +137,11 @@ body {
     text-decoration: underline;
     /* Subrayado al pasar el ratón */
 }
+
+
+#welcome-message {
+    display: block !important;
+    visibility: visible !important;
+    border: 2px solid red;
+    background-color: #ffefef;
+}

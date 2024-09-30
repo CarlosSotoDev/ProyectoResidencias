@@ -34,6 +34,7 @@ require('../../includes/navbarAlumno.php');
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Gestion de Proyectos</title>
@@ -42,7 +43,10 @@ require('../../includes/navbarAlumno.php');
 
     <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css">
 </head>
+
 <body>
+    <!-- Modal Cambio Contraseña -->
+    <?php require('../../includes/modalCambioContrasena.php'); ?>
     <main role="main" class="container bg-light p-2 mx-auto my-1">
         <h2>Gestión de Proyectos</h2>
 
@@ -79,7 +83,8 @@ require('../../includes/navbarAlumno.php');
                     <p><strong>Asesor:</strong>
                         <?php echo htmlspecialchars($proyecto['Nombre_Asesor'] ?? 'No asignado'); ?></p>
                     <div class="text-center">
-                        <a href="historyRevitions.php?id_proyecto=<?php echo $id_proyecto; ?>" class="btn btn-success mb-3">HISTORIAL DE REVISIONES</a>
+                        <a href="historyRevitions.php?id_proyecto=<?php echo $id_proyecto; ?>"
+                            class="btn btn-success mb-3">HISTORIAL DE REVISIONES</a>
                     </div>
                 </div>
             </div>
@@ -91,4 +96,5 @@ require('../../includes/navbarAlumno.php');
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>
