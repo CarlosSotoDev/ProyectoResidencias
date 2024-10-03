@@ -2,35 +2,46 @@
 include('../../includes/config.php');
 checkLogin();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Comprobamos que se han enviado los datos necesarios
+if (isset($_POST['id_asesor'], $_POST['nombres'], $_POST['apellido_paterno'], $_POST['apellido_materno'], $_POST['carrera'], $_POST['username'])) {
+
+    // Escapar los valores recibidos para prevenir inyección SQL
+    $id_asesor = mysqli_real_escape_string($connection, $_POST['id_asesor']);
     $nombres = mysqli_real_escape_string($connection, $_POST['nombres']);
     $apellido_paterno = mysqli_real_escape_string($connection, $_POST['apellido_paterno']);
     $apellido_materno = mysqli_real_escape_string($connection, $_POST['apellido_materno']);
-    $carrera = mysqli_real_escape_string($connection, $_POST['carrera']); // Carrera seleccionada
-    $rol = mysqli_real_escape_string($connection, $_POST['rol']);
-    $id_usuario = mysqli_real_escape_string($connection, $_POST['id_usuario']);
-    $proyecto_asignado = mysqli_real_escape_string($connection, $_POST['proyecto_asignado']);
+    $carrera = mysqli_real_escape_string($connection, $_POST['carrera']);
+    $username = mysqli_real_escape_string($connection, $_POST['username']);
+    $password = isset($_POST['password']) && !empty($_POST['password']) ? mysqli_real_escape_string($connection, $_POST['password']) : null;
 
-    // Insertar el nuevo asesor en la tabla asesor
-    $insert_asesor = "INSERT INTO asesor (Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Rol, ID_Usuario) 
-                      VALUES ('$nombres', '$apellido_paterno', '$apellido_materno', '$carrera', '$rol', '$id_usuario')";
-    
-    if ($connection->query($insert_asesor) === TRUE) {
-        $id_asesor = $connection->insert_id; // Obtener el ID del asesor recién agregado
+    // Actualizamos el asesor con los nuevos datos
+    $query = "
+        UPDATE asesor 
+        SET Nombres = '$nombres', Apellido_Paterno = '$apellido_paterno', Apellido_Materno = '$apellido_materno', Carrera = '$carrera'
+        WHERE ID_Asesor = '$id_asesor'
+    ";
 
-        // Actualizar la tabla proyecto para asignar el asesor al proyecto
-        $update_proyecto = "UPDATE proyecto SET Asesor = '$id_asesor' WHERE ID_Proyecto = '$proyecto_asignado'";
-        if ($connection->query($update_proyecto) === TRUE) {
-            // Redirigir al dashboard si la inserción y actualización fueron exitosas
-            header("Location: dashboardAdminAsesor.php?success=1");
-            exit();
-        } else {
-            echo "Error al actualizar el proyecto: " . $connection->error;
+    if ($connection->query($query) === TRUE) {
+        // Actualizamos el usuario si se han cambiado los datos
+        $userQuery = "UPDATE usuario SET Nombre_Usuario = '$username'";
+
+        // Solo actualizar la contraseña si se ha enviado
+        if ($password) {
+            $hashedPassword = hash('sha256', $password); // Encriptar contraseña
+            $userQuery .= ", Contraseña = '$hashedPassword'";
         }
-    } else {
-        echo "Error al agregar el asesor: " . $connection->error;
-    }
-}
 
-$connection->close();
+        $userQuery .= " WHERE ID_Usuario = (SELECT ID_Usuario FROM asesor WHERE ID_Asesor = '$id_asesor')";
+
+        // Ejecutar la consulta de actualización del usuario
+        $connection->query($userQuery);
+
+        header('Location: dashboardAdminAsesor.php?success=1');
+    } else {
+        echo "Error al actualizar el asesor: " . $connection->error;
+    }
+
+} else {
+    echo "Faltan datos obligatorios para realizar la actualización.";
+}
 ?>

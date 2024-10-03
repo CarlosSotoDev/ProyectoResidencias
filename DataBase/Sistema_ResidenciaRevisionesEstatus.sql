@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 28-09-2024 a las 22:46:36
+-- Tiempo de generación: 03-10-2024 a las 06:07:17
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   KEY `fk_alumno_asesor` (`Asesor`),
   KEY `fk_alumno_rol` (`Rol`),
   KEY `fk_alumno_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=303 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `alumno`
@@ -74,8 +74,7 @@ CREATE TABLE IF NOT EXISTS `alumno` (
 
 INSERT INTO `alumno` (`ID_Alumno`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Carrera`, `Proyecto`, `Asesor`, `Calendario_Revisiones`, `Rol`, `ID_Usuario`) VALUES
 (300, 'CRISTHIAN YAEL', 'ROMERO', 'ROBLEDO', 1, 1, 100, NULL, 1, 300),
-(301, 'JOEL', 'CAMACHO', 'CAMPOY', 1, 2, 100, NULL, 1, 301),
-(302, 'ALUMNO', 'CAMACHO', 'CAMPOY', 1, 5, 102, NULL, 1, 302);
+(301, 'CARLOS', 'SOTO', 'GARCIA', 1, 1, 100, NULL, 1, 301);
 
 -- --------------------------------------------------------
 
@@ -98,16 +97,15 @@ CREATE TABLE IF NOT EXISTS `asesor` (
   KEY `fk_asesor_carrera` (`Carrera`),
   KEY `fk_asesor_rol` (`Rol`),
   KEY `fk_asesor_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `asesor`
 --
 
 INSERT INTO `asesor` (`ID_Asesor`, `Nombres`, `Apellido_Paterno`, `Apellido_Materno`, `Proyecto_Asignado`, `Carrera`, `Rol`, `ID_Usuario`) VALUES
-(100, 'AXEL', 'LIRA', 'JUAREZ', 1, 1, 2, 100),
-(101, 'CARLOS', 'SOTO', 'JUAREZ', 3, 1, 2, 101),
-(102, 'ASESOR', 'LIRA', 'ROBLEDO', 5, 1, 2, 102);
+(100, 'FABIOLA', 'FUENTES', 'HERRERA', 1, 2, 2, 100),
+(101, 'JOSE LUIS', 'CAMACHO', 'CAMPERO', 2, 1, 2, 101);
 
 -- --------------------------------------------------------
 
@@ -174,18 +172,16 @@ CREATE TABLE IF NOT EXISTS `proyecto` (
   KEY `fk_proyecto_integrante_2` (`Integrante_2`),
   KEY `fk_proyecto_integrante_3` (`Integrante_3`),
   KEY `fk_proyecto_asesor` (`Asesor`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto`
 --
 
 INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`, `Archivo_Docx`) VALUES
-(1, 'Proyecto ejemplo 2', 'En Revisión', 300, NULL, NULL, 100, 'PO-VI-TESCO-03_Acreditacion_de_Residencia_Profesional__V5a.docx'),
-(2, 'Proyecto ejemplo 3', 'En Revisión', 301, NULL, NULL, 100, 'GF.docx'),
-(3, 'RSRS', 'Pendiente', NULL, NULL, NULL, 101, NULL),
-(4, 'HOLA', 'Pendiente', NULL, NULL, NULL, 101, NULL),
-(5, 'PROYECTO PARA EJEMPLO', 'En Revisión', 302, NULL, NULL, 102, 'Caso_de_uso_vou.docx');
+(1, 'PROYECTO EJEMPLO PRUEBA', 'Pendiente', 300, 301, NULL, 100, NULL),
+(2, 'PROYECTO EJEMPLO 2', 'Pendiente', NULL, NULL, NULL, NULL, NULL),
+(3, 'PROYECTO EJEMPLO 3', 'Pendiente', NULL, NULL, NULL, 101, NULL);
 
 -- --------------------------------------------------------
 
@@ -241,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `Rol` int DEFAULT NULL,
   PRIMARY KEY (`ID_Usuario`),
   KEY `fk_usuario_rol` (`Rol`)
-) ENGINE=MyISAM AUTO_INCREMENT=303 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -249,12 +245,10 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 
 INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VALUES
 (1, 'ADMIN', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 3),
-(100, 'AXEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
+(100, 'FABIOLA', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
+(101, 'CAMACHO', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
 (300, 'YAEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
-(301, 'JOEL', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1),
-(101, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
-(102, 'ASESOR', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 2),
-(302, 'ALUMNO', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
+(301, 'CARLOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 1);
 
 --
 -- Disparadores `usuario`

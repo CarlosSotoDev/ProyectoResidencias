@@ -19,12 +19,18 @@ $search_term = isset($_GET['search']) ? '%' . $_GET['search'] . '%' : '%%';
 $query = "
     SELECT p.ID_Proyecto, p.Nombre_Proyecto, p.Status
     FROM proyecto p
-    WHERE p.Asesor = ? AND p.Nombre_Proyecto LIKE ?
+    WHERE p.Asesor = ? 
+    AND (p.Nombre_Proyecto LIKE ? OR p.ID_Proyecto LIKE ?)
     ORDER BY p.ID_Proyecto ASC";
 
 // Preparar la consulta
 $stmt = $connection->prepare($query);
-$stmt->bind_param('is', $asesor_id, $search_term); // 'i' para entero y 's' para string
+if ($stmt === false) {
+    die('Error al preparar la consulta: ' . $connection->error);
+}
+
+// Añadimos el término de búsqueda para el ID_Proyecto (como string también)
+$stmt->bind_param('iss', $asesor_id, $search_term, $search_term); // 'i' para entero y 's' para string
 $stmt->execute();
 $result = $stmt->get_result(); // Obtener resultados
 
@@ -38,7 +44,6 @@ if (isset($_SESSION['error'])) {
     echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
     unset($_SESSION['error']);
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +73,7 @@ if (isset($_SESSION['error'])) {
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
                     <input class="form-control mr-sm-2" type="search" name="search"
-                        placeholder="Buscar por nombre de proyecto" aria-label="Buscar"
+                        placeholder="Buscar por nombre o ID de proyecto" aria-label="Buscar"
                         value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>

@@ -14,7 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $apellido_materno = mysqli_real_escape_string($connection, $_POST['apellido_materno']);
     $carrera = mysqli_real_escape_string($connection, $_POST['carrera']);
     $proyecto = mysqli_real_escape_string($connection, $_POST['proyecto']);
-    $asesor = mysqli_real_escape_string($connection, $_POST['asesor']);
+
+    // Obtener el asesor asignado al proyecto seleccionado
+    $queryAsesor = "SELECT Asesor FROM proyecto WHERE ID_Proyecto = '$proyecto'";
+    $resultAsesor = $connection->query($queryAsesor);
+    $rowAsesor = $resultAsesor->fetch_assoc();
+    $asesor = isset($rowAsesor['Asesor']) ? $rowAsesor['Asesor'] : NULL;
 
     // Datos para el usuario
     $nombre_usuario = mysqli_real_escape_string($connection, $_POST['username']);
@@ -47,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmtUsuario->bind_param("issi", $nextID, $nombre_usuario, $contrasena, $rol);
         $stmtUsuario->execute();
 
-        // Insertar el nuevo alumno en la tabla alumno, usando el ID_Usuario como ID_Alumno y asignando el rol
+        // Insertar el nuevo alumno en la tabla alumno, usando el ID_Usuario como ID_Alumno y asignando el rol y asesor
         $queryInsertAlumno = "INSERT INTO alumno (ID_Alumno, Nombres, Apellido_Paterno, Apellido_Materno, Carrera, Proyecto, Asesor, ID_Usuario, Rol) 
                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtAlumno = $connection->prepare($queryInsertAlumno);
