@@ -1,59 +1,55 @@
-<?php 
+<?php
 include('../../includes/config.php');
 checkLogin();
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Admin - Alumnos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
-    <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>docs.css">
 </head>
-<body>
-    <!-- Barra superior -->
-    <?php require('../../includes/navbarAdmin.php'); ?>
 
-    <div class="container-fluid">
+<body>
+    <!-- Navbar -->
+    <?php require('../../includes/navbarAdmin.php'); ?>
+    <!-- Modal Cambio Contraseña -->
+
+    <!-- Página de contenido -->
+    <div class="container-fluid page-dashboard bg-white">
         <div class="row">
             <!-- Barra lateral -->
-            <nav class="col-md-2 d-none d-md-block bg-success sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdmin.php">
-                                Usuarios
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">
-                                Proyectos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">
-                                Asesor
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">
-                                Alumnos
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <div class="col-2 sidebar bg-success d-flex flex-column align-items-center p-3">
+                <!-- Aquí va el contenido de la barra lateral -->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdmin.php">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">Asesores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">Alumnos</a>
+                    </li>
+                </ul>
+            </div>
 
             <!-- Contenido principal -->
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Gestión de Alumnos</h2>
+            <div class="col-sm-10 content bg-white p-5 my-5 text-justify">
+                <h1 id="anteproyecto">Gestion de Alumno</h1>
 
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
-                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Buscar por nombre de alumno" aria-label="Buscar">
+                    <input class="form-control mr-sm-2" type="search" name="search"
+                        placeholder="Buscar por nombre de alumno" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
@@ -63,7 +59,8 @@ checkLogin();
                 </button>
 
                 <!-- Botón para asignar proyecto a un alumno existente -->
-                <button type="button" class="btn btn-info mb-3 ml-2" data-toggle="modal" data-target="#assignProjectModal">
+                <button type="button" class="btn btn-info mb-3 ml-2" data-toggle="modal"
+                    data-target="#assignProjectModal">
                     Asignar Proyecto a Alumno
                 </button>
 
@@ -130,225 +127,237 @@ checkLogin();
                         </tbody>
                     </table>
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <!-- Modal para agregar alumno -->
-    <div class="modal fade" id="addAlumnoModal" tabindex="-1" role="dialog" aria-labelledby="addAlumnoModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAlumnoModalLabel">Agregar Alumno</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <!-- Modal para agregar alumno -->
+                <div class="modal fade" id="addAlumnoModal" tabindex="-1" role="dialog"
+                    aria-labelledby="addAlumnoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addAlumnoModalLabel">Agregar Alumno</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="addAlumno.php" method="POST">
+                                    <div class="form-group">
+                                        <label for="addNombreAlumno">Nombre del Alumno</label>
+                                        <input type="text" class="form-control" name="nombres" id="addNombreAlumno"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addApellidoPaterno">Apellido Paterno</label>
+                                        <input type="text" class="form-control" name="apellido_paterno"
+                                            id="addApellidoPaterno" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addApellidoMaterno">Apellido Materno</label>
+                                        <input type="text" class="form-control" name="apellido_materno"
+                                            id="addApellidoMaterno" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addCarrera">Carrera</label>
+                                        <select class="form-control" name="carrera" id="addCarrera" required>
+                                            <?php
+                                            $queryCarrera = "SELECT ID_Carrera, Nombre_Carrera FROM carrera";
+                                            $resultCarrera = $connection->query($queryCarrera);
+                                            while ($rowCarrera = $resultCarrera->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($rowCarrera['ID_Carrera']) . "'>" . htmlspecialchars($rowCarrera['Nombre_Carrera']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addProyecto">Proyecto</label>
+                                        <select class="form-control" name="proyecto" id="addProyecto">
+                                            <option value="">Sin Proyecto</option>
+                                            <?php
+                                            $queryProyecto = "SELECT ID_Proyecto, Nombre_Proyecto FROM proyecto WHERE (Integrante_1 IS NULL OR Integrante_2 IS NULL OR Integrante_3 IS NULL)";
+                                            $resultProyecto = $connection->query($queryProyecto);
+                                            while ($rowProyecto = $resultProyecto->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($rowProyecto['ID_Proyecto']) . "'>" . htmlspecialchars($rowProyecto['Nombre_Proyecto']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addAsesor">Asesor</label>
+                                        <input type="text" class="form-control" name="asesor" id="addAsesor" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addUsuarioAlumno">Nombre de Usuario</label>
+                                        <input type="text" class="form-control" name="username" id="addUsuarioAlumno"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addContrasenaAlumno">Contraseña</label>
+                                        <input type="password" class="form-control" name="password"
+                                            id="addContrasenaAlumno" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Agregar Alumno</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form action="addAlumno.php" method="POST">
-                        <div class="form-group">
-                            <label for="addNombreAlumno">Nombre del Alumno</label>
-                            <input type="text" class="form-control" name="nombres" id="addNombreAlumno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addApellidoPaterno">Apellido Paterno</label>
-                            <input type="text" class="form-control" name="apellido_paterno" id="addApellidoPaterno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addApellidoMaterno">Apellido Materno</label>
-                            <input type="text" class="form-control" name="apellido_materno" id="addApellidoMaterno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addCarrera">Carrera</label>
-                            <select class="form-control" name="carrera" id="addCarrera" required>
-                                <?php
-                                $queryCarrera = "SELECT ID_Carrera, Nombre_Carrera FROM carrera";
-                                $resultCarrera = $connection->query($queryCarrera);
-                                while ($rowCarrera = $resultCarrera->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($rowCarrera['ID_Carrera']) . "'>" . htmlspecialchars($rowCarrera['Nombre_Carrera']) . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="addProyecto">Proyecto</label>
-                            <select class="form-control" name="proyecto" id="addProyecto">
-                                <option value="">Sin Proyecto</option>
-                                <?php
-                                $queryProyecto = "SELECT ID_Proyecto, Nombre_Proyecto FROM proyecto WHERE (Integrante_1 IS NULL OR Integrante_2 IS NULL OR Integrante_3 IS NULL)";
-                                $resultProyecto = $connection->query($queryProyecto);
-                                while ($rowProyecto = $resultProyecto->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($rowProyecto['ID_Proyecto']) . "'>" . htmlspecialchars($rowProyecto['Nombre_Proyecto']) . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="addAsesor">Asesor</label>
-                            <input type="text" class="form-control" name="asesor" id="addAsesor" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="addUsuarioAlumno">Nombre de Usuario</label>
-                            <input type="text" class="form-control" name="username" id="addUsuarioAlumno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="addContrasenaAlumno">Contraseña</label>
-                            <input type="password" class="form-control" name="password" id="addContrasenaAlumno" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Agregar Alumno</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal para editar alumno -->
-    <div class="modal fade" id="editAlumnoModal" tabindex="-1" role="dialog" aria-labelledby="editAlumnoModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editAlumnoModalLabel">Editar Alumno</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="editAlumno.php" method="POST">
-                        <input type="hidden" name="id_alumno" id="editAlumnoId">
-                        
-                        <div class="form-group">
-                            <label for="editNombreAlumno">Nombre del Alumno</label>
-                            <input type="text" class="form-control" name="nombres" id="editNombreAlumno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editApellidoPaterno">Apellido Paterno</label>
-                            <input type="text" class="form-control" name="apellido_paterno" id="editApellidoPaterno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editApellidoMaterno">Apellido Materno</label>
-                            <input type="text" class="form-control" name="apellido_materno" id="editApellidoMaterno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editCarrera">Carrera</label>
-                            <select class="form-control" name="carrera" id="editCarrera" required>
-                                <?php
-                                $queryCarrera = "SELECT ID_Carrera, Nombre_Carrera FROM carrera";
-                                $resultCarrera = $connection->query($queryCarrera);
-                                while ($rowCarrera = $resultCarrera->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($rowCarrera['ID_Carrera']) . "'>" . htmlspecialchars($rowCarrera['Nombre_Carrera']) . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="editUsuarioAlumno">Nombre de Usuario</label>
-                            <input type="text" class="form-control" name="username" id="editUsuarioAlumno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editContrasenaAlumno">Contraseña</label>
-                            <input type="password" class="form-control" name="password" id="editContrasenaAlumno">
-                            <small class="form-text text-muted">Deja en blanco para mantener la contraseña actual.</small>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                <!-- Modal para editar alumno -->
+                <div class="modal fade" id="editAlumnoModal" tabindex="-1" role="dialog"
+                    aria-labelledby="editAlumnoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editAlumnoModalLabel">Editar Alumno</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="editAlumno.php" method="POST">
+                                    <input type="hidden" name="id_alumno" id="editAlumnoId">
 
-    <!-- Modal para asignar proyecto a un alumno existente -->
-    <div class="modal fade" id="assignProjectModal" tabindex="-1" role="dialog" aria-labelledby="assignProjectModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="assignProjectModalLabel">Asignar Proyecto a Alumno</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="assignProject.php" method="POST">
-                        <div class="form-group">
-                            <label for="selectAlumno">Seleccionar Alumno</label>
-                            <select class="form-control" name="alumno_id" id="selectAlumno" required>
-                                <option value="">Seleccione un alumno sin proyecto</option>
-                                <?php
-                                $queryAlumno = "SELECT ID_Alumno, CONCAT(Nombres, ' ', Apellido_Paterno, ' ', Apellido_Materno) AS Nombre_Alumno FROM alumno WHERE Proyecto IS NULL";
-                                $resultAlumno = $connection->query($queryAlumno);
-                                while ($alumno = $resultAlumno->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($alumno['ID_Alumno']) . "'>" . htmlspecialchars($alumno['Nombre_Alumno']) . "</option>";
-                                }
-                                ?>
-                            </select>
+                                    <div class="form-group">
+                                        <label for="editNombreAlumno">Nombre del Alumno</label>
+                                        <input type="text" class="form-control" name="nombres" id="editNombreAlumno"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editApellidoPaterno">Apellido Paterno</label>
+                                        <input type="text" class="form-control" name="apellido_paterno"
+                                            id="editApellidoPaterno" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editApellidoMaterno">Apellido Materno</label>
+                                        <input type="text" class="form-control" name="apellido_materno"
+                                            id="editApellidoMaterno" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editCarrera">Carrera</label>
+                                        <select class="form-control" name="carrera" id="editCarrera" required>
+                                            <?php
+                                            $queryCarrera = "SELECT ID_Carrera, Nombre_Carrera FROM carrera";
+                                            $resultCarrera = $connection->query($queryCarrera);
+                                            while ($rowCarrera = $resultCarrera->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($rowCarrera['ID_Carrera']) . "'>" . htmlspecialchars($rowCarrera['Nombre_Carrera']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editUsuarioAlumno">Nombre de Usuario</label>
+                                        <input type="text" class="form-control" name="username" id="editUsuarioAlumno"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editContrasenaAlumno">Contraseña</label>
+                                        <input type="password" class="form-control" name="password"
+                                            id="editContrasenaAlumno">
+                                        <small class="form-text text-muted">Deja en blanco para mantener la contraseña
+                                            actual.</small>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="selectProyecto">Seleccionar Proyecto</label>
-                            <select class="form-control" name="proyecto_id" id="selectProyecto" required>
-                                <option value="">Seleccione un proyecto con espacios disponibles</option>
-                                <?php
-                                $queryProyecto = "
+                    </div>
+                </div>
+
+                <!-- Modal para asignar proyecto a un alumno existente -->
+                <div class="modal fade" id="assignProjectModal" tabindex="-1" role="dialog"
+                    aria-labelledby="assignProjectModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="assignProjectModalLabel">Asignar Proyecto a Alumno</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="assignProject.php" method="POST">
+                                    <div class="form-group">
+                                        <label for="selectAlumno">Seleccionar Alumno</label>
+                                        <select class="form-control" name="alumno_id" id="selectAlumno" required>
+                                            <option value="">Seleccione un alumno sin proyecto</option>
+                                            <?php
+                                            $queryAlumno = "SELECT ID_Alumno, CONCAT(Nombres, ' ', Apellido_Paterno, ' ', Apellido_Materno) AS Nombre_Alumno FROM alumno WHERE Proyecto IS NULL";
+                                            $resultAlumno = $connection->query($queryAlumno);
+                                            while ($alumno = $resultAlumno->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($alumno['ID_Alumno']) . "'>" . htmlspecialchars($alumno['Nombre_Alumno']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="selectProyecto">Seleccionar Proyecto</label>
+                                        <select class="form-control" name="proyecto_id" id="selectProyecto" required>
+                                            <option value="">Seleccione un proyecto con espacios disponibles</option>
+                                            <?php
+                                            $queryProyecto = "
                                     SELECT ID_Proyecto, Nombre_Proyecto 
                                     FROM proyecto 
                                     WHERE (Integrante_1 IS NULL OR Integrante_2 IS NULL OR Integrante_3 IS NULL)";
-                                $resultProyecto = $connection->query($queryProyecto);
-                                while ($proyecto = $resultProyecto->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($proyecto['ID_Proyecto']) . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto']) . "</option>";
-                                }
-                                ?>
-                            </select>
+                                            $resultProyecto = $connection->query($queryProyecto);
+                                            while ($proyecto = $resultProyecto->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($proyecto['ID_Proyecto']) . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Asignar Proyecto</button>
+                                </form>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Asignar Proyecto</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Script para abrir el modal con los datos del alumno -->
-    <script>
-        document.querySelectorAll('.edit-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                var row = this.closest('tr');
-                
-                var idAlumno = row.querySelector('td').innerText;
-                var nombre = row.cells[1].innerText;
-                var apellidoPaterno = row.cells[2].innerText;
-                var apellidoMaterno = row.cells[3].innerText;
-                var carrera = row.cells[4].innerText;
-                var usuario = row.cells[7].innerText;
+                <!-- Script para abrir el modal con los datos del alumno -->
+                <script>
+                    document.querySelectorAll('.edit-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            var row = this.closest('tr');
 
-                document.getElementById('editAlumnoId').value = idAlumno;
-                document.getElementById('editNombreAlumno').value = nombre;
-                document.getElementById('editApellidoPaterno').value = apellidoPaterno;
-                document.getElementById('editApellidoMaterno').value = apellidoMaterno;
-                document.getElementById('editCarrera').value = carrera;
-                document.getElementById('editUsuarioAlumno').value = usuario;
-                document.getElementById('editContrasenaAlumno').value = '';
+                            var idAlumno = row.querySelector('td').innerText;
+                            var nombre = row.cells[1].innerText;
+                            var apellidoPaterno = row.cells[2].innerText;
+                            var apellidoMaterno = row.cells[3].innerText;
+                            var carrera = row.cells[4].innerText;
+                            var usuario = row.cells[7].innerText;
 
-                $('#editAlumnoModal').modal('show');
-            });
-        });
+                            document.getElementById('editAlumnoId').value = idAlumno;
+                            document.getElementById('editNombreAlumno').value = nombre;
+                            document.getElementById('editApellidoPaterno').value = apellidoPaterno;
+                            document.getElementById('editApellidoMaterno').value = apellidoMaterno;
+                            document.getElementById('editCarrera').value = carrera;
+                            document.getElementById('editUsuarioAlumno').value = usuario;
+                            document.getElementById('editContrasenaAlumno').value = '';
 
-        document.getElementById('addProyecto').addEventListener('change', function() {
-            var proyectoId = this.value;
-            if (proyectoId) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'getAsesor.php?proyecto_id=' + proyectoId, true);
-                xhr.onload = function() {
-                    if (this.status === 200) {
-                        document.getElementById('addAsesor').value = this.responseText;
-                    }
-                };
-                xhr.send();
-            } else {
-                document.getElementById('addAsesor').value = '';
-            }
-        });
-    </script>
+                            $('#editAlumnoModal').modal('show');
+                        });
+                    });
 
-    <!-- Bootstrap JS y dependencias -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+                    document.getElementById('addProyecto').addEventListener('change', function () {
+                        var proyectoId = this.value;
+                        if (proyectoId) {
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET', 'getAsesor.php?proyecto_id=' + proyectoId, true);
+                            xhr.onload = function () {
+                                if (this.status === 200) {
+                                    document.getElementById('addAsesor').value = this.responseText;
+                                }
+                            };
+                            xhr.send();
+                        } else {
+                            document.getElementById('addAsesor').value = '';
+                        }
+                    });
+                </script>
+
+                <!-- Scripts de Bootstrap -->
+                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

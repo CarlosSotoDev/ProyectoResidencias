@@ -30,7 +30,7 @@ if (isset($_SESSION['error'])) {
     <title>Dashboard Asesor</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>docs.css"> <!-- Enlace al archivo CSS personalizado -->
 </head>
 
 <body>
@@ -42,7 +42,7 @@ if (isset($_SESSION['error'])) {
     <!-- Modal Cambio Contraseña -->
     <?php require('../../includes/modalCambioContrasena.php'); ?>
 
-    <main role="main" class="container bg-light p-2 mx-auto my-1">
+    <main role="main" class="container bg-white p-2 mx-auto my-1">
         <!-- Dashboard Bienvenida -->
         <?php require('../../includes/welcomeDashboard.php'); ?>
     </main>
