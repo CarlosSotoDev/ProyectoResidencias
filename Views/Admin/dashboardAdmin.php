@@ -8,52 +8,43 @@ checkLogin();
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>docs.css">
 </head>
 
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAdmin.php'); ?>
+    <!-- Modal Cambio Contraseña -->
 
-
-    <div class="container-fluid">
+    <!-- Página de contenido -->
+    <div class="container-fluid page-dashboard bg-white">
         <div class="row">
             <!-- Barra lateral -->
-            <nav class="col-md-2 d-none d-md-block bg-success sidebar">
-
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="#">
-                                Usuarios
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">
-                                Proyectos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">
-                                Asesor
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">
-                                Alumnos
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <div class="col-2 sidebar bg-success d-flex flex-column align-items-center p-3">
+                <!-- Aquí va el contenido de la barra lateral -->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdmin.php">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">Asesores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">Alumnos</a>
+                    </li>
+                </ul>
+            </div>
 
             <!-- Contenido principal -->
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Gestión de Usuarios</h2>
+            <div class="col-sm-10 content bg-white p-5 my-5 text-justify">
+                <h1 id="anteproyecto">Gestion de Usuarios</h1>
 
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
@@ -95,14 +86,11 @@ checkLogin();
                         </tbody>
                     </table>
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <!-- Bootstrap JS y dependencias -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+                <!-- Scripts de Bootstrap -->
+                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

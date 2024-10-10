@@ -13,15 +13,21 @@ if (!isset($_SESSION['asesor_id'])) {
 $asesor_id = $_SESSION['asesor_id'];
 
 // Verificar si hay un término de búsqueda
-$search_term = isset($_GET['search']) ? '%' . $_GET['search'] . '%' : '%%';
+$search_query = isset($_GET['search']) ? '%' . $_GET['search'] . '%' : '%%';
 
-// Consulta para obtener los proyectos asignados al asesor
+// Obtener la página actual desde la URL (si no se proporciona, por defecto es la página 1)
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$results_per_page = 10; // Número de resultados por página
+$start_from = ($page - 1) * $results_per_page; // Calcular el offset
+
+// Modificar la consulta SQL para incluir el LIMIT y OFFSET
 $query = "
     SELECT p.ID_Proyecto, p.Nombre_Proyecto, p.Status
     FROM proyecto p
     WHERE p.Asesor = ? 
     AND (p.Nombre_Proyecto LIKE ? OR p.ID_Proyecto LIKE ?)
-    ORDER BY p.ID_Proyecto ASC";
+    ORDER BY p.ID_Proyecto ASC
+    LIMIT ?, ?"; // Limitar los resultados
 
 // Preparar la consulta
 $stmt = $connection->prepare($query);
@@ -29,10 +35,28 @@ if ($stmt === false) {
     die('Error al preparar la consulta: ' . $connection->error);
 }
 
-// Añadimos el término de búsqueda para el ID_Proyecto (como string también)
-$stmt->bind_param('iss', $asesor_id, $search_term, $search_term); // 'i' para entero y 's' para string
+// Añadimos el término de búsqueda, el límite y el offset
+$stmt->bind_param('issii', $asesor_id, $search_query, $search_query, $start_from, $results_per_page);
 $stmt->execute();
 $result = $stmt->get_result(); // Obtener resultados
+
+// Obtener el número total de proyectos asignados al asesor para paginación
+$total_query = "
+    SELECT COUNT(*) AS total
+    FROM proyecto p
+    WHERE p.Asesor = ? 
+    AND (p.Nombre_Proyecto LIKE ? OR p.ID_Proyecto LIKE ?)";
+
+// Preparar la consulta
+$stmt_total = $connection->prepare($total_query);
+$stmt_total->bind_param('iss', $asesor_id, $search_query, $search_query);
+$stmt_total->execute();
+$result_total = $stmt_total->get_result();
+$total_row = $result_total->fetch_assoc();
+$total_projects = $total_row['total'];
+
+// Calcular el número total de páginas
+$total_pages = ceil($total_projects / $results_per_page);
 
 // Mensajes de éxito o error al cambiar la contraseña
 if (isset($_SESSION['success'])) {
@@ -124,6 +148,44 @@ if (isset($_SESSION['error'])) {
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Paginación -->
+                <?php
+                $search_query_encoded = isset($_GET['search']) ? urlencode($_GET['search']) : ''; // Encodificar si existe
+                if ($total_pages > 1) {
+                    echo '<nav aria-label="Page navigation">';
+                    echo '<ul class="pagination justify-content-center">';
+
+                    // Botón "Anterior"
+                    if ($page > 1) {
+                        echo '<li class="page-item"><a class="page-link" href="asigmentProyects.php?page=' . ($page - 1) . '&search=' . $search_query_encoded . '">Anterior</a></li>';
+                    } else {
+                        echo '<li class="page-item disabled"><span class="page-link">Anterior</span></li>';
+                    }
+
+                    // Mostrar enlaces de paginación
+                    for ($i = 1; $i <= $total_pages; $i++) {
+                        if ($i == $page) {
+                            echo '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+                        } else {
+                            echo '<li class="page-item"><a class="page-link" href="asigmentProyects.php?page=' . $i . '&search=' . $search_query_encoded . '">' . $i . '</a></li>';
+                        }
+                    }
+
+                    // Botón "Siguiente"
+                    if ($page < $total_pages) {
+                        echo '<li class="page-item"><a class="page-link" href="asigmentProyects.php?page=' . ($page + 1) . '&search=' . $search_query_encoded . '">Siguiente</a></li>';
+                    } else {
+                        echo '<li class="page-item disabled"><span class="page-link">Siguiente</span></li>';
+                    }
+
+                    echo '</ul>';
+                    echo '</nav>';
+                }
+                ?>
+
+
+
             </main>
         </div>
     </div>

@@ -8,49 +8,43 @@ checkLogin();
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Admin - Proyectos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>dashboard.css"> <!-- Enlace al archivo CSS personalizado -->
-    <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>docs.css">
 </head>
+
 <body>
-    
-    <!-- Barra superior -->
+    <!-- Navbar -->
     <?php require('../../includes/navbarAdmin.php'); ?>
-    <div class="container-fluid">
+    <!-- Modal Cambio Contraseña -->
+
+    <!-- Página de contenido -->
+    <div class="container-fluid page-dashboard bg-white">
         <div class="row">
             <!-- Barra lateral -->
-            <nav class="col-md-2 d-none d-md-block bg-success sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdmin.php">
-                                Usuarios
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">
-                                Proyectos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">
-                                Asesor
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">
-                                Alumnos
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <div class="col-2 sidebar bg-success d-flex flex-column align-items-center p-3">
+                <!-- Aquí va el contenido de la barra lateral -->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdmin.php">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminProyectos.php">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminAsesor.php">Asesores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">Alumnos</a>
+                    </li>
+                </ul>
+            </div>
 
             <!-- Contenido principal -->
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <h2>Gestión de Proyectos</h2>
+            <div class="col-sm-10 content bg-white p-5 my-5 text-justify">
+                <h1 id="anteproyecto">Gestion de Proyectos</h1>
 
                 <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
@@ -113,7 +107,7 @@ checkLogin();
                                    OR CONCAT(i3.Nombres, ' ', i3.Apellido_Paterno, ' ', i3.Apellido_Materno) LIKE '%$search%'
                                    OR CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) LIKE '%$search%'
                                 ORDER BY p.ID_Proyecto ASC";
-                            
+
                             $result = $connection->query($query);
 
                             // Mostrar todos los campos de la tabla
@@ -135,229 +129,228 @@ checkLogin();
                         </tbody>
                     </table>
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <!-- Modal para agregar proyecto -->
-    <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addProjectModalLabel">Agregar Proyecto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="addProject.php" method="POST">
-                        <div class="form-group">
-                            <label for="addNombreProyecto">Nombre del Proyecto</label>
-                            <input type="text" class="form-control" name="nombre_proyecto" id="addNombreProyecto"
-                                required>
+                <!-- Modal para agregar proyecto -->
+                <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog"
+                    aria-labelledby="addProjectModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addProjectModalLabel">Agregar Proyecto</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="addProject.php" method="POST">
+                                    <div class="form-group">
+                                        <label for="addNombreProyecto">Nombre del Proyecto</label>
+                                        <input type="text" class="form-control" name="nombre_proyecto"
+                                            id="addNombreProyecto" required>
+                                    </div>
+                                    <input type="hidden" name="status" value="Pendiente"> <!-- Status predeterminado -->
+                                    <button type="submit" class="btn btn-primary">Agregar Proyecto</button>
+                                </form>
+                            </div>
                         </div>
-                        <input type="hidden" name="status" value="Pendiente"> <!-- Status predeterminado -->
-                        <button type="submit" class="btn btn-primary">Agregar Proyecto</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal para editar proyecto -->
-    <div class="modal fade" id="editProjectModal" tabindex="-1" role="dialog" aria-labelledby="editProjectModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProjectModalLabel">Editar Proyecto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="editProject.php" method="POST">
-                        <input type="hidden" name="id_proyecto" id="editProjectId">
-                        
-                        <!-- Campo de texto para nombre del proyecto -->
-                        <div class="form-group">
-                            <label for="editNombreProyecto">Nombre del Proyecto</label>
-                            <input type="text" class="form-control" name="nombre_proyecto" id="editNombreProyecto" required>
+                <!-- Modal para editar proyecto -->
+                <div class="modal fade" id="editProjectModal" tabindex="-1" role="dialog"
+                    aria-labelledby="editProjectModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editProjectModalLabel">Editar Proyecto</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="editProject.php" method="POST">
+                                    <input type="hidden" name="id_proyecto" id="editProjectId">
+
+                                    <!-- Campo de texto para nombre del proyecto -->
+                                    <div class="form-group">
+                                        <label for="editNombreProyecto">Nombre del Proyecto</label>
+                                        <input type="text" class="form-control" name="nombre_proyecto"
+                                            id="editNombreProyecto" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </form>
+                            </div>
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal para desvincular asesor -->
-    <div class="modal fade" id="unlinkModal" tabindex="-1" role="dialog" aria-labelledby="unlinkModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="unlinkModalLabel">Desvincular Asesor</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="unlinkAsesor.php" method="POST">
-                        <div class="form-group">
-                            <label for="selectProyecto">Seleccionar Proyecto</label>
-                            <select class="form-control" id="selectProyecto" name="id_proyecto" required>
-                                <?php
-                                // Consulta para obtener los proyectos que tienen un asesor asignado
-                                $queryProyectosConAsesor = "
+                <!-- Modal para desvincular asesor -->
+                <div class="modal fade" id="unlinkModal" tabindex="-1" role="dialog" aria-labelledby="unlinkModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="unlinkModalLabel">Desvincular Asesor</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="unlinkAsesor.php" method="POST">
+                                    <div class="form-group">
+                                        <label for="selectProyecto">Seleccionar Proyecto</label>
+                                        <select class="form-control" id="selectProyecto" name="id_proyecto" required>
+                                            <?php
+                                            // Consulta para obtener los proyectos que tienen un asesor asignado
+                                            $queryProyectosConAsesor = "
                                     SELECT p.ID_Proyecto, p.Nombre_Proyecto, 
                                            CONCAT(a.Nombres, ' ', a.Apellido_Paterno, ' ', a.Apellido_Materno) AS Nombre_Asesor
                                     FROM proyecto p
                                     INNER JOIN asesor a ON p.Asesor = a.ID_Asesor";
-                                $resultProyectos = $connection->query($queryProyectosConAsesor);
-                                while ($rowProyectos = $resultProyectos->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($rowProyectos['ID_Proyecto']) . "'>" 
-                                         . htmlspecialchars($rowProyectos['Nombre_Proyecto']) . " - Asesor: " 
-                                         . htmlspecialchars($rowProyectos['Nombre_Asesor']) . "</option>";
-                                }
-                                ?>
-                            </select>
+                                            $resultProyectos = $connection->query($queryProyectosConAsesor);
+                                            while ($rowProyectos = $resultProyectos->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($rowProyectos['ID_Proyecto']) . "'>"
+                                                    . htmlspecialchars($rowProyectos['Nombre_Proyecto']) . " - Asesor: "
+                                                    . htmlspecialchars($rowProyectos['Nombre_Asesor']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Desvincular Asesor</button>
+                                </form>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-danger">Desvincular Asesor</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Primer Modal: Seleccionar proyecto para desvincular integrante -->
-    <div class="modal fade" id="selectProjectModal" tabindex="-1" role="dialog" aria-labelledby="selectProjectModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="selectProjectModalLabel">Seleccionar Proyecto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="selectProjectForm">
-                        <div class="form-group">
-                            <label for="selectProyectoIntegrante">Seleccionar Proyecto</label>
-                            <select class="form-control" id="selectProyectoIntegrante" name="id_proyecto" required>
-                                <?php
-                                // Consulta para obtener proyectos con uno o más integrantes
-                                $queryProyectosConIntegrantes = "
+                <!-- Primer Modal: Seleccionar proyecto para desvincular integrante -->
+                <div class="modal fade" id="selectProjectModal" tabindex="-1" role="dialog"
+                    aria-labelledby="selectProjectModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="selectProjectModalLabel">Seleccionar Proyecto</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="selectProjectForm">
+                                    <div class="form-group">
+                                        <label for="selectProyectoIntegrante">Seleccionar Proyecto</label>
+                                        <select class="form-control" id="selectProyectoIntegrante" name="id_proyecto"
+                                            required>
+                                            <?php
+                                            // Consulta para obtener proyectos con uno o más integrantes
+                                            $queryProyectosConIntegrantes = "
                                     SELECT p.ID_Proyecto, p.Nombre_Proyecto 
                                     FROM proyecto p
                                     WHERE p.Integrante_1 IS NOT NULL OR p.Integrante_2 IS NOT NULL OR p.Integrante_3 IS NOT NULL";
-                                $resultProyectosIntegrantes = $connection->query($queryProyectosConIntegrantes);
-                                while ($rowProyectosIntegrantes = $resultProyectosIntegrantes->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($rowProyectosIntegrantes['ID_Proyecto']) . "'>" 
-                                         . htmlspecialchars($rowProyectosIntegrantes['Nombre_Proyecto']) . "</option>";
+                                            $resultProyectosIntegrantes = $connection->query($queryProyectosConIntegrantes);
+                                            while ($rowProyectosIntegrantes = $resultProyectosIntegrantes->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($rowProyectosIntegrantes['ID_Proyecto']) . "'>"
+                                                    . htmlspecialchars($rowProyectosIntegrantes['Nombre_Proyecto']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" id="nextBtn">Siguiente</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segundo Modal: Desvincular integrante -->
+                <div class="modal fade" id="unlinkIntegranteModal" tabindex="-1" role="dialog"
+                    aria-labelledby="unlinkIntegranteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="unlinkIntegranteModalLabel">Desvincular Integrante</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="unlinkIntegrante.php" method="POST">
+                                    <input type="hidden" id="selectedProjectId" name="id_proyecto">
+                                    <div class="form-group">
+                                        <label for="selectIntegrante">Seleccionar Integrante a Desvincular</label>
+                                        <select class="form-control" id="selectIntegrante" name="integrante" required>
+                                            <!-- Este select se llenará dinámicamente al seleccionar el proyecto -->
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Desvincular Integrante</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enlace para abrir el modal con los datos del proyecto -->
+                <script>
+                    // Escuchar el evento de clic en los botones "Editar"
+                    document.querySelectorAll('.edit-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            // Obtener la fila en la que se hizo clic
+                            var row = this.closest('tr');
+
+                            // Obtener el ID del proyecto desde la columna correspondiente
+                            var projectId = row.querySelector('.project-id').innerText;
+
+                            // Obtener el nombre del proyecto desde la columna correspondiente
+                            var projectName = row.cells[1].innerText;
+
+                            // Establecer los valores en el modal
+                            document.getElementById('editProjectId').value = projectId;
+                            document.getElementById('editNombreProyecto').value = projectName;
+
+                            // Mostrar el modal
+                            $('#editProjectModal').modal('show');
+                        });
+                    });
+                </script>
+
+                <!-- Script para manejar la lógica de los modales de desvinculación -->
+                <script>
+                    document.getElementById('nextBtn').addEventListener('click', function () {
+                        var idProyecto = document.getElementById('selectProyectoIntegrante').value;
+
+                        // Establecer el ID del proyecto seleccionado en el segundo modal
+                        document.getElementById('selectedProjectId').value = idProyecto;
+
+                        // Hacer una petición AJAX para obtener los integrantes del proyecto seleccionado
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('GET', 'getIntegrantes.php?id_proyecto=' + idProyecto, true);
+                        xhr.onload = function () {
+                            if (this.status === 200) {
+                                var integrantes = JSON.parse(this.responseText);
+                                var selectIntegrante = document.getElementById('selectIntegrante');
+                                selectIntegrante.innerHTML = ''; // Limpiar el select antes de agregar nuevas opciones
+
+                                // Agregar cada integrante como opción
+                                for (var i = 0; i < integrantes.length; i++) {
+                                    var option = document.createElement('option');
+                                    option.value = integrantes[i].id;
+                                    option.text = integrantes[i].nombre;
+                                    selectIntegrante.appendChild(option);
                                 }
-                                ?>
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-primary" id="nextBtn">Siguiente</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Segundo Modal: Desvincular integrante -->
-    <div class="modal fade" id="unlinkIntegranteModal" tabindex="-1" role="dialog" aria-labelledby="unlinkIntegranteModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="unlinkIntegranteModalLabel">Desvincular Integrante</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="unlinkIntegrante.php" method="POST">
-                        <input type="hidden" id="selectedProjectId" name="id_proyecto">
-                        <div class="form-group">
-                            <label for="selectIntegrante">Seleccionar Integrante a Desvincular</label>
-                            <select class="form-control" id="selectIntegrante" name="integrante" required>
-                                <!-- Este select se llenará dinámicamente al seleccionar el proyecto -->
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-warning">Desvincular Integrante</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                                // Ocultar el primer modal y mostrar el segundo modal
+                                $('#selectProjectModal').modal('hide');
+                                $('#unlinkIntegranteModal').modal('show');
+                            }
+                        };
+                        xhr.send();
+                    });
+                </script>
 
-    <!-- Enlace para abrir el modal con los datos del proyecto -->
-    <script>
-        // Escuchar el evento de clic en los botones "Editar"
-        document.querySelectorAll('.edit-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                // Obtener la fila en la que se hizo clic
-                var row = this.closest('tr');
-                
-                // Obtener el ID del proyecto desde la columna correspondiente
-                var projectId = row.querySelector('.project-id').innerText;
-                
-                // Obtener el nombre del proyecto desde la columna correspondiente
-                var projectName = row.cells[1].innerText;
-
-                // Establecer los valores en el modal
-                document.getElementById('editProjectId').value = projectId;
-                document.getElementById('editNombreProyecto').value = projectName;
-
-                // Mostrar el modal
-                $('#editProjectModal').modal('show');
-            });
-        });
-    </script>
-
-    <!-- Script para manejar la lógica de los modales de desvinculación -->
-    <script>
-        document.getElementById('nextBtn').addEventListener('click', function() {
-            var idProyecto = document.getElementById('selectProyectoIntegrante').value;
-
-            // Establecer el ID del proyecto seleccionado en el segundo modal
-            document.getElementById('selectedProjectId').value = idProyecto;
-
-            // Hacer una petición AJAX para obtener los integrantes del proyecto seleccionado
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'getIntegrantes.php?id_proyecto=' + idProyecto, true);
-            xhr.onload = function() {
-                if (this.status === 200) {
-                    var integrantes = JSON.parse(this.responseText);
-                    var selectIntegrante = document.getElementById('selectIntegrante');
-                    selectIntegrante.innerHTML = ''; // Limpiar el select antes de agregar nuevas opciones
-                    
-                    // Agregar cada integrante como opción
-                    for (var i = 0; i < integrantes.length; i++) {
-                        var option = document.createElement('option');
-                        option.value = integrantes[i].id;
-                        option.text = integrantes[i].nombre;
-                        selectIntegrante.appendChild(option);
-                    }
-
-                    // Ocultar el primer modal y mostrar el segundo modal
-                    $('#selectProjectModal').modal('hide');
-                    $('#unlinkIntegranteModal').modal('show');
-                }
-            };
-            xhr.send();
-        });
-    </script>
-
-    <!-- Bootstrap JS y dependencias -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+                <!-- Scripts de Bootstrap -->
+                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>
