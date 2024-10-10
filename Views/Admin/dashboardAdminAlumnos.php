@@ -18,14 +18,10 @@ checkLogin();
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAdmin.php'); ?>
-    <!-- Modal Cambio Contraseña -->
 
-    <!-- Página de contenido -->
     <div class="container-fluid page-dashboard bg-white">
         <div class="row">
-            <!-- Barra lateral -->
             <div class="col-2 sidebar bg-success d-flex flex-column align-items-center p-3">
-                <!-- Aquí va el contenido de la barra lateral -->
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="dashboardAdmin.php">Usuarios</a>
@@ -42,23 +38,19 @@ checkLogin();
                 </ul>
             </div>
 
-            <!-- Contenido principal -->
             <div class="col-sm-10 content bg-white p-5 my-5 text-justify">
-                <h1 id="anteproyecto">Gestion de Alumno</h1>
+                <h1 id="anteproyecto">Gestión de Alumno</h1>
 
-                <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
                     <input class="form-control mr-sm-2" type="search" name="search"
                         placeholder="Buscar por nombre de alumno" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
-                <!-- Botón para agregar alumno -->
                 <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addAlumnoModal">
                     Agregar Alumno
                 </button>
 
-                <!-- Botón para asignar proyecto a un alumno existente -->
                 <button type="button" class="btn btn-info mb-3 ml-2" data-toggle="modal"
                     data-target="#assignProjectModal">
                     Asignar Proyecto a Alumno
@@ -143,18 +135,15 @@ checkLogin();
                                 <form action="addAlumno.php" method="POST">
                                     <div class="form-group">
                                         <label for="addNombreAlumno">Nombre del Alumno</label>
-                                        <input type="text" class="form-control" name="nombres" id="addNombreAlumno"
-                                            required>
+                                        <input type="text" class="form-control" name="nombres" id="addNombreAlumno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno"
-                                            id="addApellidoPaterno" required>
+                                        <input type="text" class="form-control" name="apellido_paterno" id="addApellidoPaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno"
-                                            id="addApellidoMaterno" required>
+                                        <input type="text" class="form-control" name="apellido_materno" id="addApellidoMaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addCarrera">Carrera</label>
@@ -182,18 +171,12 @@ checkLogin();
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="addAsesor">Asesor</label>
-                                        <input type="text" class="form-control" name="asesor" id="addAsesor" readonly>
-                                    </div>
-                                    <div class="form-group">
                                         <label for="addUsuarioAlumno">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="addUsuarioAlumno"
-                                            required>
+                                        <input type="text" class="form-control" name="username" id="addUsuarioAlumno" readonly required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addContrasenaAlumno">Contraseña</label>
-                                        <input type="password" class="form-control" name="password"
-                                            id="addContrasenaAlumno" required>
+                                        <input type="text" class="form-control" name="password" id="addContrasenaAlumno" readonly required>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Agregar Alumno</button>
                                 </form>
@@ -219,18 +202,15 @@ checkLogin();
 
                                     <div class="form-group">
                                         <label for="editNombreAlumno">Nombre del Alumno</label>
-                                        <input type="text" class="form-control" name="nombres" id="editNombreAlumno"
-                                            required>
+                                        <input type="text" class="form-control" name="nombres" id="editNombreAlumno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno"
-                                            id="editApellidoPaterno" required>
+                                        <input type="text" class="form-control" name="apellido_paterno" id="editApellidoPaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno"
-                                            id="editApellidoMaterno" required>
+                                        <input type="text" class="form-control" name="apellido_materno" id="editApellidoMaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editCarrera">Carrera</label>
@@ -246,15 +226,12 @@ checkLogin();
                                     </div>
                                     <div class="form-group">
                                         <label for="editUsuarioAlumno">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="editUsuarioAlumno"
-                                            required>
+                                        <input type="text" class="form-control" name="username" id="editUsuarioAlumno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editContrasenaAlumno">Contraseña</label>
-                                        <input type="password" class="form-control" name="password"
-                                            id="editContrasenaAlumno">
-                                        <small class="form-text text-muted">Deja en blanco para mantener la contraseña
-                                            actual.</small>
+                                        <input type="password" class="form-control" name="password" id="editContrasenaAlumno">
+                                        <small class="form-text text-muted">Deja en blanco para mantener la contraseña actual.</small>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                                 </form>
@@ -314,10 +291,27 @@ checkLogin();
 
                 <!-- Script para abrir el modal con los datos del alumno -->
                 <script>
+                    function generarUsuarioYContrasena() {
+                        const nombres = document.getElementById('addNombreAlumno').value.trim();
+                        const apellidoPaterno = document.getElementById('addApellidoPaterno').value.trim();
+                        const apellidoMaterno = document.getElementById('addApellidoMaterno').value.trim();
+
+                        if (nombres && apellidoPaterno && apellidoMaterno) {
+                            const nombreUsuario = (nombres.charAt(0) + apellidoPaterno + apellidoMaterno.charAt(0)).toUpperCase();
+                            document.getElementById('addUsuarioAlumno').value = nombreUsuario;
+                        }
+
+                        const contrasenaAleatoria = Math.floor(100000 + Math.random() * 900000);
+                        document.getElementById('addContrasenaAlumno').value = contrasenaAleatoria;
+                    }
+
+                    document.getElementById('addNombreAlumno').addEventListener('input', generarUsuarioYContrasena);
+                    document.getElementById('addApellidoPaterno').addEventListener('input', generarUsuarioYContrasena);
+                    document.getElementById('addApellidoMaterno').addEventListener('input', generarUsuarioYContrasena);
+
                     document.querySelectorAll('.edit-btn').forEach(button => {
                         button.addEventListener('click', function () {
                             var row = this.closest('tr');
-
                             var idAlumno = row.querySelector('td').innerText;
                             var nombre = row.cells[1].innerText;
                             var apellidoPaterno = row.cells[2].innerText;
@@ -336,28 +330,14 @@ checkLogin();
                             $('#editAlumnoModal').modal('show');
                         });
                     });
-
-                    document.getElementById('addProyecto').addEventListener('change', function () {
-                        var proyectoId = this.value;
-                        if (proyectoId) {
-                            var xhr = new XMLHttpRequest();
-                            xhr.open('GET', 'getAsesor.php?proyecto_id=' + proyectoId, true);
-                            xhr.onload = function () {
-                                if (this.status === 200) {
-                                    document.getElementById('addAsesor').value = this.responseText;
-                                }
-                            };
-                            xhr.send();
-                        } else {
-                            document.getElementById('addAsesor').value = '';
-                        }
-                    });
                 </script>
 
-                <!-- Scripts de Bootstrap -->
-                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+                <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
                 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

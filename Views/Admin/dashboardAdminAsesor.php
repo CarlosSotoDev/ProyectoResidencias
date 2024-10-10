@@ -18,14 +18,10 @@ checkLogin();
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAdmin.php'); ?>
-    <!-- Modal Cambio Contraseña -->
 
-    <!-- Página de contenido -->
     <div class="container-fluid page-dashboard bg-white">
         <div class="row">
-            <!-- Barra lateral -->
             <div class="col-2 sidebar bg-success d-flex flex-column align-items-center p-3">
-                <!-- Aquí va el contenido de la barra lateral -->
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="dashboardAdmin.php">Usuarios</a>
@@ -42,23 +38,19 @@ checkLogin();
                 </ul>
             </div>
 
-            <!-- Contenido principal -->
             <div class="col-sm-10 content bg-white p-5 my-5 text-justify">
                 <h1 id="anteproyecto">Gestion de Asesores</h1>
 
-                <!-- Barra de búsqueda -->
                 <form method="GET" class="form-inline mb-3">
                     <input class="form-control mr-sm-2" type="search" name="search"
                         placeholder="Buscar por ID, Nombre, Apellidos, Carrera o Proyectos" aria-label="Buscar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
 
-                <!-- Botón para agregar asesor -->
                 <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addAsesorModal">
                     Agregar Asesor
                 </button>
 
-                <!-- Botón para agregar asesor EXISTENTE -->
                 <button type="button" class="btn btn-info mb-3 ml-2" data-toggle="modal"
                     data-target="#assignExistingAsesorModal">
                     Agregar Asesor existente
@@ -94,13 +86,11 @@ checkLogin();
                                 ORDER BY asesor.ID_Asesor ASC";
                             $result = $connection->query($query);
 
-                            // Mostrar los asesores
                             while ($row = $result->fetch_assoc()) {
-                                // Verificación y separación de proyectos
                                 if (!empty($row['Proyectos']) && is_string($row['Proyectos'])) {
                                     $proyectos = explode(", ", $row['Proyectos']);
                                 } else {
-                                    $proyectos = []; // Si está vacío, inicializamos como un arreglo vacío
+                                    $proyectos = [];
                                 }
 
                                 echo "<tr>";
@@ -110,11 +100,8 @@ checkLogin();
                                 echo "<td>" . htmlspecialchars($row['Apellido_Materno']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['Nombre_Carrera'] ?? 'Sin Carrera') . "</td>";
 
-                                // Si el asesor tiene más de un proyecto asignado, mostrar un menú desplegable
                                 if (count($proyectos) > 1) {
-                                    echo "<td>
-                                          <select class='form-control'>
-                                              <option value=''>Seleccionar Proyecto</option>";
+                                    echo "<td><select class='form-control'><option value=''>Seleccionar Proyecto</option>";
                                     foreach ($proyectos as $proyecto) {
                                         echo "<option value='" . htmlspecialchars($proyecto) . "'>" . htmlspecialchars($proyecto) . "</option>";
                                     }
@@ -124,9 +111,7 @@ checkLogin();
                                 }
 
                                 echo "<td>" . htmlspecialchars($row['Nombre_Usuario']) . "</td>";
-                                echo "<td>";
-                                echo "<button type='button' class='btn btn-primary btn-sm edit-btn'>Editar</button>";
-                                echo "</td>";
+                                echo "<td><button type='button' class='btn btn-primary btn-sm edit-btn' data-toggle='modal' data-target='#editAsesorModal'>Editar</button></td>";
                                 echo "</tr>";
                             }
                             ?>
@@ -135,8 +120,7 @@ checkLogin();
                 </div>
 
                 <!-- Modal para agregar asesor -->
-                <div class="modal fade" id="addAsesorModal" tabindex="-1" role="dialog"
-                    aria-labelledby="addAsesorModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addAsesorModal" tabindex="-1" role="dialog" aria-labelledby="addAsesorModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -149,18 +133,15 @@ checkLogin();
                                 <form action="addAsesor.php" method="POST">
                                     <div class="form-group">
                                         <label for="addNombreAsesor">Nombres</label>
-                                        <input type="text" class="form-control" name="nombres" id="addNombreAsesor"
-                                            required>
+                                        <input type="text" class="form-control" name="nombres" id="addNombreAsesor" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno"
-                                            id="addApellidoPaterno" required>
+                                        <input type="text" class="form-control" name="apellido_paterno" id="addApellidoPaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno"
-                                            id="addApellidoMaterno" required>
+                                        <input type="text" class="form-control" name="apellido_materno" id="addApellidoMaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addCarrera">Carrera</label>
@@ -179,7 +160,6 @@ checkLogin();
                                         <select class="form-control" name="proyecto" id="addProyecto">
                                             <option value="">Sin Proyecto</option>
                                             <?php
-                                            // Obtener los proyectos sin asesor asignado
                                             $queryProyecto = "SELECT * FROM proyecto WHERE Asesor IS NULL";
                                             $resultProyecto = $connection->query($queryProyecto);
                                             while ($proyecto = $resultProyecto->fetch_assoc()) {
@@ -190,13 +170,11 @@ checkLogin();
                                     </div>
                                     <div class="form-group">
                                         <label for="addUsuario">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="addUsuario"
-                                            required>
+                                        <input type="text" class="form-control" name="username" id="addUsuario" readonly required>
                                     </div>
                                     <div class="form-group">
                                         <label for="addContrasena">Contraseña</label>
-                                        <input type="password" class="form-control" name="password" id="addContrasena"
-                                            required>
+                                        <input type="text" class="form-control" name="password" id="addContrasena" readonly required>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Agregar Asesor</button>
                                 </form>
@@ -206,26 +184,22 @@ checkLogin();
                 </div>
 
                 <!-- Modal para asignar asesor existente -->
-                <div class="modal fade" id="assignExistingAsesorModal" tabindex="-1" role="dialog"
-                    aria-labelledby="assignExistingAsesorModalLabel" aria-hidden="true">
+                <div class="modal fade" id="assignExistingAsesorModal" tabindex="-1" role="dialog" aria-labelledby="assignExistingAsesorModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="assignExistingAsesorModalLabel">Asignar Asesor Existente
-                                </h5>
+                                <h5 class="modal-title" id="assignExistingAsesorModalLabel">Asignar Asesor Existente</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="assignAsesor.php" method="POST" id="assignAsesorForm">
+                                <form action="assignAsesor.php" method="POST">
                                     <div class="form-group">
                                         <label for="selectExistingAsesor">Seleccionar Asesor</label>
-                                        <select class="form-control" name="asesor_id" id="selectExistingAsesor"
-                                            required>
+                                        <select class="form-control" name="asesor_id" id="selectExistingAsesor" required>
                                             <option value="">Seleccione un Asesor</option>
                                             <?php
-                                            // Obtener los asesores existentes
                                             $queryAsesores = "SELECT ID_Asesor, CONCAT(Nombres, ' ', Apellido_Paterno, ' ', Apellido_Materno) AS Nombre_Asesor FROM asesor";
                                             $resultAsesores = $connection->query($queryAsesores);
                                             while ($asesor = $resultAsesores->fetch_assoc()) {
@@ -239,7 +213,6 @@ checkLogin();
                                         <select class="form-control" name="proyecto_id" id="selectProject" required>
                                             <option value="">Seleccione un Proyecto</option>
                                             <?php
-                                            // Obtener los proyectos disponibles
                                             $queryProyectos = "SELECT ID_Proyecto, Nombre_Proyecto FROM proyecto WHERE Asesor IS NULL";
                                             $resultProyectos = $connection->query($queryProyectos);
                                             while ($proyecto = $resultProyectos->fetch_assoc()) {
@@ -256,8 +229,7 @@ checkLogin();
                 </div>
 
                 <!-- Modal para editar asesor -->
-                <div class="modal fade" id="editAsesorModal" tabindex="-1" role="dialog"
-                    aria-labelledby="editAsesorModalLabel" aria-hidden="true">
+                <div class="modal fade" id="editAsesorModal" tabindex="-1" role="dialog" aria-labelledby="editAsesorModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -271,18 +243,15 @@ checkLogin();
                                     <input type="hidden" name="id_asesor" id="editAsesorId">
                                     <div class="form-group">
                                         <label for="editNombreAsesor">Nombres</label>
-                                        <input type="text" class="form-control" name="nombres" id="editNombreAsesor"
-                                            required>
+                                        <input type="text" class="form-control" name="nombres" id="editNombreAsesor" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno"
-                                            id="editApellidoPaterno" required>
+                                        <input type="text" class="form-control" name="apellido_paterno" id="editApellidoPaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno"
-                                            id="editApellidoMaterno" required>
+                                        <input type="text" class="form-control" name="apellido_materno" id="editApellidoMaterno" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editCarrera">Carrera</label>
@@ -298,14 +267,12 @@ checkLogin();
                                     </div>
                                     <div class="form-group">
                                         <label for="editUsuario">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="editUsuario"
-                                            required>
+                                        <input type="text" class="form-control" name="username" id="editUsuario" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="editContrasena">Contraseña</label>
                                         <input type="password" class="form-control" name="password" id="editContrasena">
-                                        <small class="form-text text-muted">Deja el campo vacío si no quieres cambiar la
-                                            contraseña.</small>
+                                        <small class="form-text text-muted">Deja el campo vacío si no quieres cambiar la contraseña.</small>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                                 </form>
@@ -314,13 +281,29 @@ checkLogin();
                     </div>
                 </div>
 
-                <!-- Script para pre-llenar el modal de edición con los datos del asesor -->
                 <script>
-                    // Escuchar el evento de clic en los botones "Editar"
+                    function generarUsuarioYContrasena() {
+                        const nombres = document.getElementById('addNombreAsesor').value.trim();
+                        const apellidoPaterno = document.getElementById('addApellidoPaterno').value.trim();
+                        const apellidoMaterno = document.getElementById('addApellidoMaterno').value.trim();
+
+                        if (nombres && apellidoPaterno && apellidoMaterno) {
+                            const nombreUsuario = (nombres.charAt(0) + apellidoPaterno + apellidoMaterno.charAt(0)).toUpperCase();
+                            document.getElementById('addUsuario').value = nombreUsuario;
+                        }
+
+                        const contrasenaAleatoria = Math.floor(100000 + Math.random() * 900000);
+                        document.getElementById('addContrasena').value = contrasenaAleatoria;
+                    }
+
+                    document.getElementById('addNombreAsesor').addEventListener('input', generarUsuarioYContrasena);
+                    document.getElementById('addApellidoPaterno').addEventListener('input', generarUsuarioYContrasena);
+                    document.getElementById('addApellidoMaterno').addEventListener('input', generarUsuarioYContrasena);
+
+                    // Funcionalidad para el botón de "Editar"
                     document.querySelectorAll('.edit-btn').forEach(button => {
                         button.addEventListener('click', function () {
                             var row = this.closest('tr');
-
                             var asesorId = row.querySelector('.asesor-id').innerText;
                             var nombres = row.cells[1].innerText;
                             var apellidoPaterno = row.cells[2].innerText;
@@ -335,16 +318,16 @@ checkLogin();
                             document.getElementById('editCarrera').value = carrera;
                             document.getElementById('editUsuario').value = username;
                             document.getElementById('editContrasena').value = ''; // Deja vacío para que el usuario la rellene si lo desea
-
-                            $('#editAsesorModal').modal('show');
                         });
                     });
                 </script>
 
-                <!-- Scripts de Bootstrap -->
-                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+                <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
                 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
