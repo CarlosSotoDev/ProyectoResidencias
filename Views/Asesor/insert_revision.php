@@ -27,6 +27,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmtInsert = $connection->prepare($insertQuery);
         $stmtInsert->bind_param("isss", $id_conexion, $comentario, $fecha_revision_actual, $fecha_proxima_revision);
         if ($stmtInsert->execute()) {
+
+            // Obtener los alumnos relacionados con este proyecto
+            $queryAlumnos = "SELECT Integrante_1, Integrante_2, Integrante_3 FROM proyecto WHERE ID_Proyecto = ?";
+            $stmtAlumnos = $connection->prepare($queryAlumnos);
+            $stmtAlumnos->bind_param("i", $id_proyecto);
+            $stmtAlumnos->execute();
+            $resultAlumnos = $stmtAlumnos->get_result();
+            $alumnos = $resultAlumnos->fetch_assoc();
+
+            // Generar notificación para cada integrante (si existe)
+            $mensaje_notificacion = "Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: " . $fecha_proxima_revision;
+
+            foreach (['Integrante_1', 'Integrante_2', 'Integrante_3'] as $integrante) {
+                if (!empty($alumnos[$integrante])) {
+                    // Insertar la notificación en la tabla 'notificaciones'
+                    $insertNotificacion = "INSERT INTO notificaciones (ID_Usuario, Mensaje) VALUES (?, ?)";
+                    $stmtNotificacion = $connection->prepare($insertNotificacion);
+                    $stmtNotificacion->bind_param("is", $alumnos[$integrante], $mensaje_notificacion);
+                    $stmtNotificacion->execute();
+                }
+            }
+
             // Obtener todas las revisiones actualizadas para este ID_Conexion
             $queryRevisiones = "SELECT ROW_NUMBER() OVER (ORDER BY Fecha_Revision ASC) AS Revision_Numero, Comentario, Fecha_Revision, Fecha_Proxima_Revision 
                                 FROM revisiones WHERE ID_Conexion = ?";
@@ -35,17 +57,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmtRevisiones->execute();
             $resultRevisiones = $stmtRevisiones->get_result();
 
-            // Generar y devolver las filas de la tabla con los botones "Ver Comentario" y aplicar las clases de colores a las fechas
+            // Generar y devolver las filas de la tabla con los botones "Ver Comentario"
             while ($revision = $resultRevisiones->fetch_assoc()) {
                 $fecha_proxima_revision = $revision['Fecha_Proxima_Revision'];
                 $clase_fecha = '';
 
                 if ($fecha_proxima_revision < $fecha_actual) {
-                    $clase_fecha = 'text-danger'; // Fecha pasada: rojo
+                    $clase_fecha = 'text-danger';
                 } elseif ($fecha_proxima_revision == $fecha_actual) {
-                    $clase_fecha = 'text-success'; // Fecha actual: verde
+                    $clase_fecha = 'text-success';
                 } else {
-                    $clase_fecha = 'text-warning'; // Fecha futura: amarillo
+                    $clase_fecha = 'text-warning';
                 }
 
                 echo "<tr>";
@@ -86,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $clase_fecha = '';
 
                     if ($fecha_proxima_revision < $fecha_actual) {
-                        $clase_fecha = 'text-danger'; 
+                        $clase_fecha = 'text-danger';
                     } elseif ($fecha_proxima_revision == $fecha_actual) {
                         $clase_fecha = 'text-success';
                     } else {
@@ -108,3 +130,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+?>
