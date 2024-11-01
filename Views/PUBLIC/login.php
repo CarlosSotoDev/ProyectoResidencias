@@ -15,7 +15,9 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             header('Location: ../Asesor/dashboardAsesor.php');
         } else if ($_SESSION['rol'] == 1) {
             header('Location: ../Student/dashboardStudent.php');
-        } else {
+        } else if ($_SESSION['rol'] == 5) {
+            header('Location: ../Jefe/dashboardJefe.php');
+        }else {
             // Rol no reconocido, redirigir a una página de error o login
             header('Location: login.php');
         }

@@ -35,6 +35,9 @@ checkLogin();
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="dashboardAdminAlumnos.php">Alumnos</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="dashboardAdminJefes.php">Jefes de Carrera</a>
+                    </li>
                 </ul>
             </div>
 
