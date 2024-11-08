@@ -2,26 +2,101 @@
 include('../../includes/config.php');
 checkLogin();
 
-// Obtener el ID del proyecto desde la URL o la sesión
+$usuario_id = $_SESSION['user_id'];
+$rol = $_SESSION['rol'];
+$upload_message = '';
+
+// Obtener el ID del proyecto desde la URL, la sesión, o asociarlo directamente con el usuario si es necesario
 $project_id = isset($_GET['id_proyecto']) ? $_GET['id_proyecto'] : (isset($_SESSION['id_proyecto']) ? $_SESSION['id_proyecto'] : null);
 
 if (!$project_id) {
-    echo "No se ha seleccionado ningún proyecto.";
-    exit();
+    // Si no hay ID en la sesión ni en la URL, intenta buscar el proyecto del usuario
+    $query = "SELECT p.ID_Proyecto FROM proyecto p 
+              JOIN alumno a ON (p.Integrante_1 = a.ID_Alumno OR p.Integrante_2 = a.ID_Alumno OR p.Integrante_3 = a.ID_Alumno)
+              WHERE a.ID_Alumno = ? LIMIT 1";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    $stmt->bind_result($project_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($project_id) {
+        $_SESSION['id_proyecto'] = $project_id;
+    } else {
+        echo "No se ha seleccionado ningún proyecto.";
+        exit();
+    }
 }
 
-// Consulta para obtener los detalles del proyecto
+// Procesar la subida de archivo
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['documento'])) {
+    $allowed_extensions = ['doc', 'docx'];
+    $file = $_FILES['documento'];
+    $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $file_name_original = pathinfo($file['name'], PATHINFO_FILENAME);
+
+    if (in_array($file_ext, $allowed_extensions)) {
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/ProyectoResidencias/uploads/documents/';
+        
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        $query = "SELECT Archivo_Docx FROM proyecto WHERE ID_Proyecto = ?";
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param("i", $project_id);
+        $stmt->execute();
+        $stmt->bind_result($archivo_anterior);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($archivo_anterior && file_exists($upload_dir . $archivo_anterior)) {
+            unlink($upload_dir . $archivo_anterior);
+        }
+
+        $file_name = str_replace(' ', '_', $file_name_original) . '.' . $file_ext;
+        $file_path = $upload_dir . $file_name;
+
+        if (file_exists($file_path)) {
+            $file_name = str_replace(' ', '_', $file_name_original) . '_' . time() . '.' . $file_ext;
+            $file_path = $upload_dir . $file_name;
+        }
+
+        if (move_uploaded_file($file['tmp_name'], $file_path)) {
+            $query = "UPDATE proyecto SET Archivo_Docx = ?, Status = 'En Revisión' WHERE ID_Proyecto = ?";
+            $stmt = $connection->prepare($query);
+            $stmt->bind_param("si", $file_name, $project_id);
+            if ($stmt->execute()) {
+                // Enviar notificación al asesor
+                $mensaje = "Un nuevo documento ha sido subido para el proyecto.";
+                $query_notif = "INSERT INTO notificaciones (ID_Usuario, Mensaje, ID_Proyecto) 
+                                SELECT Asesor, ?, ? FROM proyecto WHERE ID_Proyecto = ?";
+                $stmt_notif = $connection->prepare($query_notif);
+                $stmt_notif->bind_param("sii", $mensaje, $project_id, $project_id);
+                $stmt_notif->execute();
+
+                $upload_message = "El archivo se subió correctamente.";
+                header("Location: historyRevitions.php?id_proyecto=" . $project_id);
+                exit();
+            } else {
+                $upload_message = "Error al guardar el archivo en la base de datos.";
+            }
+        } else {
+            $upload_message = "Error al mover el archivo.";
+        }
+    } else {
+        $upload_message = "Solo se permiten archivos .doc y .docx.";
+    }
+}
+
+// Consulta para obtener los detalles del proyecto según el ID
 $query = "SELECT p.*, p.Status, p.Archivo_Docx, p.Nombre_Proyecto FROM proyecto p WHERE p.ID_Proyecto = ?";
 $stmt = $connection->prepare($query);
 $stmt->bind_param("i", $project_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $proyecto = $result->fetch_assoc();
-
-if (!$proyecto) {
-    echo "No hay detalles disponibles para este proyecto.";
-    exit();
-}
 
 // Mensajes de éxito o error al cambiar la contraseña
 if (isset($_SESSION['success'])) {
@@ -51,7 +126,6 @@ if (isset($_SESSION['error'])) {
     <!-- Modal Cambio Contraseña -->
     <?php require('../../includes/modalCambioContrasena.php'); ?>
 
-    <!-- Main content -->
     <main role="main" class="container-fluid bg-light p-2 my-1 border border-success custom-margin">
         <h2>Historial de Revisiones</h2>
 
@@ -66,12 +140,10 @@ if (isset($_SESSION['error'])) {
                             <strong><?php echo htmlspecialchars($proyecto['Nombre_Proyecto'] ?? 'No disponible'); ?></strong>
                         </p>
                         <p class="h4 text-center">Subir Documento:</p>
-                        <!-- Formulario para subir documento -->
                         <form method="post" enctype="multipart/form-data">
                             <div class="d-flex flex-column align-items-center justify-content-center">
                                 <label for="documento">Seleccionar Documento (.docx):</label>
-                                <input type="file" name="documento" id="documento" class="form-control" accept=".doc, .docx"
-                                    required style="width: 50%;">
+                                <input type="file" name="documento" id="documento" class="form-control" accept=".doc, .docx" required style="width: 50%;">
                                 <input type="hidden" name="project_id" value="<?php echo $proyecto['ID_Proyecto']; ?>">
                                 <button type="submit" class="btn btn-success mt-3 mx-auto">Subir Documento</button>
                             </div>
@@ -79,7 +151,7 @@ if (isset($_SESSION['error'])) {
 
                         <?php if (!empty($proyecto['Archivo_Docx'])): ?>
                             <p class="mt-3">Documento Actual:
-                                <a href="../../uploads/documents/<?php echo rawurlencode($proyecto['Archivo_Docx']); ?>" target="_blank" class="document-link">Ver Documento</a>
+                                <a href="/ProyectoResidencias/uploads/documents/<?php echo rawurlencode($proyecto['Archivo_Docx']); ?>" target="_blank" class="document-link">Ver Documento</a>
                             </p>
                         <?php endif; ?>
 
@@ -107,7 +179,6 @@ if (isset($_SESSION['error'])) {
                         </thead>
                         <tbody id="revisiones-tbody">
                             <?php
-                            // Obtener el ID_Conexion basado en el ID_Proyecto
                             $queryConexion = "SELECT ID_Conexion FROM conproyectorevisiones WHERE ID_Proyecto = ?";
                             $stmtConexion = $connection->prepare($queryConexion);
                             $stmtConexion->bind_param("i", $project_id);
@@ -118,7 +189,6 @@ if (isset($_SESSION['error'])) {
                                 $conexion = $resultConexion->fetch_assoc();
                                 $id_conexion = $conexion['ID_Conexion'];
 
-                                // Obtener el historial de revisiones para este ID_Conexion
                                 $queryRevisiones = "
                                     SELECT ROW_NUMBER() OVER (ORDER BY Fecha_Revision ASC) AS Revision_Numero, 
                                            Comentario, 
@@ -184,7 +254,7 @@ if (isset($_SESSION['error'])) {
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 

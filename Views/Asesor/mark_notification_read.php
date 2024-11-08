@@ -11,17 +11,9 @@ if (isset($_GET['id_notificacion']) && isset($_GET['id_proyecto'])) {
     $stmt->bind_param("i", $id_notificacion);
     $stmt->execute();
 
-    // Almacenar el ID del proyecto en la sesión y verificar
-    $_SESSION['id_proyecto'] = $id_proyecto;
-    if (!isset($_SESSION['id_proyecto'])) {
-        echo "Error: el ID del proyecto no se almacenó en la sesión.";
-        exit();
-    }
-
-    // Redirigir al historial de revisiones del proyecto
-    header("Location: ../Student/historyRevitions.php?id_proyecto=" . $id_proyecto);
+    // Redirigir al historial de revisiones del proyecto para el asesor
+    header("Location: ../Asesor/historyRevitions.php?id_proyecto=" . $id_proyecto);
     exit();
 } else {
     echo "ID de notificación o de proyecto no válido.";
 }
-?>

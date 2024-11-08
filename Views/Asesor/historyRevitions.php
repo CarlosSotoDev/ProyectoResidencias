@@ -4,39 +4,39 @@ checkLogin();
 
 $usuario_id = $_SESSION['user_id'];
 $rol = $_SESSION['rol'];
-$project_id = isset($_GET['id_proyecto']) ? $_GET['id_proyecto'] : null;
+$upload_message = '';
 
-// Verificar si se ha recibido el ID del proyecto
-if ($project_id) {
-    if ($rol == 2) {
-        // Si el usuario es Asesor
-        $query = "
-            SELECT p.*, p.Status, p.Archivo_Docx
-            FROM proyecto p
-            WHERE p.Asesor = (SELECT ID_Asesor FROM asesor WHERE ID_Usuario = ?) 
-            AND p.ID_Proyecto = ?";
+// Obtener el ID del proyecto desde la URL, la sesión, o asociarlo directamente con el usuario si es necesario
+$project_id = isset($_GET['id_proyecto']) ? $_GET['id_proyecto'] : (isset($_SESSION['id_proyecto']) ? $_SESSION['id_proyecto'] : null);
 
-        $stmt = $connection->prepare($query);
-        $stmt->bind_param("ii", $usuario_id, $project_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    } elseif ($rol == 1) {
-        // Si el usuario es Alumno
-        $query = "
-            SELECT p.*, p.Status, p.Archivo_Docx
-            FROM proyecto p
-            WHERE (p.Integrante_1 = ? OR p.Integrante_2 = ? OR p.Integrante_3 = ?) 
-            AND p.ID_Proyecto = ?";
+if (!$project_id) {
+    // Si no hay ID en la sesión ni en la URL, intenta buscar el proyecto asignado al asesor
+    $query = "SELECT p.ID_Proyecto FROM proyecto p 
+              JOIN asesor a ON p.Asesor = a.ID_Asesor
+              WHERE a.ID_Usuario = ? LIMIT 1";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    $stmt->bind_result($project_id);
+    $stmt->fetch();
+    $stmt->close();
 
-        $stmt = $connection->prepare($query);
-        $stmt->bind_param("iiii", $usuario_id, $usuario_id, $usuario_id, $project_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    // Guarda el ID de proyecto en la sesión si se encontró
+    if ($project_id) {
+        $_SESSION['id_proyecto'] = $project_id;
+    } else {
+        echo "No se ha seleccionado ningún proyecto.";
+        exit();
     }
-} else {
-    echo "No se ha seleccionado ningún proyecto.";
-    exit();
 }
+
+// Consulta para obtener los detalles del proyecto según el ID
+$query = "SELECT p.*, p.Status, p.Archivo_Docx, p.Nombre_Proyecto FROM proyecto p WHERE p.ID_Proyecto = ?";
+$stmt = $connection->prepare($query);
+$stmt->bind_param("i", $project_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$proyecto = $result->fetch_assoc();
 
 // Mensajes de éxito o error al cambiar la contraseña
 if (isset($_SESSION['success'])) {
@@ -76,28 +76,23 @@ if (isset($_SESSION['error'])) {
                 <div class="bg-light p-3">
                     <h2 class="text-center">Proyecto</h2>
 
-                    <?php
-                    if ($result && $result->num_rows > 0) {
-                        $proyecto = $result->fetch_assoc();
-                        ?>
+                    <?php if (!empty($proyecto)): ?>
                         <p class="h2 text-center">
                             <strong><?php echo htmlspecialchars($proyecto['Nombre_Proyecto'] ?? 'No disponible'); ?></strong>
                         </p>
                         <p class="h4 text-center">DOCUMENTO:</p>
                         <?php if (!empty($proyecto['Archivo_Docx'])): ?>
                             <p class="text-center">
-                                <a href="../../uploads/documents/<?php echo htmlspecialchars($proyecto['Archivo_Docx']); ?>" target="_blank" class="btn btn-primary">Descargar Documento</a>
+                                <a href="/ProyectoResidencias/uploads/documents/<?php echo htmlspecialchars($proyecto['Archivo_Docx']); ?>" target="_blank" class="btn btn-primary">Descargar Documento</a>
                             </p>
                         <?php else: ?>
                             <p class="text-center">No hay documento subido.</p>
                         <?php endif; ?>
                         <p class="text-center h4"><strong>Status del Proyecto:</strong><br>
                             <?php echo htmlspecialchars($proyecto['Status'] ?? 'No disponible'); ?></p>
-                        <?php
-                    } else {
-                        echo "<p>No hay detalles disponibles para este proyecto.</p>";
-                    }
-                    ?>
+                    <?php else: ?>
+                        <p>No hay detalles disponibles para este proyecto.</p>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -152,7 +147,6 @@ if (isset($_SESSION['error'])) {
                             </thead>
                             <tbody id="revisiones-tbody" class="text-center">
                                 <?php
-                                // Obtener la fecha actual
                                 $fecha_actual = date('Y-m-d');
 
                                 // Obtener el ID_Conexion basado en el ID_Proyecto
@@ -166,7 +160,6 @@ if (isset($_SESSION['error'])) {
                                     $conexion = $resultConexion->fetch_assoc();
                                     $id_conexion = $conexion['ID_Conexion'];
 
-                                    // Obtener el historial de revisiones para este ID_Conexion
                                     $queryRevisiones = "
                                         SELECT ROW_NUMBER() OVER (ORDER BY Fecha_Revision ASC) as Revision_Numero, Comentario, Fecha_Revision, Fecha_Proxima_Revision
                                         FROM revisiones
@@ -179,7 +172,6 @@ if (isset($_SESSION['error'])) {
 
                                     if ($resultRevisiones->num_rows > 0) {
                                         while ($revision = $resultRevisiones->fetch_assoc()) {
-                                            // Definir la clase CSS según la fecha
                                             $fecha_proxima_revision = $revision['Fecha_Proxima_Revision'];
                                             $clase_fecha = '';
 
@@ -223,20 +215,15 @@ if (isset($_SESSION['error'])) {
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="comentario-completo">
-                    <!-- Aquí se cargará el comentario completo -->
-                </div>
+                <div class="modal-body" id="comentario-completo"></div>
             </div>
         </div>
     </div>
 
-    <!-- Manejo del formulario de nueva revisión con AJAX -->
     <script>
     $(document).ready(function() {
-        // Capturar la acción del formulario para agregar la revisión
         $("#revisionForm").submit(function(e) {
-            e.preventDefault(); // Evitar que el formulario se envíe de la forma tradicional
-
+            e.preventDefault();
             var comentario = $("#comentario").val();
             var fecha_proxima_revision = $("#fecha_proxima_revision").val();
             var id_proyecto = $("#id_proyecto").val();
@@ -244,31 +231,22 @@ if (isset($_SESSION['error'])) {
             $.ajax({
                 url: 'insert_revision.php',
                 method: 'POST',
-                data: {
-                    comentario: comentario,
-                    fecha_proxima_revision: fecha_proxima_revision,
-                    id_proyecto: id_proyecto
-                },
+                data: { comentario: comentario, fecha_proxima_revision: fecha_proxima_revision, id_proyecto: id_proyecto },
                 success: function(response) {
-                    // Limpiar el formulario
                     $("#comentario").val('');
                     $("#fecha_proxima_revision").val('');
-                    // Cerrar el modal
                     $('#revisionModal').modal('hide');
-                    // Actualizar la tabla de revisiones con el contenido devuelto
                     $("#revisiones-tbody").html(response);
                 }
             });
         });
 
-        // Asignar el evento click para ver comentario en el modal
         $(document).on('click', '.ver-comentario', function() {
             var comentario = $(this).data('comentario');
-            $("#comentario-completo").text(comentario); // Colocar el comentario en el modal
-            $("#verComentarioModal").modal('show'); // Mostrar el modal
+            $("#comentario-completo").text(comentario);
+            $("#verComentarioModal").modal('show');
         });
     });
     </script>
-
 </body>
 </html>
