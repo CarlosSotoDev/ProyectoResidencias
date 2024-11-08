@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 30-10-2024 a las 21:14:43
+-- Tiempo de generación: 08-11-2024 a las 02:01:39
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.18
 
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   KEY `fk_alumno_asesor` (`Asesor`),
   KEY `fk_alumno_rol` (`Rol`),
   KEY `fk_alumno_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=309 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=310 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `alumno`
@@ -90,7 +90,8 @@ INSERT INTO `alumno` (`ID_Alumno`, `Nombres`, `Apellido_Paterno`, `Apellido_Mate
 (305, 'ALEXIS', 'VASQUEZ', 'SANTIAGO', 1, 3, 103, NULL, 1, 305),
 (306, 'JOSE MANUEL', 'LUVIANO', 'RAMIREZ', 1, 2, 101, NULL, 1, 306),
 (307, 'DIEGO', 'FARFAN', 'MARTINEZ', 1, 5, 104, NULL, 1, 307),
-(308, 'MAXIMILIANO', 'MENDEZ', 'ROMERO', 2, 6, 105, NULL, 1, 308);
+(308, 'MAXIMILIANO', 'MENDEZ', 'ROMERO', 2, 6, 105, NULL, 1, 308),
+(309, 'FABIAN', 'ROMARIO', 'SAJNCEZ', 3, 7, 106, NULL, 1, 309);
 
 -- --------------------------------------------------------
 
@@ -113,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `asesor` (
   KEY `fk_asesor_carrera` (`Carrera`),
   KEY `fk_asesor_rol` (`Rol`),
   KEY `fk_asesor_usuario` (`ID_Usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `asesor`
@@ -125,7 +126,8 @@ INSERT INTO `asesor` (`ID_Asesor`, `Nombres`, `Apellido_Paterno`, `Apellido_Mate
 (102, 'ASESOR', 'TAVAREZ', 'JUAREZ', 4, 1, 2, 102),
 (103, 'LUIS ENRIQUE', 'VIVANCO', 'BENAVIDES', 3, 1, 2, 103),
 (104, 'LUIS ALBERTO', 'OVANDO', 'BRITO', 5, 1, 2, 104),
-(105, 'ARTURO', 'FALCON', 'CAMPOY', 6, 2, 2, 105);
+(105, 'ARTURO', 'FALCON', 'CAMPOY', 6, 2, 2, 105),
+(106, 'EMILIO', 'REYES', 'FERNANDEZ', 7, 3, 2, 106);
 
 -- --------------------------------------------------------
 
@@ -183,6 +185,78 @@ INSERT INTO `conproyectorevisiones` (`ID_Proyecto`, `ID_Conexion`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `notificaciones`
+--
+
+DROP TABLE IF EXISTS `notificaciones`;
+CREATE TABLE IF NOT EXISTS `notificaciones` (
+  `ID_Notificacion` int NOT NULL AUTO_INCREMENT,
+  `ID_Usuario` int NOT NULL,
+  `Mensaje` text NOT NULL,
+  `Fecha_Notificacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Leida` tinyint(1) NOT NULL DEFAULT '0',
+  `ID_Proyecto` int DEFAULT NULL,
+  PRIMARY KEY (`ID_Notificacion`),
+  KEY `fk_notificacion_usuario` (`ID_Usuario`)
+) ENGINE=MyISAM AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `notificaciones`
+--
+
+INSERT INTO `notificaciones` (`ID_Notificacion`, `ID_Usuario`, `Mensaje`, `Fecha_Notificacion`, `Leida`, `ID_Proyecto`) VALUES
+(1, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-10-31', '2024-10-30 15:42:23', 1, NULL),
+(2, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-10-31', '2024-10-30 15:42:23', 1, NULL),
+(3, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-10-31', '2024-10-30 15:49:37', 1, NULL),
+(4, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-10-31', '2024-10-30 15:49:37', 1, NULL),
+(5, 303, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-10-31', '2024-10-30 15:50:59', 1, NULL),
+(6, 304, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-10-31', '2024-10-30 15:50:59', 0, NULL),
+(7, 306, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-10-31', '2024-10-30 15:50:59', 0, NULL),
+(8, 303, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-01', '2024-10-30 17:30:11', 1, NULL),
+(9, 304, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-01', '2024-10-30 17:30:11', 0, NULL),
+(10, 306, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-01', '2024-10-30 17:30:11', 0, NULL),
+(11, 303, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-02', '2024-10-30 17:55:43', 1, NULL),
+(12, 304, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-02', '2024-10-30 17:55:43', 0, NULL),
+(13, 306, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-02', '2024-10-30 17:55:43', 0, NULL),
+(14, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-01', '2024-10-31 19:52:48', 1, NULL),
+(15, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-01', '2024-10-31 19:52:48', 1, NULL),
+(16, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-02', '2024-10-31 19:53:48', 1, NULL),
+(17, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-02', '2024-10-31 19:53:48', 1, NULL),
+(18, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-28', '2024-11-03 12:05:06', 1, NULL),
+(19, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-28', '2024-11-03 12:05:06', 0, NULL),
+(20, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-22', '2024-11-03 12:12:22', 1, NULL),
+(21, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-22', '2024-11-03 12:12:22', 0, NULL),
+(22, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-21', '2024-11-03 12:15:07', 1, NULL),
+(23, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-21', '2024-11-03 12:15:07', 0, NULL),
+(24, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-12-07', '2024-11-03 12:19:29', 1, NULL),
+(25, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-12-07', '2024-11-03 12:19:29', 0, NULL),
+(26, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-03 12:22:31', 1, NULL),
+(27, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-03 12:22:31', 0, NULL),
+(28, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-03 12:24:46', 1, NULL),
+(29, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-03 12:24:46', 0, NULL),
+(30, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-12-06', '2024-11-03 12:25:06', 1, NULL),
+(31, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-12-06', '2024-11-03 12:25:06', 0, NULL),
+(32, 100, 'Un nuevo documento ha sido subido para el proyecto.', '2024-11-03 15:42:21', 1, 1),
+(33, 100, 'Un nuevo documento ha sido subido para el proyecto.', '2024-11-03 15:48:16', 1, 1),
+(34, 100, 'Un nuevo documento ha sido subido para el proyecto.', '2024-11-03 15:49:40', 1, 1),
+(35, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-03 15:49:52', 1, NULL),
+(36, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-03 15:49:52', 0, NULL),
+(37, 100, 'Un nuevo documento ha sido subido para el proyecto.', '2024-11-07 19:28:05', 1, 1),
+(38, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-15', '2024-11-07 19:28:28', 1, NULL),
+(39, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-15', '2024-11-07 19:28:28', 0, NULL),
+(40, 100, 'Un nuevo documento ha sido subido para el proyecto.', '2024-11-07 19:31:40', 0, 1),
+(41, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-07 19:32:40', 1, NULL),
+(42, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-23', '2024-11-07 19:32:40', 0, NULL),
+(43, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-14', '2024-11-07 19:45:29', 1, NULL),
+(44, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-14', '2024-11-07 19:45:29', 0, NULL),
+(45, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-22', '2024-11-07 19:45:47', 1, NULL),
+(46, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-22', '2024-11-07 19:45:47', 0, NULL),
+(47, 300, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-22', '2024-11-07 19:45:52', 0, NULL),
+(48, 301, 'Se ha agregado un nuevo comentario a tu proyecto. Fecha de próxima revisión: 2024-11-22', '2024-11-07 19:45:52', 0, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `proyecto`
 --
 
@@ -201,19 +275,20 @@ CREATE TABLE IF NOT EXISTS `proyecto` (
   KEY `fk_proyecto_integrante_2` (`Integrante_2`),
   KEY `fk_proyecto_integrante_3` (`Integrante_3`),
   KEY `fk_proyecto_asesor` (`Asesor`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto`
 --
 
 INSERT INTO `proyecto` (`ID_Proyecto`, `Nombre_Proyecto`, `Status`, `Integrante_1`, `Integrante_2`, `Integrante_3`, `Asesor`, `Archivo_Docx`) VALUES
-(1, 'PROYECTO EJEMPLO PRUEBA 2', 'En Revisión', 300, 301, NULL, 100, 'GF_(1).docx'),
+(1, 'PROYECTO EJEMPLO PRUEBA 2', 'En Revisión', 300, 301, NULL, 100, 'TABLAS_SOTE_(1).docx'),
 (2, 'PROYECTO EJEMPLO 2', 'En Revisión', 303, 304, 306, 101, 'TIBURON_(3).docx'),
 (3, 'PROYECTO EJEMPLO 3', 'Pendiente', 305, NULL, NULL, 103, NULL),
 (4, 'Proyecto ejemplo 3', 'Pendiente', 302, NULL, NULL, 102, NULL),
 (5, 'PRPYECTO ENABLING', 'En Revisión', 307, NULL, NULL, 104, 'GF_(1)_1728533429.docx'),
-(6, 'PRUEBA PARA JEFE', 'Pendiente', 308, NULL, NULL, 105, NULL);
+(6, 'PRUEBA PARA JEFE', 'Pendiente', 308, NULL, NULL, 105, NULL),
+(7, 'PROYECTO ELECTROMECANICA', 'Pendiente', 309, NULL, NULL, 106, NULL);
 
 -- --------------------------------------------------------
 
@@ -230,7 +305,7 @@ CREATE TABLE IF NOT EXISTS `revisiones` (
   `Fecha_Proxima_Revision` date NOT NULL,
   `Revision_Numero` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID_Revision`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `revisiones`
@@ -239,7 +314,27 @@ CREATE TABLE IF NOT EXISTS `revisiones` (
 INSERT INTO `revisiones` (`ID_Conexion`, `ID_Revision`, `Comentario`, `Fecha_Revision`, `Fecha_Proxima_Revision`, `Revision_Numero`) VALUES
 (1, 1, 'BUEN TRABAJO', '2024-10-03', '2024-10-18', 1),
 (2, 2, 'GLEKGLEJLGJRLKGJLTR', '2024-10-04', '2024-10-25', 1),
-(5, 3, 'BUEN TRABAJO PERO CORRIJE REDACCION', '2024-10-10', '2024-10-16', 1);
+(5, 3, 'BUEN TRABAJO PERO CORRIJE REDACCION', '2024-10-10', '2024-10-16', 1),
+(1, 4, 'NUEVA REVISION', '2024-10-30', '2024-10-31', 1),
+(1, 5, 'ASA', '2024-10-30', '2024-10-31', 1),
+(2, 6, 'SADSADAS', '2024-10-30', '2024-10-31', 1),
+(2, 7, 'dwqq', '2024-10-30', '2024-11-01', 1),
+(2, 8, 'qaqsA', '2024-10-30', '2024-11-02', 1),
+(1, 9, 'ASASDA', '2024-11-01', '2024-11-01', 1),
+(1, 10, 'ASDASD', '2024-11-01', '2024-11-02', 1),
+(1, 11, 'WQEQW', '2024-11-03', '2024-11-28', 1),
+(1, 12, 'WAQ', '2024-11-03', '2024-11-22', 1),
+(1, 13, 'AWEWAEWA', '2024-11-03', '2024-11-21', 1),
+(1, 14, 'WQEQ', '2024-11-03', '2024-12-07', 1),
+(1, 15, 'WAA', '2024-11-03', '2024-11-23', 1),
+(1, 16, 'WQEQ', '2024-11-03', '2024-11-23', 1),
+(1, 17, 'WQE', '2024-11-03', '2024-12-06', 1),
+(1, 18, 'werw', '2024-11-03', '2024-11-23', 1),
+(1, 19, 'BUEN TRABAJO', '2024-11-08', '2024-11-15', 1),
+(1, 20, 'SADAS', '2024-11-08', '2024-11-23', 1),
+(1, 21, 'WEQEQ', '2024-11-08', '2024-11-14', 1),
+(1, 22, 'EWEWERW', '2024-11-08', '2024-11-22', 1),
+(1, 23, 'WQEWQ', '2024-11-08', '2024-11-22', 1);
 
 -- --------------------------------------------------------
 
@@ -303,7 +398,9 @@ INSERT INTO `usuario` (`ID_Usuario`, `Nombre_Usuario`, `Contraseña`, `Rol`) VAL
 (3000, 'ARATH', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 5),
 (105, 'AFALCONC', 'ff774570d7fdab8b0c15ef79b015a579e6a82acf230f2f7d95659c0a46782f23', 2),
 (308, 'MMENDEZR', 'd1a52aa40d5e38073b33176c3180b285ee2e6492483ffb72cff9898380f81a9a', 1),
-(3001, 'PROMARIOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 5);
+(3001, 'PROMARIOS', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 5),
+(106, 'EREYESF', 'd4405ec23fb5a6963b47ef8b07a93a0e9343d1901862f33bda5824ebd913e2e8', 2),
+(309, 'FROMARIOS', 'ecbaf58490a3246e2353e802789df76cde9c21d7d08631de4c04b56cc74fcc36', 1);
 
 --
 -- Disparadores `usuario`
