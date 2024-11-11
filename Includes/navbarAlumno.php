@@ -28,9 +28,9 @@
                     Documentación
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="APA7.php">APA 7</a>
                     <a class="dropdown-item" href="Anteproyecto.php">Anteproyecto</a>
                     <a class="dropdown-item" href="Documentacion.php">Documentación Proyecto</a>
-                    <a class="dropdown-item" href="APA7.php">APA 7</a>
                 </div>
             </li>
         </ul>
@@ -48,7 +48,7 @@
                 $unread_count = $result->num_rows;
                 ?>
                 <a href="#" class="nav-link dropdown-toggle" id="notificationDropdown" role="button"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-bell"></i>
                     <?php if ($unread_count > 0): ?>
                         <span class="badge badge-danger"><?php echo $unread_count; ?></span>
@@ -57,8 +57,8 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
                     <?php if ($unread_count > 0): ?>
                         <?php while ($notification = $result->fetch_assoc()): ?>
-                            <a href="../Student/mark_notification_read.php?id_notificacion=<?php echo $notification['ID_Notificacion']; ?>&id_proyecto=<?php echo $notification['ID_Proyecto']; ?>" 
-                               class="dropdown-item">
+                            <a href="../Student/mark_notification_read.php?id_notificacion=<?php echo $notification['ID_Notificacion']; ?>&id_proyecto=<?php echo $notification['ID_Proyecto']; ?>"
+                                class="dropdown-item">
                                 <?php echo $notification['Mensaje']; ?>
                             </a>
                         <?php endwhile; ?>
