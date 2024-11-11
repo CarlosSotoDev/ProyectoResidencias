@@ -52,7 +52,7 @@ if (isset($_SESSION['error'])) {
     <?php require('../../includes/navbarAlumno.php'); ?>
     <!-- Modal Cambio Contraseña -->
     <?php require('../../includes/modalCambioContrasena.php'); ?>
-    
+
 
 
     <!-- Página de contenido -->
@@ -76,6 +76,12 @@ if (isset($_SESSION['error'])) {
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="#viñetas">Viñetas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="#tablas">Tablas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="#imgFig">Imagenes y Figuras</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="#referencias">Referencias</a>
@@ -207,6 +213,70 @@ if (isset($_SESSION['error'])) {
                         </div>
                     </div>
 
+                    <!-- Tablas -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="tablas">Formato APA - Tablas</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Características de las tablas según APA 7.ª edición:</h5>
+                            <ul>
+                                <li><strong>Numeración de Tablas:</strong> Las tablas deben estar numeradas en orden
+                                    consecutivo (Tabla 1, Tabla 2, etc.).</li>
+                                <li><strong>Titulo de la Tabla:</strong> El título de la tabla debe colocarse en la
+                                    parte superior izquierda y sin punto final</li>
+                                <li><strong>Estructura del Titulo:</strong> El titulo debe de Tener el Numero de tabla,
+                                    El contenido de la tabla, fuente , lugar de donde se saco la misma, y autor entre
+                                    parentesis(Si la tabla es de auditoria propia, se coloca el mensaje de "Elaboración
+                                    propia")</li>
+                                <li><strong>Alineación:</strong> Todo el contenido de la tabla de estar centrado</li>
+                                <li><strong>Estilos:</strong> Evita el uso de bordes y líneas interiores; sólo se usan
+                                    en la parte superior e inferior de la tabla y debajo de los encabezados.</li>
+                                <li><strong>Tamaño de letra:</strong> 12 puntos.</li>
+                                <li><strong>Fuente:</strong> Arial, Times New Roman (Consulte con su asesor para la
+                                    fuente requerida, aunque "Arial" es la más común).</li>
+                            </ul>
+                            <h5 class="font-weight-bold">Ejemplo:</h5>
+                            <div class="text-center">
+                                <img src="../../Assets/IMG/TablaApa.webp" alt="Cronograma" class="text-center">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Imagenes y Figuras -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="imgFig">Formato APA - Imagenes y Figuras</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Características de las Imagenes y Figuras según APA 7.ª
+                                edición:</h5>
+                            <ul>
+                                <li><strong>Numeración de Images/Figuras:</strong> Las Imagenes o Figuras deben estar
+                                    numeradas en orden
+                                    consecutivo (Imagen 1, Imagen 2, etc.).</li>
+                                <li><strong>Titulo de la Imagen/Figura:</strong> El título de las Imagenes o Figuras
+                                    debe colocarse en la
+                                    parte inferior izquierda y sin punto final</li>
+                                <li><strong>Estructura del Titulo:</strong> El titulo debe de Tener el Numero de Imagen
+                                    o Figura,
+                                    El contenido de la misma, fuente , lugar de donde se saco, y autor entre
+                                    parentesis(Si la Imagen o Figura es de auditoria propia, se coloca el mensaje de
+                                    "Elaboración
+                                    propia")</li>
+                                <li><strong>Alineación:</strong> Las imagenes o figuras en formatos mas formales deben
+                                    de ser de un tamaño no molesto para los lectores y deben de ser centradas</li>
+                                <li><strong>Tamaño de letra:</strong> 12 puntos.</li>
+                                <li><strong>Fuente:</strong> Arial, Times New Roman (Consulte con su asesor para la
+                                    fuente requerida, aunque "Arial" es la más común).</li>
+                            </ul>
+                            <h5 class="font-weight-bold">Ejemplo:</h5>
+                            <div class="text-center">
+                                <img src="../../Assets/IMG/ImgApa.webp" alt="Cronograma" class="text-center">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- REFERENCIAS -->
                     <div class="card mb-4">
                         <div class="card-header bg-success text-white">
@@ -224,7 +294,19 @@ if (isset($_SESSION['error'])) {
                                 <li><strong>Tamaño de letra:</strong> 12 puntos.</li>
                                 <li><strong>Fuente:</strong> Arial, Times New Roman (Consulte con su asesor para la
                                     fuente requerida, aunque "Arial" es la más común).</li>
+                                <li><strong>Estructura:</strong> Autor o Autores, Año de publicacion de la Investigacion
+                                    Publicada, Titulo de la Investigacion, Editorial o Institucion de publicacion, y
+                                    opcionalmente las paginas de donde se consulto la informacion</li>
                             </ul>
+
+
+                            <h5 class="font-weight-bold">Ejemplo:</h5>
+                            <div class="text-center">
+                                <p><strong>Tejera-Martínez, F., Aguilera, D., & Vílchez-González, J. M. (2020).
+                                        Lenguajes de programación y desarrollo de competencias clave. Revisión
+                                        sistemática. Revista Electrónica de Investigación Educativa, 22(e27),
+                                        1-16.</strong></p>
+                            </div>
                         </div>
                     </div>
 

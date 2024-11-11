@@ -60,31 +60,47 @@ if (isset($_SESSION['error'])) {
                 <!-- Aquí va el contenido de la barra lateral -->
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#anteproyecto">Portada</a>
+                        <a class="nav-link text-white text-center" href="#portada">Portada</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#titulo">Indice General</a>
+                        <a class="nav-link text-white text-center" href="#indice-general">Indice General</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#objGen">Indice de Figuras</a>
+                        <a class="nav-link text-white text-center" href="#indice-figuras">Indice de Figuras</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#objEsp">Indice de Tablas</a>
+                        <a class="nav-link text-white text-center" href="#indice-tablas">Indice de Tablas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#acts">Introduccion</a>
+                        <a class="nav-link text-white text-center" href="#introduccion">Introduccion</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#cronograma">Planteamiento del problema</a>
+                        <a class="nav-link text-white text-center" href="#planteamiento-problema">Planteamiento del
+                            problema</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#cronograma">Justificacion</a>
+                        <a class="nav-link text-white text-center" href="#justificacion">Justificacion</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white text-center" href="#cronograma">Objetivos</a>
+                        <a class="nav-link text-white text-center" href="#objetivos">Objetivos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="#cronograma">Cronograma de Actividades</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="#marTeo">Marco Teorico</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="#desarrollo">Desarrollo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="#conclusiones">Conclusiones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="#glosario">Glosario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-center" href="#bibliografia">Bibliografía</a>
                     </li>
                 </ul>
             </div>
@@ -102,154 +118,211 @@ if (isset($_SESSION['error'])) {
                 </p>
 
                 <div class="container mt-5">
-                    <!-- Título -->
+                    <!-- Portada -->
                     <div class="card mb-4">
                         <div class="card-header bg-success text-white">
-                            <h2 class="card-title" id="titulo">Título del Proyecto</h2>
+                            <h2 class="card-title" id="portada">Portada</h2>
                         </div>
                         <div class="card-body">
                             <h5 class="font-weight-bold">Explicación:</h5>
-                            <p>El título del proyecto debe ser claro y conciso, indicando de manera resumida el
-                                propósito principal del proyecto. Se deben mencionar las tecnologías principales que se
-                                van a utilizar y describir brevemente qué solución o sistema se va a implementar.</p>
+                            <p>La portada del proyecto debe presentar toda la información esencial que identifique el
+                                trabajo de manera clara y profesional. Debe incluir el encabezado institucional y todos
+                                los detalles de identificación necesarios.</p>
 
                             <h5 class="font-weight-bold">Estructura:</h5>
                             <ul>
-                                <li><strong>Qué es:</strong> Se debe identificar qué es lo que se va a hacer en el
-                                    proyecto, por ejemplo, un sistema, un programa, una aplicación, un invento, etc.
+                                <li><strong>Qué es:</strong> Una portada es la primera página del proyecto, diseñada
+                                    para proporcionar información básica e identificar el trabajo ante la institución.
                                 </li>
-                                <li><strong>Por qué:</strong> Se debe justificar por qué es necesario desarrollar este
-                                    proyecto, destacando la necesidad o problema que se quiere solucionar.</li>
-                                <li><strong>Cómo:</strong> Se debe describir brevemente cómo se llevará a cabo el
-                                    proyecto, es decir, las principales tecnologías o métodos que se utilizarán.</li>
+                                <li><strong>Características de la portada:</strong></li>
+                                <ul>
+                                    <li><strong>Encabezado escolar:</strong> Tecnológico de Estudios Superiores de
+                                        Coacalco.</li>
+                                    <li><strong>Logo oficial de la institución:</strong> Incluir el logo en un lugar
+                                        visible.</li>
+                                    <li><strong>Carrera:</strong> Indicar el nombre de la carrera para la cual se
+                                        presenta el proyecto.</li>
+                                    <li><strong>Nombre del proyecto:</strong> Título claro y conciso que refleje el
+                                        propósito del proyecto.</li>
+                                    <li><strong>Quienes presentan el proyecto:</strong> Nombres de los autores o
+                                        estudiantes responsables del proyecto.</li>
+                                    <li><strong>Fecha:</strong> Fecha en que se presenta o se entrega el proyecto.</li>
+                                </ul>
+                                <li><strong>Por qué:</strong> La portada ofrece una identificación formal del proyecto y
+                                    sus autores, cumpliendo con los requisitos institucionales.</li>
+                                <li><strong>Cómo:</strong> Se organiza de forma limpia y estructurada, siguiendo un
+                                    orden que facilite la lectura y ubicación de cada elemento.</li>
                             </ul>
-
                             <h5 class="font-weight-bold">Ejemplo:</h5>
-                            <p><em>Sistema de información web con PHP y MySQL para la gestión de proyectos de
-                                    residencias profesionales del Tecnológico de Estudios Superiores de Coacalco.</em>
+                            <div class="text-center">
+                                <img src="../../Assets/IMG/Documentacion/Portada.webp" alt="Cronograma"
+                                    class="text-center">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Índice General -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="indice-general">Índice General</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>El índice general muestra una lista de todos los capítulos y secciones del proyecto,
+                                facilitando la navegación y organización del documento. Este indice se debe de
+                                actualizar al final de la elaboracion de este documento con todos los subtemas y temas
+                                dentro del mismo</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Un listado estructurado de todas las partes principales del
+                                    proyecto.</li>
+                                <li><strong>Por qué:</strong> Permite al lector ubicar rápidamente el contenido y
+                                    estructura del proyecto.</li>
+                                <li><strong>Cómo:</strong> Se organiza jerárquicamente, indicando el título de cada
+                                    sección junto con la página.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Índice de Figuras -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="indice-figuras">Índice de Figuras</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>Este índice enumera todas las figuras utilizadas en el documento, incluyendo
+                                ilustraciones, gráficos, o diagramas, proporcionando al lector fácil acceso visual al
+                                contenido gráfico. Este indice se debe de actualizar al final de la elaboracion de este
+                                documento con todas las imagenes, ilustraciones o figuras dentro del mismo</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Un listado de las figuras con sus títulos y la página en
+                                    que se encuentran.</li>
+                                <li><strong>Por qué:</strong> Facilita la localización rápida de figuras relevantes para
+                                    la interpretación de datos o explicaciones visuales.</li>
+                                <li><strong>Cómo:</strong> Se presenta en formato de lista, especificando el número de
+                                    figura, título y página.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Índice de Tablas -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="indice-tablas">Índice de Tablas</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>Este índice contiene todas las tablas del documento, detallando su ubicación y contenido
+                                de cada una para facilitar el análisis de datos y comparaciones. Este indice se debe de
+                                actualizar al final de la elaboracion de este
+                                documento con todas tablas presentes dentro del mismo</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Un listado de todas las tablas, incluyendo títulos y número
+                                    de página.</li>
+                                <li><strong>Por qué:</strong> Permite a los lectores acceder rápidamente a datos
+                                    importantes organizados en forma de tabla.</li>
+                                <li><strong>Cómo:</strong> Presentado en formato de lista, mostrando el número de tabla,
+                                    título y ubicación por página.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Introducción -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="introduccion">Introducción</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>La introducción debe ofrecer una vista general del proyecto, explicando el contexto,
+                                propósito y relevancia del tema, sin profundizar en detalles específicos.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Un resumen inicial que contextualiza el proyecto y presenta
+                                    los temas principales de forma general.</li>
+                                <li><strong>Por qué:</strong> Permite que el lector entienda la importancia y relevancia
+                                    del proyecto desde el inicio.</li>
+                                <li><strong>Cómo:</strong> La introducción debe ser concisa y no debe exceder una
+                                    cuartilla de extensión.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Planteamiento del Problema -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="planteamiento-problema">Planteamiento del Problema</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>El planteamiento del problema describe de manera detallada el problema que el proyecto
+                                busca resolver, enfocándose en su origen, impacto y relevancia.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Una descripción precisa del problema que se abordará en el
+                                    proyecto, enfatizando por qué es importante resolverlo.</li>
+                                <li><strong>Por qué:</strong> Define claramente el problema que motiva la creación del
+                                    proyecto, ayudando a justificar la necesidad de una solución.</li>
+                                <li><strong>Cómo:</strong> Debe ser un análisis estructurado y no debe exceder una
+                                    extensión de cuartilla y media.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Justificación -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="justificacion">Justificación</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>La justificación argumenta la importancia de desarrollar el proyecto, describiendo para
+                                quién se realiza y los beneficios que generará.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Una explicación de la importancia y los beneficios del
+                                    proyecto, detallando a quién va dirigido.</li>
+                                <li><strong>Por qué:</strong> Muestra la relevancia del proyecto, destacando los
+                                    beneficios esperados y su impacto positivo.</li>
+                                <li><strong>Cómo:</strong> Se presenta de manera detallada y argumentativa, con una
+                                    extensión máxima de cuartilla y media.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Objetivos -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="objetivos">Objetivos</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>Los objetivos son metas específicas que se desean alcanzar con el proyecto. Incluyen un
+                                objetivo general y tres objetivos específicos que guiarán el desarrollo del proyecto.
                             </p>
-                        </div>
-                    </div>
-
-                    <!-- Objetivo General -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
-                            <h2 class="card-title" id="objGen">Objetivo General</h2>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="font-weight-bold">Explicación:</h5>
-                            <p>El objetivo general describe el propósito principal del proyecto. Es una meta amplia que
-                                busca el resultado final del proyecto. Debe centrarse en el "para qué" se está
-                                realizando, qué se espera lograr a un nivel global.</p>
 
                             <h5 class="font-weight-bold">Estructura:</h5>
                             <ul>
-                                <li><strong>Qué es:</strong> Se debe definir de manera general qué se espera lograr con
-                                    el proyecto.</li>
-                                <li><strong>Por qué:</strong> Se debe explicar la razón o necesidad que motiva la
-                                    realización del proyecto.</li>
-                                <li><strong>Cómo:</strong> De manera general, describir qué métodos, herramientas o
-                                    tecnologías se usarán para alcanzar el objetivo.</li>
-                                <li><strong>Inicio</strong> Los objetivos especificos y generales deben de comenzar con
-                                    un verbo</li>
+                                <li><strong>Objetivo General:</strong> Debe ser una declaración concisa, con un máximo
+                                    de tres líneas, que resuma el propósito principal del proyecto.</li>
+                                <li><strong>Objetivos Específicos:</strong> Tres objetivos específicos, cada uno con un
+                                    máximo de tres líneas, que detallan pasos o metas concretas para alcanzar el
+                                    objetivo general.</li>
+                                <li><strong>Por qué:</strong> Los objetivos proporcionan una guía clara y específica
+                                    para el desarrollo y evaluación del proyecto.</li>
+                                <li><strong>Cómo:</strong> Cada objetivo debe ser breve, concreto y alinearse con el
+                                    propósito y alcance del proyecto.</li>
                             </ul>
-
-                            <h5 class="font-weight-bold">Ejemplo:</h5>
-                            <p><em>Crear e implementar un sistema web que permita gestionar eficientemente los proyectos
-                                    de residencias profesionales, facilitando la administración de documentos, el
-                                    seguimiento de avances, y la asignación de asesorías mediante el uso de tecnologías
-                                    modernas.</em></p>
-                        </div>
-                    </div>
-
-                    <!-- Objetivos Específicos -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
-                            <h2 class="card-title" id="objEsp">Objetivos Específicos</h2>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="font-weight-bold">Explicación:</h5>
-                            <p>Los objetivos específicos detallan de manera más precisa las metas que se deben alcanzar
-                                para cumplir con el objetivo general. Cada objetivo específico corresponde a una tarea o
-                                funcionalidad concreta del proyecto. Se dividen en pequeños pasos que, en conjunto,
-                                logran el propósito del proyecto.</p>
-
-                            <h5 class="font-weight-bold">Estructura:</h5>
-                            <ul>
-                                <li><strong>Qué es:</strong> Define claramente cada funcionalidad o tarea que se va a
-                                    desarrollar como parte del proyecto.</li>
-                                <li><strong>Por qué:</strong> Justifica la necesidad de cada tarea o funcionalidad,
-                                    explicando su importancia dentro del proyecto.</li>
-                                <li><strong>Cómo:</strong> Describe brevemente las tecnologías o métodos que se usarán
-                                    para realizar esa tarea específica.</li>
-                                <li><strong>Inicio</strong> Los objetivos especificos y generales deben de comenzar con
-                                    un verbo</li>
-                                <li><strong>Cuantos</strong> Aqui tu puedes colocar lo objetivos especificos que
-                                    requieras, recuerda que estos tambien se definiran en tu Cronograma(Tambien se
-                                    explica como se debe de hacer en el siguiente punto de la pagina)</li>
-                            </ul>
-
-                            <h5 class="font-weight-bold">Ejemplos:</h5>
-                            <ul>
-                                <li> Implementar el backend con PHP y MySQL
-                                    para gestionar la lógica de negocio relacionada con los proyectos, usuarios y la
-                                    gestión de entregas.</li>
-                                <li> Desarrollar el
-                                    frontend utilizando HTML, CSS, Bootstrap y JavaScript para crear una interfaz de
-                                    usuario intuitiva y responsive.</li>
-                                <li>Establecer un sistema de roles y
-                                    autenticación que permita a los usuarios acceder a las funcionalidades según su rol
-                                    (administrador, asesor, alumno).</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Descripcion detallada de actividades -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
-                            <h2 class="card-title" id="acts">Descripción detallada de las actividades a realizar</h2>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="font-weight-bold">Breve Explicación:</h5>
-                            <p>La descripción detallada de las actividades establece los pasos específicos que se deben
-                                llevar a cabo para completar el proyecto. Cada actividad debe estar claramente definida,
-                                con objetivos y responsabilidades bien establecidos para asegurar que el proyecto avance
-                                de manera ordenada y eficiente.</p>
-
-                            <h5 class="font-weight-bold">Estructura:</h5>
-                            <ul>
-                                <li><strong>Qué es:</strong> Se debe detallar cada una de las actividades que se
-                                    realizarán a lo largo del proyecto, asegurando que todas las fases del desarrollo
-                                    estén cubiertas.</li>
-                                <li><strong>Por qué:</strong> Explicar por qué es necesario definir claramente las
-                                    actividades a realizar, como una forma de asegurar que no se omita ningún paso
-                                    importante y de facilitar el seguimiento del progreso.</li>
-                                <li><strong>Cómo:</strong> Describir cómo se organizarán las actividades, estableciendo
-                                    un orden lógico, identificando dependencias entre tareas y asignando responsables y
-                                    fechas para cada una.</li>
-                            </ul>
-
-                            <h5 class="font-weight-bold">Ejemplos:</h5>
-                            <ul>
-                                <li><strong>Análisis de requerimientos:</strong> Recolectar las necesidades de los
-                                    usuarios (alumnos, asesores y administradores) y establecer el diseño del sistema.
-                                </li>
-                                <li><strong>Diseño del sistema:</strong> Definir la arquitectura del sistema, diseñando
-                                    tanto el frontend como el backend.</li>
-                                <li><strong>Desarrollo del backend:</strong> Implementar las funcionalidades para la
-                                    gestión de usuarios y proyectos utilizando PHP y MySQL.</li>
-                                <li><strong>Desarrollo del frontend:</strong> Crear una interfaz de usuario responsive y
-                                    fácil de usar con HTML, CSS, Bootstrap y JavaScript.</li>
-                                <li><strong>Integración del sistema de roles:</strong> Implementar un sistema de
-                                    autenticación con roles diferenciados para alumnos, asesores y administradores.</li>
-                                <li><strong>Pruebas del sistema:</strong> Realizar pruebas de funcionalidad y carga para
-                                    asegurar que el sistema responde correctamente bajo diferentes condiciones.</li>
-                                <li><strong>Documentación:</strong> Generar la documentación técnica del sistema para
-                                    facilitar futuras modificaciones y mantenimientos.</li>
-                            </ul>
-
-                            <h5 class="font-weight-bold">Deben de estar ligadas al Cronograma al igual que los objetivos
-                                especificos</h5>
                         </div>
                     </div>
 
@@ -259,7 +332,7 @@ if (isset($_SESSION['error'])) {
                             <h2 class="card-title" id="cronograma">Cronograma de actividades</h2>
                         </div>
                         <div class="card-body">
-                            <h5 class="font-weight-bold">Breve Explicación:</h5>
+                            <h5 class="font-weight-bold">Explicación:</h5>
                             <p>El cronograma define el tiempo estimado para cada fase del proyecto, incluyendo las
                                 fechas clave y los plazos de entrega de las distintas tareas y actividades. Ayuda a
                                 planificar el trabajo, controlar el progreso y asegurar que el proyecto se complete
@@ -268,25 +341,163 @@ if (isset($_SESSION['error'])) {
                             <h5 class="font-weight-bold">Estructura:</h5>
                             <ul>
                                 <li><strong>Qué es:</strong> Debe especificar las actividades principales del proyecto y
-                                    su orden cronológico (Esta vinculado a los objetivos especificos).</li>
+                                    su orden cronológico.</li>
                                 <li><strong>Por qué:</strong> Justifica la importancia de seguir un cronograma para
-                                    asegurar que el proyecto avance de manera ordenada y se cumplan los plazos
-                                    establecidos.</li>
+                                    asegurar que el proyecto avance de manera ordenada.</li>
                                 <li><strong>Cómo:</strong> Indica cómo se definirán los tiempos y fechas para cada
-                                    tarea (Pueden ser días, semanas o el periodo te tiempo de preferencia),
-                                    estableciendo hitos o entregas parciales, y los métodos que se utilizarán
-                                    para monitorear el cumplimiento.</li>
-                                <li><strong>En donde se puede realizar:</strong> Este se puede realizar en diferentes
-                                    herramientas o plataformas, alguna de ella puede ser Excel o GantProject. Tambien se
-                                    puede preguntar al asesor y al departamento de residencias para pedir alguna
-                                    sugerencia y si este diagrama es aceptado con dicha tecnologia</li>
+                                    tarea, estableciendo hitos o entregas parciales.</li>
+                                <li><strong>En qué herramientas:</strong> Este se puede realizar en herramientas como
+                                    Excel o GantProject.</li>
                             </ul>
                             <h5 class="font-weight-bold">Ejemplo realizado en Excel:</h5>
                             <div class="text-center">
-                                <img src="../../Assets/IMG/Cronograma.webp" alt="" class="text-center">
+                                <img src="../../Assets/IMG/Cronograma.webp" alt="Cronograma" class="text-center">
                             </div>
                         </div>
                     </div>
+
+
+                    <!-- Marco Teórico -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="marco-teorico">Marco Teórico</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>El marco teórico es la parte más extensa y fundamental del documento. En esta sección se
+                                desarrollan las bases teóricas, conceptos y temas clave que se utilizarán en el
+                                proyecto. Proporciona el contexto necesario y detalla los fundamentos que sustentan la
+                                investigación.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Es una recopilación y análisis de las teorías,
+                                    investigaciones previas, y conceptos relevantes para el desarrollo del proyecto.
+                                    Establece el contexto académico y científico necesario para fundamentar el trabajo.
+                                </li>
+                                <li><strong>Extensión:</strong> Debido a su importancia y complejidad, el marco teórico
+                                    debe tener una extensión mínima de 50 cuartillas. La extensión máxima dependerá de
+                                    la magnitud de la investigación y la profundidad requerida para abordar los temas.
+                                </li>
+                                <li><strong>Por qué:</strong> Brinda el sustento teórico necesario para comprender el
+                                    problema y las soluciones planteadas en el proyecto. Sin una base teórica sólida, el
+                                    proyecto carecería de rigor académico.</li>
+                                <li><strong>Cómo:</strong> Toda la información incluida en el marco teórico debe estar
+                                    citada correctamente. Las citas y referencias precisas son esenciales, ya que
+                                    cualquier omisión de la fuente original puede considerarse plagio, lo cual puede
+                                    llevar a la anulación total del trabajo.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <!-- Desarrollo -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="desarrollo">Desarrollo</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>En el apartado de desarrollo se aplican todas las metodologías, temas y conocimientos
+                                investigados en el marco teórico, llevando a cabo el proyecto de manera práctica. Es la
+                                implementación de cada esquema, metodología y fundamento teórico que se mencionó
+                                anteriormente.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Es la sección donde se desarrolla y ejecuta el proyecto en
+                                    base a los conceptos, metodologías y teorías planteadas en el marco teórico.</li>
+                                <li><strong>Elementos a incluir:</strong> Esta sección debe contener esquemas,
+                                    metodologías, capturas de pantalla, imágenes del proyecto en desarrollo, tablas de
+                                    datos, y todos los elementos visuales necesarios para ilustrar el avance y
+                                    funcionamiento del proyecto.</li>
+                                <li><strong>Por qué:</strong> Facilita la comprensión práctica de cómo se implementa la
+                                    teoría en el desarrollo real del proyecto, mostrando los resultados visuales y los
+                                    pasos fundamentales.</li>
+                                <li><strong>Cómo:</strong> Deben evitarse explicaciones excesivamente técnicas como
+                                    códigos de programación detallados. Solo se incluirán fragmentos esenciales o de
+                                    funciones principales para evitar que el contenido se torne tedioso o complicado.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Conclusiones -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="conclusiones">Conclusiones</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>La sección de conclusiones presenta un resumen de los resultados y aprendizajes obtenidos
+                                durante el desarrollo del proyecto. Incluye las observaciones finales, el análisis de
+                                los logros alcanzados, así como cualquier limitación o desafío encontrado.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Un análisis reflexivo sobre el proyecto, en el que se
+                                    exponen los resultados más relevantes y el impacto de las soluciones implementadas.
+                                </li>
+                                <li><strong>Por qué:</strong> Permite cerrar el documento evaluando si se lograron los
+                                    objetivos planteados y destacando el valor del trabajo realizado.</li>
+                                <li><strong>Cómo:</strong> Las conclusiones deben ser claras y objetivas, reflejando de
+                                    manera precisa los resultados y aportes del proyecto, sin extenderse demasiado.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Glosario -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="glosario">Glosario</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>El glosario es una sección destinada a explicar palabras o términos técnicos utilizados
+                                en el documento, especialmente aquellos que pueden ser difíciles de entender para
+                                lectores no especializados en la disciplina.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Una lista de términos acompañados de su definición, con el
+                                    objetivo de facilitar la comprensión del contenido técnico del proyecto.</li>
+                                <li><strong>Por qué:</strong> Ayuda a los lectores a entender términos especializados,
+                                    permitiendo una lectura más fluida y accesible.</li>
+                                <li><strong>Cómo:</strong> Los términos deben listarse en orden alfabético, con
+                                    definiciones claras y concisas.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bibliografía -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h2 class="card-title" id="bibliografia">Bibliografía</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="font-weight-bold">Explicación:</h5>
+                            <p>La bibliografía incluye todas las fuentes de información consultadas para la elaboración
+                                del proyecto, tales como libros, artículos, documentos académicos y páginas web. Cada
+                                fuente debe citarse correctamente para respaldar la información presentada y evitar el
+                                plagio.</p>
+
+                            <h5 class="font-weight-bold">Estructura:</h5>
+                            <ul>
+                                <li><strong>Qué es:</strong> Una lista de referencias utilizadas para construir el marco
+                                    teórico y fundamentar el proyecto.</li>
+                                <li><strong>Por qué:</strong> Proporciona el debido crédito a los autores y garantiza la
+                                    veracidad de la información presentada.</li>
+                                <li><strong>Cómo:</strong> Cada referencia debe seguir un formato de citación estándar
+                                    (como APA), con los detalles necesarios para que el lector pueda localizar la
+                                    fuente.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+
+
+
 
                 </div>
 
