@@ -1,7 +1,23 @@
 <?php
 // navbarAsesor.php
-?>
+include_once('../../includes/config.php'); // Usamos include_once para evitar conflictos
 
+// Obtener el ID del asesor y almacenarlo en la sesión si no está configurado
+if (!isset($_SESSION['asesor_id'])) {
+    $query = "SELECT ID_Asesor FROM asesor WHERE ID_Usuario = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $stmt->bind_result($asesor_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($asesor_id) {
+        $_SESSION['asesor_id'] = $asesor_id;
+    }
+}
+?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
     <a class="navbar-brand mx-5" href="../Asesor/dashboardAsesor.php">
         <img src="<?php echo IMG_PATH; ?>TESCO_TRANSPARENTE.webp" alt="Logo" style="width: 120px;">
@@ -13,43 +29,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <?php
-                // Verificar si el asesor tiene un proyecto asignado en la sesión o en la base de datos
-                if (!isset($_SESSION['id_proyecto']) || empty($_SESSION['id_proyecto'])) {
-                    $query = "SELECT ID_Proyecto FROM proyecto WHERE Asesor = (SELECT ID_Asesor FROM asesor WHERE ID_Usuario = ?) LIMIT 1";
-                    $stmt = $connection->prepare($query);
-                    $stmt->bind_param("i", $_SESSION['user_id']);
-                    $stmt->execute();
-                    $stmt->bind_result($id_proyecto);
-                    $stmt->fetch();
-                    $stmt->close();
-
-                    // Si el proyecto está asignado, guardarlo en la sesión
-                    if ($id_proyecto) {
-                        $_SESSION['id_proyecto'] = $id_proyecto;
-                    }
-                }
-
-                // Mostrar enlace al proyecto si existe
-                if (isset($_SESSION['id_proyecto']) && $_SESSION['id_proyecto']): ?>
-                    <a href="../Asesor/proyects.php?id_proyecto=<?php echo $_SESSION['id_proyecto']; ?>" class="nav-link">
-                        Ir al Proyecto
-                    </a>
-                <?php else: ?>
-                    <p class="nav-link">No tienes ningún proyecto asignado.</p>
-                <?php endif; ?>
-            </li>
-
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    Documentación
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="Anteproyecto.php">Anteproyecto</a>
-                    <a class="dropdown-item" href="Documentacion.php">Documentación Proyecto</a>
-                    <a class="dropdown-item" href="APA7.php">APA 7</a>
-                </div>
+                <a href="../Asesor/asigmentProyects.php" class="nav-link">Ver Proyectos</a>
             </li>
         </ul>
 
@@ -57,7 +37,6 @@
             <!-- Icono de notificaciones -->
             <div class="dropdown">
                 <?php
-                // Consulta para obtener las notificaciones no leídas para el asesor
                 $query = "SELECT ID_Notificacion, Mensaje, Fecha_Notificacion, ID_Proyecto 
                           FROM notificaciones 
                           WHERE ID_Usuario = ? AND Leida = 0 ORDER BY Fecha_Notificacion DESC LIMIT 5";

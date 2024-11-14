@@ -1,0 +1,108 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+/* Ajustes de la barra de navegación */
+.navbar {
+    background-color: #28a745;
+}
+
+.navbar .navbar-brand img {
+    height: 40px; /* Ajusta la altura del logo */
+}
+
+/* Ajuste del contenedor principal */
+.container {
+    margin-top: 20px;
+}
+
+/* Estilos de la tabla */
+.table thead th {
+    background-color: #343a40; /* Color de encabezado */
+    color: white;
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.table tbody tr:hover {
+    background-color: #ffffff;
+}
+
+
+/* Estilos personalizados para la tabla de proyectos */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #28a745; /* Color verde del proyecto */
+    color: #fff;
+}
+
+.table thead th {
+    padding: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+}
+
+.table tbody tr {
+    transition: background-color 0.3s;
+}
+
+.table tbody tr:hover {
+    background-color: #ffffff;
+}
+
+.table tbody td {
+    padding: 15px;
+    text-align: center;
+    color: #333;
+    font-size: 0.95rem;
+    border-top: 1px solid #ffffff;
+}
+
+.table tbody td a {
+    color: #28a745;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.table tbody td a:hover {
+    color: #155724;
+    text-decoration: underline;
+}
+
+/* Ajustes de color para mensajes de error */
+.text-danger {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+/* Estilos adicionales para el botón de búsqueda */
+.form-inline .form-control {
+    border-radius: 20px;
+    padding: 8px 15px;
+    width: 250px;
+}
+
+.form-inline .btn {
+    border-radius: 20px;
+    padding: 8px 15px;
+}
+/* Añadir margen superior al contenido principal para que no quede oculto detrás del navbar */
+.main-content {
+    margin-top: 70px; /* Ajusta este valor según la altura del navbar */
+}
