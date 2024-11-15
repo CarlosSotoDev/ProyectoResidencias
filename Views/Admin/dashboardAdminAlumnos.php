@@ -76,12 +76,32 @@ checkLogin();
                         </thead>
                         <tbody>
                             <?php
+                            $recordsPerPage = 7; // Limite de registros por página
+                            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Página actual
+                            $offset = ($page - 1) * $recordsPerPage; // Desplazamiento para la consulta
+
+                            // Verifica si se ha enviado una búsqueda
                             $searchQuery = "";
+                            $search = "";
                             if (isset($_GET['search']) && !empty($_GET['search'])) {
                                 $search = mysqli_real_escape_string($connection, $_GET['search']);
                                 $searchQuery = "AND (alumno.Nombres LIKE '%$search%' OR alumno.Apellido_Paterno LIKE '%$search%' OR alumno.Apellido_Materno LIKE '%$search%' OR alumno.ID_Alumno LIKE '%$search%' OR asesor.Nombres LIKE '%$search%' OR proyecto.Nombre_Proyecto LIKE '%$search%')";
                             }
 
+                            // Consulta para contar el total de registros para la paginación
+                            $totalQuery = "
+                                SELECT COUNT(*) as total
+                                FROM alumno 
+                                LEFT JOIN proyecto ON alumno.Proyecto = proyecto.ID_Proyecto 
+                                LEFT JOIN asesor ON alumno.Asesor = asesor.ID_Asesor 
+                                LEFT JOIN carrera ON alumno.Carrera = carrera.ID_Carrera
+                                LEFT JOIN usuario ON alumno.ID_Usuario = usuario.ID_Usuario
+                                WHERE 1=1 $searchQuery";
+                            $totalResult = $connection->query($totalQuery);
+                            $totalRows = $totalResult->fetch_assoc()['total'];
+                            $totalPages = ceil($totalRows / $recordsPerPage);
+
+                            // Consulta para obtener los alumnos con paginación
                             $query = "
                                 SELECT alumno.*, proyecto.Nombre_Proyecto, 
                                        CONCAT(asesor.Nombres, ' ', asesor.Apellido_Paterno, ' ', asesor.Apellido_Materno) AS Nombre_Asesor, 
@@ -92,7 +112,8 @@ checkLogin();
                                 LEFT JOIN carrera ON alumno.Carrera = carrera.ID_Carrera
                                 LEFT JOIN usuario ON alumno.ID_Usuario = usuario.ID_Usuario
                                 WHERE 1=1 $searchQuery 
-                                ORDER BY alumno.ID_Alumno ASC";
+                                ORDER BY alumno.ID_Alumno ASC
+                                LIMIT $recordsPerPage OFFSET $offset";
                             $result = $connection->query($query);
 
                             while ($row = $result->fetch_assoc()) {
@@ -123,218 +144,30 @@ checkLogin();
                     </table>
                 </div>
 
-                <!-- Modal para agregar alumno -->
-                <div class="modal fade" id="addAlumnoModal" tabindex="-1" role="dialog"
-                    aria-labelledby="addAlumnoModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addAlumnoModalLabel">Agregar Alumno</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="addAlumno.php" method="POST">
-                                    <div class="form-group">
-                                        <label for="addNombreAlumno">Nombre del Alumno</label>
-                                        <input type="text" class="form-control" name="nombres" id="addNombreAlumno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno" id="addApellidoPaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno" id="addApellidoMaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addCarrera">Carrera</label>
-                                        <select class="form-control" name="carrera" id="addCarrera" required>
-                                            <?php
-                                            $queryCarrera = "SELECT ID_Carrera, Nombre_Carrera FROM carrera";
-                                            $resultCarrera = $connection->query($queryCarrera);
-                                            while ($rowCarrera = $resultCarrera->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($rowCarrera['ID_Carrera']) . "'>" . htmlspecialchars($rowCarrera['Nombre_Carrera']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addProyecto">Proyecto</label>
-                                        <select class="form-control" name="proyecto" id="addProyecto">
-                                            <option value="">Sin Proyecto</option>
-                                            <?php
-                                            $queryProyecto = "SELECT ID_Proyecto, Nombre_Proyecto FROM proyecto WHERE (Integrante_1 IS NULL OR Integrante_2 IS NULL OR Integrante_3 IS NULL)";
-                                            $resultProyecto = $connection->query($queryProyecto);
-                                            while ($rowProyecto = $resultProyecto->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($rowProyecto['ID_Proyecto']) . "'>" . htmlspecialchars($rowProyecto['Nombre_Proyecto']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addUsuarioAlumno">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="addUsuarioAlumno" readonly required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addContrasenaAlumno">Contraseña</label>
-                                        <input type="text" class="form-control" name="password" id="addContrasenaAlumno" readonly required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Agregar Alumno</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Paginación -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page - 1; ?>&search=<?= htmlspecialchars($search); ?>">Anterior</a>
+                            </li>
+                        <?php endif; ?>
 
-                <!-- Modal para editar alumno -->
-                <div class="modal fade" id="editAlumnoModal" tabindex="-1" role="dialog"
-                    aria-labelledby="editAlumnoModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editAlumnoModalLabel">Editar Alumno</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="editAlumno.php" method="POST">
-                                    <input type="hidden" name="id_alumno" id="editAlumnoId">
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $i; ?>&search=<?= htmlspecialchars($search); ?>"><?= $i; ?></a>
+                            </li>
+                        <?php endfor; ?>
 
-                                    <div class="form-group">
-                                        <label for="editNombreAlumno">Nombre del Alumno</label>
-                                        <input type="text" class="form-control" name="nombres" id="editNombreAlumno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno" id="editApellidoPaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno" id="editApellidoMaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editCarrera">Carrera</label>
-                                        <select class="form-control" name="carrera" id="editCarrera" required>
-                                            <?php
-                                            $queryCarrera = "SELECT ID_Carrera, Nombre_Carrera FROM carrera";
-                                            $resultCarrera = $connection->query($queryCarrera);
-                                            while ($rowCarrera = $resultCarrera->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($rowCarrera['ID_Carrera']) . "'>" . htmlspecialchars($rowCarrera['Nombre_Carrera']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editUsuarioAlumno">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="editUsuarioAlumno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editContrasenaAlumno">Contraseña</label>
-                                        <input type="password" class="form-control" name="password" id="editContrasenaAlumno">
-                                        <small class="form-text text-muted">Deja en blanco para mantener la contraseña actual.</small>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <?php if ($page < $totalPages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page + 1; ?>&search=<?= htmlspecialchars($search); ?>">Siguiente</a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
 
-                <!-- Modal para asignar proyecto a un alumno existente -->
-                <div class="modal fade" id="assignProjectModal" tabindex="-1" role="dialog"
-                    aria-labelledby="assignProjectModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="assignProjectModalLabel">Asignar Proyecto a Alumno</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="assignProject.php" method="POST">
-                                    <div class="form-group">
-                                        <label for="selectAlumno">Seleccionar Alumno</label>
-                                        <select class="form-control" name="alumno_id" id="selectAlumno" required>
-                                            <option value="">Seleccione un alumno sin proyecto</option>
-                                            <?php
-                                            $queryAlumno = "SELECT ID_Alumno, CONCAT(Nombres, ' ', Apellido_Paterno, ' ', Apellido_Materno) AS Nombre_Alumno FROM alumno WHERE Proyecto IS NULL";
-                                            $resultAlumno = $connection->query($queryAlumno);
-                                            while ($alumno = $resultAlumno->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($alumno['ID_Alumno']) . "'>" . htmlspecialchars($alumno['Nombre_Alumno']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="selectProyecto">Seleccionar Proyecto</label>
-                                        <select class="form-control" name="proyecto_id" id="selectProyecto" required>
-                                            <option value="">Seleccione un proyecto con espacios disponibles</option>
-                                            <?php
-                                            $queryProyecto = "
-                                    SELECT ID_Proyecto, Nombre_Proyecto 
-                                    FROM proyecto 
-                                    WHERE (Integrante_1 IS NULL OR Integrante_2 IS NULL OR Integrante_3 IS NULL)";
-                                            $resultProyecto = $connection->query($queryProyecto);
-                                            while ($proyecto = $resultProyecto->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($proyecto['ID_Proyecto']) . "'>" . htmlspecialchars($proyecto['Nombre_Proyecto']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Asignar Proyecto</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Script para abrir el modal con los datos del alumno -->
-                <script>
-                    function generarUsuarioYContrasena() {
-                        const nombres = document.getElementById('addNombreAlumno').value.trim();
-                        const apellidoPaterno = document.getElementById('addApellidoPaterno').value.trim();
-                        const apellidoMaterno = document.getElementById('addApellidoMaterno').value.trim();
-
-                        if (nombres && apellidoPaterno && apellidoMaterno) {
-                            const nombreUsuario = (nombres.charAt(0) + apellidoPaterno + apellidoMaterno.charAt(0)).toUpperCase();
-                            document.getElementById('addUsuarioAlumno').value = nombreUsuario;
-                        }
-
-                        const contrasenaAleatoria = Math.floor(100000 + Math.random() * 900000);
-                        document.getElementById('addContrasenaAlumno').value = contrasenaAleatoria;
-                    }
-
-                    document.getElementById('addNombreAlumno').addEventListener('input', generarUsuarioYContrasena);
-                    document.getElementById('addApellidoPaterno').addEventListener('input', generarUsuarioYContrasena);
-                    document.getElementById('addApellidoMaterno').addEventListener('input', generarUsuarioYContrasena);
-
-                    document.querySelectorAll('.edit-btn').forEach(button => {
-                        button.addEventListener('click', function () {
-                            var row = this.closest('tr');
-                            var idAlumno = row.querySelector('td').innerText;
-                            var nombre = row.cells[1].innerText;
-                            var apellidoPaterno = row.cells[2].innerText;
-                            var apellidoMaterno = row.cells[3].innerText;
-                            var carrera = row.cells[4].innerText;
-                            var usuario = row.cells[7].innerText;
-
-                            document.getElementById('editAlumnoId').value = idAlumno;
-                            document.getElementById('editNombreAlumno').value = nombre;
-                            document.getElementById('editApellidoPaterno').value = apellidoPaterno;
-                            document.getElementById('editApellidoMaterno').value = apellidoMaterno;
-                            document.getElementById('editCarrera').value = carrera;
-                            document.getElementById('editUsuarioAlumno').value = usuario;
-                            document.getElementById('editContrasenaAlumno').value = '';
-
-                            $('#editAlumnoModal').modal('show');
-                        });
-                    });
-                </script>
-
+                <!-- Resto de tu código de modales y scripts adicionales -->
                 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
                 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

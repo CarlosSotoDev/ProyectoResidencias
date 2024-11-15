@@ -4,7 +4,6 @@ checkLogin();
 
 $usuario_id = $_SESSION['user_id'];
 $rol = $_SESSION['rol'];
-$upload_message = '';
 
 // Obtener el ID del proyecto desde la URL, la sesión, o asociarlo directamente con el usuario si es necesario
 $project_id = isset($_GET['id_proyecto']) ? $_GET['id_proyecto'] : (isset($_SESSION['id_proyecto']) ? $_SESSION['id_proyecto'] : null);
@@ -30,7 +29,7 @@ if (!$project_id) {
     }
 }
 
-// Consulta para obtener los detalles del proyecto según el ID
+// Consulta para obtener los detalles del proyecto en la columna izquierda
 $query = "SELECT p.*, p.Status, p.Archivo_Docx, p.Nombre_Proyecto FROM proyecto p WHERE p.ID_Proyecto = ?";
 $stmt = $connection->prepare($query);
 $stmt->bind_param("i", $project_id);
@@ -38,16 +37,43 @@ $stmt->execute();
 $result = $stmt->get_result();
 $proyecto = $result->fetch_assoc();
 
-// Mensajes de éxito o error al cambiar la contraseña
-if (isset($_SESSION['success'])) {
-    echo "<div class='alert alert-success'>{$_SESSION['success']}</div>";
-    unset($_SESSION['success']);
-}
+// Configuración de paginación para la tabla de revisiones
+$recordsPerPage = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
 
-if (isset($_SESSION['error'])) {
-    echo "<div class='alert alert-danger'>{$_SESSION['error']}</div>";
-    unset($_SESSION['error']);
-}
+$queryTotalRevisiones = "SELECT COUNT(*) as total 
+                         FROM revisiones 
+                         WHERE ID_Conexion = (
+                            SELECT ID_Conexion 
+                            FROM conproyectorevisiones 
+                            WHERE ID_Proyecto = ?
+                         )";
+$stmtTotalRevisiones = $connection->prepare($queryTotalRevisiones);
+$stmtTotalRevisiones->bind_param("i", $project_id);
+$stmtTotalRevisiones->execute();
+$resultTotalRevisiones = $stmtTotalRevisiones->get_result();
+$totalRows = $resultTotalRevisiones->fetch_assoc()['total'];
+$totalPages = ceil($totalRows / $recordsPerPage);
+
+$queryRevisiones = "
+    SELECT ROW_NUMBER() OVER (ORDER BY Fecha_Revision ASC) as Revision_Numero, 
+           Comentario, 
+           Fecha_Revision, 
+           Fecha_Proxima_Revision
+    FROM revisiones
+    WHERE ID_Conexion = (
+        SELECT ID_Conexion 
+        FROM conproyectorevisiones 
+        WHERE ID_Proyecto = ?
+    )
+    ORDER BY Fecha_Revision ASC
+    LIMIT $recordsPerPage OFFSET $offset";
+$stmtRevisiones = $connection->prepare($queryRevisiones);
+$stmtRevisiones->bind_param("i", $project_id);
+$stmtRevisiones->execute();
+$resultRevisiones = $stmtRevisiones->get_result();
+
 ?>
 
 <!DOCTYPE html>
@@ -64,10 +90,9 @@ if (isset($_SESSION['error'])) {
 <body>
     <!-- Navbar -->
     <?php require('../../includes/navbarAsesor.php'); ?>
-    <!-- Modal Cambio Contraseña -->
     <?php require('../../includes/modalCambioContrasena.php'); ?>
 
-    <main role="main" class="container-fluid bg-light p-2 my-1 border border-success custom-margin">
+    <main role="main" class="container-fluid bg-light p-4 mt-4 border border-success custom-margin">
         <h2>Historial de Revisiones</h2>
 
         <div class="row align-items-center justify-content-center mt-1">
@@ -96,13 +121,12 @@ if (isset($_SESSION['error'])) {
                 </div>
             </div>
 
-            <!-- Columna derecha: Historial de Revisiones -->
+            <!-- Columna derecha: Historial de Revisiones con paginación -->
             <div class="col-md-6">
                 <div class="bg-light p-3 text-center">
                     <h2 class="text-center">Historial de Revisiones</h2>
-                    <!-- Botón para agregar nueva revisión (abre modal) -->
                     <button type="button" class="btn btn-success mb-1 text-center" data-toggle="modal" data-target="#revisionModal">
-                        Generar nueva Revision
+                        Generar nueva Revisión
                     </button>
 
                     <!-- Modal para agregar nueva revisión -->
@@ -116,7 +140,6 @@ if (isset($_SESSION['error'])) {
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <!-- Formulario para agregar revisión -->
                                     <form id="revisionForm">
                                         <div class="form-group">
                                             <label for="comentario">Comentario</label>
@@ -134,78 +157,74 @@ if (isset($_SESSION['error'])) {
                         </div>
                     </div>
 
-                    <!-- Tabla de revisiones -->
                     <div class="table-responsive">
                         <table class="table table-striped table-sm">
                             <thead>
                                 <tr class="text-center">
                                     <th>Número de Revisión</th>
                                     <th>Comentario</th>
-                                    <th>Fecha Revision</th>
-                                    <th>Fecha Próxima Revision</th>
+                                    <th>Fecha Revisión</th>
+                                    <th>Fecha Próxima Revisión</th>
                                 </tr>
                             </thead>
                             <tbody id="revisiones-tbody" class="text-center">
                                 <?php
                                 $fecha_actual = date('Y-m-d');
+                                if ($resultRevisiones->num_rows > 0) {
+                                    while ($revision = $resultRevisiones->fetch_assoc()) {
+                                        $fecha_proxima_revision = $revision['Fecha_Proxima_Revision'];
+                                        $clase_fecha = '';
 
-                                // Obtener el ID_Conexion basado en el ID_Proyecto
-                                $queryConexion = "SELECT ID_Conexion FROM conproyectorevisiones WHERE ID_Proyecto = ?";
-                                $stmtConexion = $connection->prepare($queryConexion);
-                                $stmtConexion->bind_param("i", $project_id);
-                                $stmtConexion->execute();
-                                $resultConexion = $stmtConexion->get_result();
-
-                                if ($resultConexion->num_rows > 0) {
-                                    $conexion = $resultConexion->fetch_assoc();
-                                    $id_conexion = $conexion['ID_Conexion'];
-
-                                    $queryRevisiones = "
-                                        SELECT ROW_NUMBER() OVER (ORDER BY Fecha_Revision ASC) as Revision_Numero, Comentario, Fecha_Revision, Fecha_Proxima_Revision
-                                        FROM revisiones
-                                        WHERE ID_Conexion = ?";
-
-                                    $stmtRevisiones = $connection->prepare($queryRevisiones);
-                                    $stmtRevisiones->bind_param("i", $id_conexion);
-                                    $stmtRevisiones->execute();
-                                    $resultRevisiones = $stmtRevisiones->get_result();
-
-                                    if ($resultRevisiones->num_rows > 0) {
-                                        while ($revision = $resultRevisiones->fetch_assoc()) {
-                                            $fecha_proxima_revision = $revision['Fecha_Proxima_Revision'];
-                                            $clase_fecha = '';
-
-                                            if ($fecha_proxima_revision < $fecha_actual) {
-                                                $clase_fecha = 'text-danger'; // Fecha pasada: rojo
-                                            } elseif ($fecha_proxima_revision == $fecha_actual) {
-                                                $clase_fecha = 'text-success'; // Fecha actual: verde
-                                            } else {
-                                                $clase_fecha = 'text-warning'; // Fecha futura: amarillo
-                                            }
-
-                                            echo "<tr>";
-                                            echo "<td>" . htmlspecialchars($revision['Revision_Numero']) . "</td>";
-                                            echo "<td><button class='btn btn-info ver-comentario' data-comentario='" . htmlspecialchars($revision['Comentario']) . "'>Ver Comentario</button></td>";
-                                            echo "<td>" . htmlspecialchars($revision['Fecha_Revision']) . "</td>";
-                                            echo "<td class='" . $clase_fecha . "'>" . htmlspecialchars($revision['Fecha_Proxima_Revision']) . "</td>";
-                                            echo "</tr>";
+                                        if ($fecha_proxima_revision < $fecha_actual) {
+                                            $clase_fecha = 'text-danger'; 
+                                        } elseif ($fecha_proxima_revision == $fecha_actual) {
+                                            $clase_fecha = 'text-success'; 
+                                        } else {
+                                            $clase_fecha = 'text-warning'; 
                                         }
-                                    } else {
-                                        echo "<tr><td colspan='4'>No hay revisiones para este proyecto.</td></tr>";
+
+                                        echo "<tr>";
+                                        echo "<td>" . htmlspecialchars($revision['Revision_Numero']) . "</td>";
+                                        echo "<td><button class='btn btn-info ver-comentario' data-comentario='" . htmlspecialchars($revision['Comentario']) . "'>Ver Comentario</button></td>";
+                                        echo "<td>" . htmlspecialchars($revision['Fecha_Revision']) . "</td>";
+                                        echo "<td class='" . $clase_fecha . "'>" . htmlspecialchars($revision['Fecha_Proxima_Revision']) . "</td>";
+                                        echo "</tr>";
                                     }
                                 } else {
-                                    echo "<tr><td colspan='4'>No se encontró una conexión para este proyecto.</td></tr>";
+                                    echo "<tr><td colspan='4'>No hay revisiones para este proyecto.</td></tr>";
                                 }
                                 ?>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Paginación -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <?php if ($page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page - 1; ?>&id_proyecto=<?= $project_id; ?>">Anterior</a>
+                                </li>
+                            <?php endif; ?>
+
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?= $i == $page ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?= $i; ?>&id_proyecto=<?= $project_id; ?>"><?= $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <?php if ($page < $totalPages): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page + 1; ?>&id_proyecto=<?= $project_id; ?>">Siguiente</a>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal para mostrar comentario completo -->
     <div class="modal fade" id="verComentarioModal" tabindex="-1" role="dialog" aria-labelledby="verComentarioModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -221,32 +240,11 @@ if (isset($_SESSION['error'])) {
     </div>
 
     <script>
-    $(document).ready(function() {
-        $("#revisionForm").submit(function(e) {
-            e.preventDefault();
-            var comentario = $("#comentario").val();
-            var fecha_proxima_revision = $("#fecha_proxima_revision").val();
-            var id_proyecto = $("#id_proyecto").val();
-
-            $.ajax({
-                url: 'insert_revision.php',
-                method: 'POST',
-                data: { comentario: comentario, fecha_proxima_revision: fecha_proxima_revision, id_proyecto: id_proyecto },
-                success: function(response) {
-                    $("#comentario").val('');
-                    $("#fecha_proxima_revision").val('');
-                    $('#revisionModal').modal('hide');
-                    $("#revisiones-tbody").html(response);
-                }
-            });
-        });
-
         $(document).on('click', '.ver-comentario', function() {
             var comentario = $(this).data('comentario');
             $("#comentario-completo").text(comentario);
             $("#verComentarioModal").modal('show');
         });
-    });
     </script>
 </body>
 </html>

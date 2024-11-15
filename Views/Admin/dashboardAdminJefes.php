@@ -66,20 +66,46 @@ checkLogin();
                         </thead>
                         <tbody>
                             <?php
+                            $recordsPerPage = 8; // Limite de registros por página
+                            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Página actual
+                            $offset = ($page - 1) * $recordsPerPage; // Desplazamiento para la consulta
+
                             // Obtener el valor de búsqueda, si existe
                             $search = isset($_GET['search']) ? mysqli_real_escape_string($connection, $_GET['search']) : '';
 
-                            // Consulta para obtener los jefes de carrera, con lógica de búsqueda
+                            // Consulta para contar el total de registros para la paginación
+                            $totalQuery = "
+                                SELECT COUNT(*) as total
+                                FROM administrador
+                                LEFT JOIN carrera ON administrador.Carrera = carrera.ID_Carrera
+                                LEFT JOIN usuario ON administrador.ID_Usuario = usuario.ID_Usuario
+                                WHERE administrador.Rol = 5";
+                            
+                            // Añadir la lógica de búsqueda a la consulta de conteo
+                            if ($search) {
+                                $totalQuery .= " AND (
+                                    administrador.ID_Administrador LIKE '%$search%' OR 
+                                    administrador.Nombres LIKE '%$search%' OR 
+                                    administrador.Apellido_Paterno LIKE '%$search%' OR 
+                                    administrador.Apellido_Materno LIKE '%$search%' OR 
+                                    carrera.Nombre_Carrera LIKE '%$search%' OR 
+                                    usuario.Nombre_Usuario LIKE '%$search%'
+                                )";
+                            }
+                            $totalResult = $connection->query($totalQuery);
+                            $totalRows = $totalResult->fetch_assoc()['total'];
+                            $totalPages = ceil($totalRows / $recordsPerPage);
+
+                            // Consulta para obtener los jefes de carrera con paginación
                             $query = "
                                 SELECT administrador.ID_Administrador, administrador.Nombres, administrador.Apellido_Paterno, administrador.Apellido_Materno, 
                                        carrera.Nombre_Carrera, usuario.Nombre_Usuario
                                 FROM administrador
                                 LEFT JOIN carrera ON administrador.Carrera = carrera.ID_Carrera
                                 LEFT JOIN usuario ON administrador.ID_Usuario = usuario.ID_Usuario
-                                WHERE administrador.Rol = 5
-                            ";
-
-                            // Si se ingresó un término de búsqueda, agregar condiciones para buscar en todos los campos
+                                WHERE administrador.Rol = 5";
+                            
+                            // Añadir la lógica de búsqueda a la consulta principal
                             if ($search) {
                                 $query .= " AND (
                                     administrador.ID_Administrador LIKE '%$search%' OR 
@@ -91,7 +117,7 @@ checkLogin();
                                 )";
                             }
 
-                            $query .= " ORDER BY administrador.ID_Administrador ASC";
+                            $query .= " ORDER BY administrador.ID_Administrador ASC LIMIT $recordsPerPage OFFSET $offset";
                             $result = $connection->query($query);
 
                             while ($row = $result->fetch_assoc()) {
@@ -110,156 +136,35 @@ checkLogin();
                     </table>
                 </div>
 
-                <!-- Modal para agregar jefe de carrera -->
-                <div class="modal fade" id="addJefeModal" tabindex="-1" role="dialog" aria-labelledby="addJefeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addJefeModalLabel">Agregar Jefe de Carrera</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="addJefe.php" method="POST">
-                                    <div class="form-group">
-                                        <label for="addNombreJefe">Nombres</label>
-                                        <input type="text" class="form-control" name="nombres" id="addNombreJefe" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno" id="addApellidoPaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno" id="addApellidoMaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addCarrera">Carrera</label>
-                                        <select class="form-control" name="carrera" id="addCarrera" required>
-                                            <?php
-                                            $queryCarrera = "SELECT * FROM carrera";
-                                            $resultCarrera = $connection->query($queryCarrera);
-                                            while ($carrera = $resultCarrera->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($carrera['ID_Carrera']) . "'>" . htmlspecialchars($carrera['Nombre_Carrera']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addUsuario">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="addUsuario" readonly required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="addContrasena">Contraseña</label>
-                                        <input type="text" class="form-control" name="password" id="addContrasena" readonly required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Agregar Jefe</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Paginación -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page - 1; ?>&search=<?= htmlspecialchars($search); ?>">Anterior</a>
+                            </li>
+                        <?php endif; ?>
 
-                <!-- Modal para editar jefe de carrera -->
-                <div class="modal fade" id="editJefeModal" tabindex="-1" role="dialog" aria-labelledby="editJefeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editJefeModalLabel">Editar Jefe de Carrera</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="editJefe.php" method="POST">
-                                    <input type="hidden" name="id_jefe" id="editJefeId">
-                                    <div class="form-group">
-                                        <label for="editNombreJefe">Nombres</label>
-                                        <input type="text" class="form-control" name="nombres" id="editNombreJefe" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editApellidoPaterno">Apellido Paterno</label>
-                                        <input type="text" class="form-control" name="apellido_paterno" id="editApellidoPaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editApellidoMaterno">Apellido Materno</label>
-                                        <input type="text" class="form-control" name="apellido_materno" id="editApellidoMaterno" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editCarrera">Carrera</label>
-                                        <select class="form-control" name="carrera" id="editCarrera" required>
-                                            <?php
-                                            $queryCarrera = "SELECT * FROM carrera";
-                                            $resultCarrera = $connection->query($queryCarrera);
-                                            while ($carrera = $resultCarrera->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($carrera['ID_Carrera']) . "'>" . htmlspecialchars($carrera['Nombre_Carrera']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editUsuario">Nombre de Usuario</label>
-                                        <input type="text" class="form-control" name="username" id="editUsuario" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editContrasena">Contraseña</label>
-                                        <input type="password" class="form-control" name="password" id="editContrasena">
-                                        <small class="form-text text-muted">Deja el campo vacío si no quieres cambiar la contraseña.</small>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $i; ?>&search=<?= htmlspecialchars($search); ?>"><?= $i; ?></a>
+                            </li>
+                        <?php endfor; ?>
 
-                <script>
-                    function generarUsuarioYContrasena() {
-                        const nombres = document.getElementById('addNombreJefe').value.trim();
-                        const apellidoPaterno = document.getElementById('addApellidoPaterno').value.trim();
-                        const apellidoMaterno = document.getElementById('addApellidoMaterno').value.trim();
+                        <?php if ($page < $totalPages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page + 1; ?>&search=<?= htmlspecialchars($search); ?>">Siguiente</a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
 
-                        if (nombres && apellidoPaterno && apellidoMaterno) {
-                            const nombreUsuario = (nombres.charAt(0) + apellidoPaterno + apellidoMaterno.charAt(0)).toUpperCase();
-                            document.getElementById('addUsuario').value = nombreUsuario;
-                        }
-
-                        const contrasenaAleatoria = Math.floor(100000 + Math.random() * 900000);
-                        document.getElementById('addContrasena').value = contrasenaAleatoria;
-                    }
-
-                    document.getElementById('addNombreJefe').addEventListener('input', generarUsuarioYContrasena);
-                    document.getElementById('addApellidoPaterno').addEventListener('input', generarUsuarioYContrasena);
-                    document.getElementById('addApellidoMaterno').addEventListener('input', generarUsuarioYContrasena);
-
-                    // Funcionalidad para el botón de "Editar"
-                    document.querySelectorAll('.edit-btn').forEach(button => {
-                        button.addEventListener('click', function () {
-                            var row = this.closest('tr');
-                            var jefeId = row.cells[0].innerText;
-                            var nombres = row.cells[1].innerText;
-                            var apellidoPaterno = row.cells[2].innerText;
-                            var apellidoMaterno = row.cells[3].innerText;
-                            var carrera = row.cells[4].innerText;
-                            var username = row.cells[5].innerText;
-
-                            document.getElementById('editJefeId').value = jefeId;
-                            document.getElementById('editNombreJefe').value = nombres;
-                            document.getElementById('editApellidoPaterno').value = apellidoPaterno;
-                            document.getElementById('editApellidoMaterno').value = apellidoMaterno;
-                            document.getElementById('editCarrera').value = carrera;
-                            document.getElementById('editUsuario').value = username;
-                            document.getElementById('editContrasena').value = ''; // Deja el campo vacío para que el usuario lo rellene si lo desea
-                        });
-                    });
-                </script>
+                <!-- Modales y scripts adicionales -->
+                <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
             </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

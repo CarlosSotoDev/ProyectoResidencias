@@ -25,7 +25,6 @@ checkLogin();
         <div class="row">
             <!-- Barra lateral -->
             <div class="col-2 sidebar bg-success d-flex flex-column align-items-center p-3">
-                <!-- Aquí va el contenido de la barra lateral -->
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link text-white text-center" href="dashboardAdmin.php">Usuarios</a>
@@ -67,15 +66,26 @@ checkLogin();
                         </thead>
                         <tbody>
                             <?php
+                            $recordsPerPage = 14; // Limite de registros por página
+                            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Página actual
+                            $offset = ($page - 1) * $recordsPerPage; // Desplazamiento para la consulta
+
                             // Verifica si se ha enviado una búsqueda
                             $searchQuery = "";
+                            $search = ""; // Definimos $search como cadena vacía por defecto
                             if (isset($_GET['search']) && !empty($_GET['search'])) {
                                 $search = mysqli_real_escape_string($connection, $_GET['search']);
                                 $searchQuery = "AND (Nombre_Usuario LIKE '%$search%' OR Rol LIKE '%$search%')";
                             }
 
-                            // Consulta con orden ascendente por ID_Usuario
-                            $query = "SELECT ID_Usuario, Nombre_Usuario, Rol FROM usuario WHERE Rol != 4 $searchQuery ORDER BY ID_Usuario ASC";
+                            // Obtener el total de registros para calcular el número de páginas
+                            $totalQuery = "SELECT COUNT(*) as total FROM usuario WHERE Rol != 4 $searchQuery";
+                            $totalResult = $connection->query($totalQuery);
+                            $totalRows = $totalResult->fetch_assoc()['total'];
+                            $totalPages = ceil($totalRows / $recordsPerPage);
+
+                            // Consulta con límite y desplazamiento
+                            $query = "SELECT ID_Usuario, Nombre_Usuario, Rol FROM usuario WHERE Rol != 4 $searchQuery ORDER BY ID_Usuario ASC LIMIT $recordsPerPage OFFSET $offset";
                             $result = $connection->query($query);
 
                             while ($row = $result->fetch_assoc()) {
@@ -89,6 +99,29 @@ checkLogin();
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Paginación -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page - 1; ?>&search=<?= htmlspecialchars($search); ?>">Anterior</a>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $i; ?>&search=<?= htmlspecialchars($search); ?>"><?= $i; ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <?php if ($page < $totalPages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page + 1; ?>&search=<?= htmlspecialchars($search); ?>">Siguiente</a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
 
                 <!-- Scripts de Bootstrap -->
                 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
